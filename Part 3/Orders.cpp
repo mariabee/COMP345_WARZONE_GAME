@@ -1,143 +1,108 @@
-#include <iostream>
-#include <string>
+#include "Orders.h"
 #include <list> 
-using namespace std;
 
-class Order
-{
-public:
-    virtual bool validate() = 0;
-    virtual void execute() = 0;
-    //Accessors
-    string getOrderType() { return orderType; }
-    string getOrderEffect() { return orderEffect; }
-    //Mutators
-    void setOrderType(string _o) { orderType = _o; }
-    void setOrderEffect(string effect) { orderEffect = effect; }
 
-private:
-    friend ostream& operator<<(ostream&, const Order&);
-    string orderType;
-    string orderEffect;
-};
+//ACCCESOR IMPLEMENTATION 
+string Order::getOrderType() { return orderType;; };
+string Order::getOrderEffect() { return orderEffect; };
+//MUTATOR IMPLEMENTATION 
+void Order::setOrderType(string order) { orderType = order; };
+void Order::setOrderEffect(string effect) { orderEffect = effect; };
+
+//STREAM INSERTION OPERATOR IMPLEMENTATION 
 ostream& operator << (ostream& strm, const Order& orderObj) {
 
     return strm << orderObj.orderType << endl;
 }
 
-//SUBCLASSES 
+//SUBCLASS IMPLEMENTATION 
 
-class Deploy : public Order {
-public:
-    //Default constructor 
-    Deploy() { setOrderType("Deploy"); }
-
-    void execute() {
-        if (validate()) {
-            setOrderEffect("Troops have been deployed.");
-        }
+//DEPLOY
+Deploy::Deploy() { setOrderType("Deploy"); }
+void Deploy::execute() {
+    if (validate()) {
+        setOrderEffect("Troops have been deployed.");
     }
-private:
-    bool validate() {
-        //PLACEHOLDER
+}
+bool Deploy::validate() {
+    //PLACEHOLDER
         // if the territory blongs to the player
-        return true;
-    }
-};
-class Advance : public Order {
-public:
-    //Default constructor 
-    Advance() { setOrderType("Advance"); }
-    //add MapTerritory* and Player* to the param
-    void execute() {
-        if (validate()) {
-            setOrderEffect("Troops have advanced.*");
-            /*
-            * If the map territory does not belong to the player
-            * Then an attack happens with other player
-            */
-        }
-    }
-private:
-    bool validate() {
-        //PLACEHOLDER
-        return true;
-    }
-};
-class Bomb : public Order {
-public:
-    //Default constructor 
-    Bomb() { setOrderType("Bomb"); }
+    return true;
+}
 
-    void execute() {
-        if (validate()) {
-            setOrderEffect("Territory has been bombed.*");
-
-        }
+//ADVANCE
+Advance::Advance() { setOrderType("Advance"); }
+void Advance::execute() {
+    if (validate()) {
+        setOrderEffect("Troops have advanced.*");
+        /*
+        * If the map territory does not belong to the player
+        * Then an attack happens with other player
+        */
     }
-private:
-    bool validate() {
+}
+bool Advance::validate() {
+    return true; 
+}
+
+//BOMB 
+Bomb::Bomb() { setOrderType("Bomb"); }
+void Bomb::execute() {
+    if (validate()) {
+        setOrderEffect("Territory has been bombed.*");
+
+    }
+}
+bool Bomb::validate() {
+    {
         //PLACEHOLDER
         // if the target territory is adjacent to the player's territory
         return true;
         //else return false
     }
-};
-class Blockade : public Order {
-public:
-    //Default constructor 
-    Blockade() { setOrderType("Blockade"); }
-
-    void execute() {
-        if (validate()) {
+}
+//BLOCKADE
+Blockade::Blockade() { setOrderType("Blockade"); };
+void Blockade::execute() {
+    if (validate()) {
             setOrderEffect("Troops have tripled.\nThe territory is now neutral. *");
 
-        }
-    }
-private:
-    bool validate() {
-        //PLACEHOLDER
+       }
+}
+bool Blockade::validate() {
+    //PLACEHOLDER
         //if the territory belongs to the player
-        return true;
-        //else false
+    return true;
+    //else false
+}
+//AIRLIFT 
+Airlift::Airlift() { setOrderType("Airlift"); }
+void Airlift::execute() {
+    if (validate()) {
+        setOrderEffect("Troops have moved.*");
+        //if the target territory does not belongs to the player
+        //then an attack happens
     }
-};
-class Airlift : public Order {
-public:
-    //Default constructor 
-    Airlift() { setOrderType("Airlift"); }
+}
+bool Airlift::validate() {
+    //PLACEHOLDER
+    return true;
+}
+//NEGOTIATE 
+Negotiate::Negotiate() { setOrderType("Negotiate"); }
+void Negotiate::execute() {
+    if (validate()) {
+        setOrderEffect("Attacks have been prevented until the end of turn.*");
+    }
+}
+bool Negotiate::validate() {
+    //PLACEHOLDER
+    return true;
+}
 
-    void execute() {
-        if (validate()) {
-            setOrderEffect("Troops have moved.*");
-            //if the target territory does not belongs to the player
-            //then an attack happens
-        }
-    }
-private:
-    bool validate() {
-        //PLACEHOLDER
-        return true;
-    }
-};
-class Negotiate : public Order {
-public:
-    //Default constructor 
-    Negotiate() { setOrderType("Negotiate"); }
-
-    void execute() {
-        if (validate()) {
-            setOrderEffect("Attacks have been prevented until the end of turn.*");
-        }
-    }
-private:
-    bool validate() {
-        //PLACEHOLDER
-        return true;
-    }
-};
-
+//TEMPORARY MAIN METHOD FOR TESTING 
 int main() {
+    cout << "THIS WORKS"; 
     list<Order*> testList;
     Deploy* d = new Deploy();
     Advance* a = new Advance();

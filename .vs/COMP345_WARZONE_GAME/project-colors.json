@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "ProjectMap": {
+    "e7b988d2-9c0d-4351-b752-ff2db98e3e5d": {
+      "ProjectGuid": "e7b988d2-9c0d-4351-b752-ff2db98e3e5d",
+      "DisplayName": "COMP345_WARZONE_GAME",
+      "ColorIndex": 0
+    }
+  },
+  "NextColorIndex": 1
+}

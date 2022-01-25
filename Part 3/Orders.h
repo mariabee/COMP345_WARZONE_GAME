@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <iostream>
+#include <vector>
 using namespace std;
 
 //BASE CLASS 
@@ -8,8 +9,7 @@ class order {
 	public:
         order(); 
         order(const order& other);
-
-    order(order **pOrder);
+        order(order **pOrder);
 
     virtual ~order();
         virtual bool validate() = 0;
@@ -18,8 +18,8 @@ class order {
         string get_order_type() const;
         string get_order_effect() const;
         //Mutators
-        void set_order_type(string order);
-        void set_order_effect(string effect);
+        void set_order_type(const string &order);
+        void set_order_effect(const string &effect);
 
     private:
         friend ostream& operator<<(ostream&, const order&);
@@ -75,4 +75,22 @@ class Negotiate : public order {
         void execute() override;
     private:
         bool validate() override;
+};
+
+//ORDERS LIST CLASS
+
+class OrdersList{
+public:
+    OrdersList();
+
+    void add(order* o);
+    void move(order* o, int position);
+    void remove(order* o);
+    bool contain(order **o);
+
+    virtual ~OrdersList();
+
+private:
+    vector<order*> list;
+    vector<order*>::iterator ptr;
 };

@@ -1,7 +1,7 @@
 #include "Orders.h"
-#include <list> 
-// BASE CLASS
+#include <bits/stdc++.h>
 
+// BASE CLASS IMPLEMENTATION
 order::order()
 {
     order_effect_ = nullptr;
@@ -18,22 +18,32 @@ order::order(const order& other)
 //DESTRUCTOR 
 order::~order()
 {
-    //delete order_effect_;
-    //delete order_type_;
+    delete order_effect_;
+    delete order_type_;
 }
 
-//ACCCESOR IMPLEMENTATION 
-string order::get_order_type() const { return *order_type_; }
-string order::get_order_effect() const { return *order_effect_; }
+//ACCESSOR IMPLEMENTATION
+string order::get_order_type() const {
+    if (order_type_) {
+        return *order_type_;
+    }
+    return ""; }
+string order::get_order_effect() const {
+    if (order_effect_) {
+        return *order_effect_;
+    }
+    return ""; }
 //MUTATOR IMPLEMENTATION 
-void order::set_order_type(string order) { order_type_ = &order; }
-void order::set_order_effect(string effect) { order_effect_ = &effect; }
+void order::set_order_type(const string &order) { order_type_ = new string(order); }
+void order::set_order_effect(const string &effect) { order_effect_ = new string(effect); }
 
 //STREAM INSERTION OPERATOR IMPLEMENTATION 
 ostream& operator << (ostream& stream, const order& order_obj) {
-
-    return stream << "Order Type : " << order_obj.get_order_type() << endl
-	<< "Order Effect : " << order_obj.get_order_effect() << endl; 
+    string description_ = "Order Type : " + order_obj.get_order_type() + "\n";
+    if (order_obj.get_order_effect().empty()) {
+        description_ += "Order Effect : " + order_obj.get_order_effect() + "\n";
+    }
+    return stream << description_;
 }
 
 
@@ -87,7 +97,7 @@ bool Bomb::validate() {
     }
 }
 //BLOCKADE
-Blockade::Blockade() { set_order_type("Blockade"); };
+Blockade::Blockade() { set_order_type("Blockade"); }
 void Blockade::execute() {
     if (validate()) {
         set_order_effect("Troops have tripled.\nThe territory is now neutral. *");
@@ -105,7 +115,7 @@ Airlift::Airlift() { set_order_type("Airlift"); }
 void Airlift::execute() {
     if (validate()) {
         set_order_effect("Troops have moved.*");
-        //if the target territory does not belongs to the player
+        //if the target territory does not belong to the player
         //then an attack happens
     }
 }
@@ -124,4 +134,50 @@ bool Negotiate::validate() {
     //PLACEHOLDER
     return true;
 }
+//ORDERS LIST IMPLEMENTATION
 
+void OrdersList::add(order* o) {
+    list.push_back(o);
+}
+void OrdersList::move(order* o, int position) {
+    auto it = list.begin()+position;
+    if(contain(&o)) {
+        remove(o);
+        list.insert(it, o);
+    }
+    else{
+        cout<<"Order not found";
+        return;
+    }
+}
+
+void OrdersList::remove(order* o) {
+    ptr = find(list.begin(), list.end(),o);
+    list.erase(ptr);
+}
+
+bool OrdersList::contain(order **o) {
+    ptr = find(list.begin(), list.end(),*o);
+    if (ptr != list.end())
+    {
+        //WE SHOULD MAKE AN ORDER PRINT FUNCTION FOR DEBUGGING AFTER MAP AND PLAYER
+        cout << "Element " << o <<" found at position : " ;
+        cout << ptr - list.begin() <<endl;
+        ptr = list.begin();
+        return true;
+    }
+    else {
+        std::cout << "Element not found.\n\n";
+        ptr = list.begin();
+        return false;
+    }
+}
+
+OrdersList::OrdersList(){
+    list;
+    ptr;
+}
+
+OrdersList::~OrdersList() {
+    list.clear();
+}

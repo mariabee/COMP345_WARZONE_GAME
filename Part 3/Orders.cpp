@@ -18,8 +18,8 @@ order::order(const order& other)
 //DESTRUCTOR 
 order::~order()
 {
-    delete order_effect_;
-    delete order_type_; 
+    //delete order_effect_;
+    //delete order_type_;
 }
 
 //ACCCESOR IMPLEMENTATION 
@@ -35,6 +35,7 @@ ostream& operator << (ostream& stream, const order& order_obj) {
     return stream << "Order Type : " << order_obj.get_order_type() << endl
 	<< "Order Effect : " << order_obj.get_order_effect() << endl; 
 }
+
 
 //SUBCLASS IMPLEMENTATION 
 
@@ -124,23 +125,3 @@ bool Negotiate::validate() {
     return true;
 }
 
-//TEMPORARY MAIN METHOD FOR TESTING 
-int main() {
-    list<order*> testList;
-    Deploy d1; 
-    Deploy *d = &d1; //Alternative to using new ClassName()
-    Advance* a = new Advance();
-    Bomb* b = new Bomb();
-    Blockade* bl = new Blockade();
-    Airlift* ai = new Airlift();
-    Negotiate* n = new Negotiate();
-    testList.push_front(d);
-    testList.push_front(a);
-    testList.push_front(b);
-    testList.push_front(bl);
-    testList.push_front(ai);
-    testList.push_front(n);
-    cout << "THIS WORKS END";
-
-
-}

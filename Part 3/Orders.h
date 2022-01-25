@@ -7,8 +7,11 @@ using namespace std;
 class order {
 	public:
         order(); 
-        order(const order& other); 
-        virtual ~order(); 
+        order(const order& other);
+
+    order(order **pOrder);
+
+    virtual ~order();
         virtual bool validate() = 0;
         virtual void execute() = 0; 
         //Accessors

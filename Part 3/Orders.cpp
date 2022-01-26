@@ -20,6 +20,8 @@ order::~order()
 {
     delete order_effect_;
     delete order_type_;
+    order_effect_ = NULL;
+    order_type_ = NULL;
 }
 
 //ACCESSOR IMPLEMENTATION

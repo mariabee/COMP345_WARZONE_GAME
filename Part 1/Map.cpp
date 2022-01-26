@@ -43,6 +43,58 @@ void Map::printMap() {
     }
 }
 
+
+Territory::Territory() {}
+
+Territory::~Territory() {
+    number = NULL;
+    ID=NULL;
+    name.clear();
+    continent.clear();
+    //delete player;
+
+}
+
+Territory::Territory(const int &ID,const int &number, const string &name, const string &continent) {
+    this->ID=ID;
+    this->number=number;
+    this->name=name;
+    this->continent=continent;
+}
+
+int Territory::getId() const {
+    return ID;
+}
+
+void Territory::setId(int id) {
+    ID = id;
+}
+
+int Territory::getNumber() const {
+    return number;
+}
+
+void Territory::setNumber(int number) {
+    Territory::number = number;
+}
+
+const string &Territory::getName() const {
+    return name;
+}
+
+void Territory::setName(const string &name) {
+    Territory::name = name;
+}
+
+const string &Territory::getContinent() const {
+    return continent;
+}
+
+void Territory::setContinent(const string &continent) {
+    Territory::continent = continent;
+}
+
+
 void Map::traverse(int i) {
     visited[i] = true;
     for (int nbr:terr_nums[i]){

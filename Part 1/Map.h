@@ -5,13 +5,32 @@
 
 using namespace std;
 class Territory {
-    int number;
-    string *name;
+    int ID; //id of the country
+    int number; //nbr of troops on the territory
+    string name; //the name of the country
+    string continent; //the continent it belongs to (discuss if we should implement continent class
+    //Player player; the player that owns the territory
 public:
-    Territory(){}
-    Territory(string name) {
-        this->name = &name;
-    }
+    Territory();
+    Territory(const int &ID,const int &number, const string &name, const string &continent);
+    ~Territory();
+
+    int getId() const;
+
+    void setId(int id);
+
+    int getNumber() const;
+
+    void setNumber(int number);
+
+    const string &getName() const;
+
+    void setName(const string &name);
+
+    const string &getContinent() const;
+
+    void setContinent(const string &continent);
+
 };
 class Map {
     int *num_of_trs;

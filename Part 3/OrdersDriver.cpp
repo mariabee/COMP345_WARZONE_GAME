@@ -1,4 +1,4 @@
-//MAIN METHOD FOR TESTING
+/*//MAIN METHOD FOR TESTING
 #include "Orders.h"
 
 int main() {
@@ -29,5 +29,5 @@ int main() {
     cout << "\nTHIS WORKS END";
 
 
-}
+}*/
 

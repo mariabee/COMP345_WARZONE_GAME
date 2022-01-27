@@ -4,34 +4,71 @@
 #include <vector>
 
 using namespace std;
-class Territory {
-    int ID; //id of the country
-    int number; //nbr of troops on the territory
-    string name; //the name of the country
-    string continent; //the continent it belongs to (discuss if we should implement continent class
-    //Player player; the player that owns the territory
-public:
-    Territory();
-    Territory(const int &ID,const int &number, const string &name, const string &continent);
-    ~Territory();
 
+
+
+class Continent {
+private:
+    int ID;
+    string name;
+    int bonus;
+    string color;
+public:
     int getId() const;
 
     void setId(int id);
-
-    int getNumber() const;
-
-    void setNumber(int number);
 
     const string &getName() const;
 
     void setName(const string &name);
 
-    const string &getContinent() const;
+    int getBonus() const;
 
-    void setContinent(const string &continent);
+    void setBonus(int bonus);
+
+    const string &getColor() const;
+
+    void setColor(const string &color);
+
+    Continent(int ID, const string &name, int bonus, const string &color);
+
+    friend ostream &operator<<(ostream &os, const Continent &continent);
 
 };
+
+class Territory{
+private:
+    int ID;
+    string name;
+    int continent_ID;
+    int number_of_armies;
+    Continent *continent;
+public:
+    int getId() const;
+
+    void setId(int id);
+
+    const string &getName() const;
+
+    void setName(const string &name);
+
+    int getContinentId() const;
+
+    void setContinentId(int continentId);
+
+    int getNumberOfArmies() const;
+
+    void setNumberOfArmies(int numberOfArmies);
+
+    friend ostream &operator<<(ostream &os, const Territory &territory);
+
+    Territory(int id, const string &name, int continentId);
+
+
+    void setContinent(Continent *continent);
+
+};
+
 class Map {
     int *num_of_trs;
     list<int> *terr_nums;
@@ -46,9 +83,5 @@ public :
     void addTerritory(const Territory &t, int ter_num, vector<int> const &);
     void printMap();
     bool isConnected();
-
-};
-
-class continent {
 
 };

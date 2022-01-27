@@ -1,5 +1,101 @@
 #include "Map.h"
 #include <vector>
+
+Continent::Continent(const int ID, const string &name, int bonus, const string &color) {
+    this->ID = ID;
+    this->name = name;
+    this->bonus = bonus;
+    this->color = color;
+}
+
+ostream &operator<<(ostream &os, const Continent &continent) {
+    os << "ID: " << continent.ID << "\tName: " << continent.name << "\tBonus: " << continent.bonus << "\tColor: "
+       << continent.color;
+    return os;
+}
+
+int Continent::getId() const {
+    return ID;
+}
+
+void Continent::setId(int id) {
+    ID = id;
+}
+
+const string &Continent::getName() const {
+    return name;
+}
+
+void Continent::setName(const string &name) {
+    Continent::name = name;
+}
+
+int Continent::getBonus() const {
+    return bonus;
+}
+
+void Continent::setBonus(int bonus) {
+    Continent::bonus = bonus;
+}
+
+const string &Continent::getColor() const {
+    return color;
+}
+
+void Continent::setColor(const string &color) {
+    Continent::color = color;
+}
+
+
+Territory::Territory(int id, const string &name, int continentId) {
+    this->ID=id;
+    this->name=name;
+    this->continent_ID=continentId;
+    this->number_of_armies=0;
+    this->continent= nullptr;
+}
+
+ostream &operator<<(ostream &os, const Territory &territory) {
+    os << "ID: " << territory.ID << "\tName: " << territory.name << "\tContinent ID: " << territory.continent_ID;
+    return os;
+}
+
+int Territory::getId() const {
+    return ID;
+}
+
+void Territory::setId(int id) {
+    ID = id;
+}
+
+const string &Territory::getName() const {
+    return name;
+}
+
+void Territory::setName(const string &name) {
+    Territory::name = name;
+}
+
+int Territory::getContinentId() const {
+    return continent_ID;
+}
+
+void Territory::setContinentId(int continentId) {
+    continent_ID = continentId;
+}
+
+int Territory::getNumberOfArmies() const {
+    return number_of_armies;
+}
+
+void Territory::setNumberOfArmies(int numberOfArmies) {
+    number_of_armies = numberOfArmies;
+}
+
+
+void Territory::setContinent(Continent *continent) {
+    Territory::continent = continent;
+}
 Map::Map(int num_of_trs){
     this->num_of_trs = new int();
     *this->num_of_trs = num_of_trs;
@@ -43,58 +139,6 @@ void Map::printMap() {
     }
 }
 
-
-Territory::Territory() {}
-
-Territory::~Territory() {
-    number = NULL;
-    ID=NULL;
-    name.clear();
-    continent.clear();
-    //delete player;
-
-}
-
-Territory::Territory(const int &ID,const int &number, const string &name, const string &continent) {
-    this->ID=ID;
-    this->number=number;
-    this->name=name;
-    this->continent=continent;
-}
-
-int Territory::getId() const {
-    return ID;
-}
-
-void Territory::setId(int id) {
-    ID = id;
-}
-
-int Territory::getNumber() const {
-    return number;
-}
-
-void Territory::setNumber(int number) {
-    Territory::number = number;
-}
-
-const string &Territory::getName() const {
-    return name;
-}
-
-void Territory::setName(const string &name) {
-    Territory::name = name;
-}
-
-const string &Territory::getContinent() const {
-    return continent;
-}
-
-void Territory::setContinent(const string &continent) {
-    Territory::continent = continent;
-}
-
-
 void Map::traverse(int i) {
     visited[i] = true;
     for (int nbr:terr_nums[i]){
@@ -116,4 +160,6 @@ bool Map::isConnected() {
     }
     return true;
 }
+
+
 

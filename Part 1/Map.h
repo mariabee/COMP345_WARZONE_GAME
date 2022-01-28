@@ -63,25 +63,34 @@ public:
     friend ostream &operator<<(ostream &os, const Territory &territory);
 
     Territory(int id, const string &name, int continentId);
+    Territory() {
+        name = "Default";
+    }
 
 
     void setContinent(Continent *continent);
 
 };
+struct Node
+{
+    Territory *value;
+    Node* next;
+    Node* previous;
+};
+struct Edge {
+    int src, dest;
+};
 
 class Map {
-    int *num_of_trs;
-    list<int> *terr_nums;
+    int num_of_trs;
     Territory *territories;
-    bool *visited;
-    void addBorder(int x, int y);
-    void traverse(int i);
+    Node* getNewNode(int dest, Node *head);
+
 public :
-    explicit Map(int num_of_trs);
+    Node **head;
+    Map(Edge edges[], Territory territories[], int num_of_trs, int num_of_edges);
     ~Map();
-    void cleanUpMap();
-    void addTerritory(const Territory &t, int ter_num, vector<int> const &);
     void printMap();
-    bool isConnected();
+    void printNode(Node *ptr);
 
 };

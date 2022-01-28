@@ -1,17 +1,14 @@
 #include "Map.h"
 int main() {
-    auto *t = new Territory("Canada");
-    auto *v = new Territory("US");
-
-    Map *m = new Map(4);
-    m->addTerritory(*t, 1, {2, 3});
-    m->addTerritory(*t, 2, {1});
-    m->addTerritory(*v, 3, {4});
-    m->addTerritory(*v, 4, {2});
-    m->cleanUpMap();
-    m->printMap();
-    m->isConnected() ? cout << "CONNECTED" : cout << "NOT CONNECTED";
-    delete m;
-
+    Edge edges[] = {{1,2}, {0,1}, {2,4}, {3,2}, {4,2}, {5,1}, {6,1}, {7,6},{6,7}, {7,8}, {8,7}, {8,1}};
+    int N = 9;
+    Territory *territories = new Territory[N];
+    for (int i = 0; i < N; i++) {
+        territories[i].setId(i);
+        territories[i].setName("TEST NAME ");
+    }
+    int e = sizeof(edges)/sizeof(edges[0]);
+    Map map(edges, territories, N, e);
+    map.printMap();
     return 0;
 }

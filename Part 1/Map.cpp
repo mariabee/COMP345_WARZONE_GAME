@@ -96,70 +96,69 @@ void Territory::setNumberOfArmies(int numberOfArmies) {
 void Territory::setContinent(Continent *continent) {
     Territory::continent = continent;
 }
-Map::Map(int num_of_trs){
-    this->num_of_trs = new int();
-    *this->num_of_trs = num_of_trs;
-    terr_nums = new list<int>[num_of_trs];
-    territories = new Territory[num_of_trs];
-    visited = new bool[num_of_trs];
+
+//Method to get a new node
+Node* Map::getNewNode(int dest, Node* head)
+{
+    //Create new Node
+    Node  *newNode = new Node;
+    newNode->value = &territories[dest]; //Set its value to the address of the territory it represents
+    newNode->next = head; //Set its next node value to the head
+    if (head != nullptr) {
+        head->previous = newNode;
+    }
+    return newNode;
+}
+//MAP CONSTRUCTOR
+//Takes an array of edges, an array of territories, number of territories, and number of edges.
+Map::Map(Edge edges[], Territory territories[], int num_of_trs, int num_of_edges){
+    head = new Node*[num_of_trs](); // An array of pointers to Nodes
+    this->num_of_trs = num_of_trs;
+    this->territories = territories;
+
+    // initialize head pointer for all vertices, to corresponded with territory Id's.
+    for (int i = 0; i < num_of_trs; i++) {
+        head[i] = getNewNode(i, nullptr);
+    }
+
+    // add edges to the graph
+    for (int i = 0; i < num_of_edges; i++) {
+        int src = edges[i].src;
+        int dest = edges[i].dest;
+
+        // insert at the end
+        Node *newNode = getNewNode(dest, head[src]);
+
+        // point head pointer to the new node
+        head[src] = newNode;
+    }
 }
 Map::~Map(){
-    delete num_of_trs;
-    delete territories;
-    delete terr_nums;
-    delete visited;
-    num_of_trs = nullptr;
-    territories = nullptr;
-    terr_nums = nullptr;
-    visited = nullptr;
-}
-
-void Map::addBorder(int x, int y) {
-    terr_nums[x-1].push_back(y);
-}
-void Map::cleanUpMap() {
-    for (int i = 0; i < *num_of_trs; i++){
-        terr_nums[i].sort();
+    for (int i = 0; i < num_of_trs; i++) {
+        delete[] head[i];
     }
+    delete[] head;
 }
-void Map::addTerritory(const Territory &t, const int ter_num, vector<int> const &bord_nums ) {
-    //need to add code to check if territory already in position
-    territories[ter_num - 1] = t;
-    for (int i : bord_nums) {
-        addBorder(ter_num, i);
+void Map::printNode(Node *ptr) {
+    while (ptr->next != nullptr)
+    {
+        ptr = ptr->next;
     }
+    while (ptr != nullptr) {
+        cout << ptr->value->getId() << " ";
+        ptr = ptr->previous;
+    }
+    cout << endl;
 }
 void Map::printMap() {
-    for (int i = 0; i < *num_of_trs; i++) {
-        cout << i+1 << " TERRITORY NAME TBA : ";
-        for (int nbr:terr_nums[i]) {
-            cout << nbr << " ";
-        }
-        cout << endl;
+    for (int i = 0; i < num_of_trs; i++){
+        printNode(head[i]); // print all vertices on a line
     }
 }
 
-void Map::traverse(int i) {
-    visited[i] = true;
-    for (int nbr:terr_nums[i]){
-        if (!visited[nbr-1]){
-            traverse(nbr-1);
-        }
-    }
-}
-bool Map::isConnected() {
-    for (int i = 0; i < *num_of_trs; i++){
-        visited[i] = false;
-    }
-    traverse(0);
-    for (int i = 0; i < *num_of_trs; i++) {
-        if (!visited[i]) {
-            cout << "MAP IS NOT CONNECTED." << endl;
-            return false;
-        }
-    }
-    return true;
-}
+
+
+
 
 
 

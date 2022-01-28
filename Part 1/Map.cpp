@@ -6,6 +6,24 @@ Continent::Continent(const int ID, const string &name, int bonus, const string &
     this->name = name;
     this->bonus = bonus;
     this->color = color;
+    num_within = -1;
+    subGraph = nullptr;
+}
+
+void Continent::addTerritories(const int IDs[], int num_of, Node *mapLinks[]) {
+    this->num_within = num_of;
+    subGraph = new Node*[num_within]();
+    for (int i = 0; i < num_within; i++) {
+        int ter = IDs[i];
+        subGraph[i] = mapLinks[ter];
+        mapLinks[ter]->value->setContinentId(ID);
+    }
+}
+int Continent::getTerritoryID(int i) {
+    return subGraph[i]->value->getId();
+}
+Territory Continent::getTerritory(int i) {
+    return *subGraph[i]->value;
 }
 
 ostream &operator<<(ostream &os, const Continent &continent) {
@@ -26,24 +44,24 @@ const string &Continent::getName() const {
     return name;
 }
 
-void Continent::setName(const string &name) {
-    Continent::name = name;
+void Continent::setName(const string &_name) {
+    this->name = _name;
 }
 
 int Continent::getBonus() const {
     return bonus;
 }
 
-void Continent::setBonus(int bonus) {
-    Continent::bonus = bonus;
+void Continent::setBonus(int _bonus) {
+    Continent::bonus = _bonus;
 }
 
 const string &Continent::getColor() const {
     return color;
 }
 
-void Continent::setColor(const string &color) {
-    Continent::color = color;
+void Continent::setColor(const string &_color) {
+    Continent::color = _color;
 }
 
 
@@ -52,7 +70,6 @@ Territory::Territory(int id, const string &name, int continentId) {
     this->name=name;
     this->continent_ID=continentId;
     this->number_of_armies=0;
-    this->continent= nullptr;
 }
 
 ostream &operator<<(ostream &os, const Territory &territory) {
@@ -93,21 +110,19 @@ void Territory::setNumberOfArmies(int numberOfArmies) {
 }
 
 
-void Territory::setContinent(Continent *continent) {
-    Territory::continent = continent;
-}
 
 //Method to get a new node
-Node* Map::getNewNode(int dest, Node* head)
+void Map::AppendNode(int dest, Node* _head)
 {
-    //Create new Node
-    Node  *newNode = new Node;
+    Node  *newNode = new Node; //Create new Node
+    Node *last = _head; //set last to head
     newNode->value = &territories[dest]; //Set its value to the address of the territory it represents
-    newNode->next = head; //Set its next node value to the head
-    if (head != nullptr) {
-        head->previous = newNode;
+    newNode->next = nullptr;
+    while (last->next != nullptr) {
+        last = last->next; //Traverse the nodes
     }
-    return newNode;
+    last->next = newNode; //put the new node after the last one
+
 }
 //MAP CONSTRUCTOR
 //Takes an array of edges, an array of territories, number of territories, and number of edges.
@@ -115,22 +130,23 @@ Map::Map(Edge edges[], Territory territories[], int num_of_trs, int num_of_edges
     head = new Node*[num_of_trs](); // An array of pointers to Nodes
     this->num_of_trs = num_of_trs;
     this->territories = territories;
+    visited = new bool[num_of_trs];
 
     // initialize head pointer for all vertices, to corresponded with territory Id's.
     for (int i = 0; i < num_of_trs; i++) {
-        head[i] = getNewNode(i, nullptr);
+        head[i] = new Node;
+        head[i]->value = &territories[i];
+        head[i]->next = nullptr;
     }
 
     // add edges to the graph
     for (int i = 0; i < num_of_edges; i++) {
         int src = edges[i].src;
         int dest = edges[i].dest;
-
         // insert at the end
-        Node *newNode = getNewNode(dest, head[src]);
+        AppendNode(dest, head[src]);
 
-        // point head pointer to the new node
-        head[src] = newNode;
+
     }
 }
 Map::~Map(){
@@ -140,13 +156,10 @@ Map::~Map(){
     delete[] head;
 }
 void Map::printNode(Node *ptr) {
-    while (ptr->next != nullptr)
+    while (ptr != nullptr)
     {
-        ptr = ptr->next;
-    }
-    while (ptr != nullptr) {
         cout << ptr->value->getId() << " ";
-        ptr = ptr->previous;
+        ptr = ptr->next;
     }
     cout << endl;
 }
@@ -154,6 +167,26 @@ void Map::printMap() {
     for (int i = 0; i < num_of_trs; i++){
         printNode(head[i]); // print all vertices on a line
     }
+}
+int Map::countVisited(Node *ptr, int &count) {
+    while (ptr != nullptr) {
+        int i = ptr->value->getId();
+        if (!visited[i]) {
+            visited[i] = true;
+            count++;
+            countVisited(head[i], count);
+        }
+        ptr = ptr->next;
+    }
+    return count;
+}
+bool Map::isConnected(){
+    int count = 0;
+    int n = countVisited(head[0], count);
+    if (n < num_of_trs) {
+        return false;
+    }
+    return true;
 }
 
 

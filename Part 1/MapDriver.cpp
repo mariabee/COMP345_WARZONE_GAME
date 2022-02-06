@@ -1,29 +1,27 @@
+#include <fstream>
 #include "Map.h"
+
 int main() {
-    Edge edges[] = {{1,2}, {0,1}, {2,4}, {3,4}, {4,3}, {5,6}, {6,1}, {7,6},{6,7}, {7,8}, {8,7}, {8,1}};
-    int N = 9;
-    auto *territories = new Territory[N];
-    for (int i = 0; i < N; i++) {
-        territories[i].setId(i);
-        territories[i].setName("TEST NAME ");
-    }
-    int e = sizeof(edges)/sizeof(edges[0]);
-    Map map(edges, territories, N, e);
+    auto *t = new Territory();
+    t->setId(1);
+    cout << t->getId() << endl;
+    t->setName("TEST NAME");
+    cout << t->getName() << endl;
+    t->setContinentId(1);
+    cout << t->getContinentId() << endl;
+    t->setNumberOfArmies(4);
+    cout << t->getNumberOfArmies() << endl;
+    Continent c2;
+    Continent *c = &c2;
+    c->setName("TEST");
+    cout << c->getName() << endl;
+    c->setColor("BLUE");
+    cout << c->getColor() << endl;
+
+    MapLoader mapLoad("../Debug/canada.map");
+    Map map = mapLoad.getMap();
     map.printMap();
 
-    Continent europe = *new Continent(1, "Europe", 4, "Green");
-    int ids[] = {1, 2, 3};
-    europe.addTerritories(ids, 3, map.head);
-    cout << "PRINTING EUROPE'S TERRITORIES..." << endl;
-    for (int i = 0; i < 3; i++) {
-        cout << europe.getTerritory(i) << endl;
-    }
-    if (!map.isConnected()) {
-        cout << "MAP IS NOT CONNECTED";
-    }
-    else {
-        cout<< "MAP IS CONNECTED";
-    }
 
     return 0;
 }

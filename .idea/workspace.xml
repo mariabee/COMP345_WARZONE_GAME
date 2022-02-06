@@ -11,12 +11,11 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="59b1a9ae-7398-41f4-a45e-c750b13b7cb0" name="Changes" comment="git making me do this">
+    <list default="true" id="59b1a9ae-7398-41f4-a45e-c750b13b7cb0" name="Changes" comment="Created continent sub graph">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Part 1/Map.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Part 1/Map.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Part 1/Map.h" beforeDir="false" afterPath="$PROJECT_DIR$/Part 1/Map.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Part 1/MapDriver.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Part 1/MapDriver.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/clion-log.txt" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/clion-log.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -94,16 +93,13 @@
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\mpbur\CLionProjects\COMP345_WARZONE_GAME\Debug" />
+      <recent name="C:\Users\mpbur\CLionProjects\COMP345_WARZONE_GAME\Part 1" />
       <recent name="C:\Users\mpbur\CLionProjects\COMP345_WARZONE_GAME" />
     </key>
   </component>
   <component name="RunManager">
     <configuration name="COMP345_WARZONE_GAME" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="COMP345_WARZONE_GAME" TARGET_NAME="COMP345_WARZONE_GAME" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="COMP345_WARZONE_GAME" RUN_TARGET_NAME="COMP345_WARZONE_GAME">
-      <method v="2">
-        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
-    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
@@ -123,7 +119,11 @@
       <workItem from="1643313960637" duration="475000" />
       <workItem from="1643314452272" duration="168000" />
       <workItem from="1643314633604" duration="19672000" />
-      <workItem from="1643384995130" duration="7864000" />
+      <workItem from="1643384995130" duration="8730000" />
+      <workItem from="1643831829328" duration="528000" />
+      <workItem from="1643916647684" duration="1692000" />
+      <workItem from="1643994794480" duration="29384000" />
+      <workItem from="1644174062976" duration="728000" />
     </task>
     <task id="LOCAL-00001" summary="Moved OrdersList into Orders files, and created seperated Driver file to run testing.">
       <created>1643149106708</created>
@@ -153,7 +153,14 @@
       <option name="project" value="LOCAL" />
       <updated>1643314098193</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="Created continent sub graph">
+      <created>1643392991839</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1643392991839</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -175,12 +182,17 @@
         <entry key="MAIN">
           <value>
             <State>
+              <option name="CUSTOM_BOOLEAN_PROPERTIES">
+                <map>
+                  <entry key="Show.Git.Branches" value="true" />
+                </map>
+              </option>
               <option name="FILTERS">
                 <map>
                   <entry key="branch">
                     <value>
                       <list>
-                        <option value="main" />
+                        <option value="Maria_Change" />
                       </list>
                     </value>
                   </entry>
@@ -212,7 +224,8 @@
     <MESSAGE value="Added map and map driver, not completely done but general outline complete." />
     <MESSAGE value="Added method to see if map is connected, and added method for adding territories to the map (hopefully to make it easier for harry)" />
     <MESSAGE value="git making me do this" />
-    <option name="LAST_COMMIT_MESSAGE" value="git making me do this" />
+    <MESSAGE value="Created continent sub graph" />
+    <option name="LAST_COMMIT_MESSAGE" value="Created continent sub graph" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

@@ -17,10 +17,27 @@ int main() {
     cout << c->getName() << endl;
     c->setColor("BLUE");
     cout << c->getColor() << endl;
+    c->setId(4);
+    cout << c->getId() << endl;
+    c->setBonus(10);
+    cout << c->getBonus() << endl;
+    cout << *c << endl;
+    cout << Continent(2, "OTHER NAME", 3, "PURPLE") << endl;
+
 
     MapLoader mapLoad("../Debug/canada.map");
     Map map = mapLoad.getMap();
-    map.printMap();
+
+
+        unsigned char M = -1;
+        printf ("M in Decimal is: %d\n",M ) ;
+        printf ("M in Hexadecimal is: %X\n",M ) ;
+
+        char N =125;
+        N = N + 5;
+        printf ("N in Decimal is: %d\n",N ) ;
+        printf ("N in Hexadecimal is: %X\n",N ) ;
+
 
 
     return 0;

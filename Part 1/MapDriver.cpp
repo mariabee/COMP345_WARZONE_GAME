@@ -11,9 +11,12 @@ int main() {
     cout << t->getContinentId() << endl;
     t->setNumberOfArmies(4);
     cout << t->getNumberOfArmies() << endl;
-    Continent c2;
-    Continent *c = &c2;
-    c->setName("TEST");
+    auto *t2 = new Territory(*t);
+    cout << t2->getName() << endl;
+    delete t, t2;
+
+    Continent *c = new Continent();
+    c->setName("TEST CONTINENT");
     cout << c->getName() << endl;
     c->setColor("BLUE");
     cout << c->getColor() << endl;
@@ -23,20 +26,15 @@ int main() {
     cout << c->getBonus() << endl;
     cout << *c << endl;
     cout << Continent(2, "OTHER NAME", 3, "PURPLE") << endl;
+    Map *map = new Map(MapLoader::loadMap("../Debug/canada.map"));
+    if (!map->validate()) {
+        cout << "MAP IS NOT VALID";
+    }
+    else {
+        cout << "MAP IS VALID";
+    }
+    delete map;
 
-
-    MapLoader mapLoad("../Debug/canada.map");
-    Map map = mapLoad.getMap();
-
-
-        unsigned char M = -1;
-        printf ("M in Decimal is: %d\n",M ) ;
-        printf ("M in Hexadecimal is: %X\n",M ) ;
-
-        char N =125;
-        N = N + 5;
-        printf ("N in Decimal is: %d\n",N ) ;
-        printf ("N in Hexadecimal is: %X\n",N ) ;
 
 
 

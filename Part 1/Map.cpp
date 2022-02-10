@@ -1,4 +1,5 @@
 #include "Map.h"
+#include "../Part 2/Player.h"
 #include <utility>
 #include <vector>
 #include <iostream>
@@ -16,6 +17,7 @@ Territory::Territory(int id, string name, int continentId) {
     this->number_of_armies=0;
     edges = nullptr;
     edge_count = 0;
+    player = nullptr;
 }
 Territory::Territory() {
     name = new string();
@@ -25,18 +27,18 @@ Territory::Territory() {
     number_of_armies = -1;
     edges = nullptr;
     edge_count = 0;
+    player = nullptr;
 }
 
 void Territory::addEdges(vector<int> edge_nums, Territory *territories) {
     edge_count = edge_nums.size();
     int index;
-    this->edges = new Territory[edge_count]();
+    this->edges = new Territory*[edge_count]();
     for (int i = 0; i < edge_count; i++) {
         index = edge_nums[i] - 1;
-        edges[i] = territories[index];
+        edges[i] = &territories[index];
     }
 }
-Territory *Territory::getEdges(){ return edges; }
 
 ostream &operator<<(ostream &os, const Territory &territory) {
     os << "ID: " << territory.ID << "\tName: " << territory.getName() << "\tContinent ID: " << territory.continent_ID;
@@ -49,20 +51,51 @@ string Territory::getName() const   { return *name;}
 int Territory::getContinentId() const{ return continent_ID; }
 int Territory::getNumberOfArmies() const { return number_of_armies; }
 int Territory::getEdgeCount() const {return edge_count; }
+Territory **Territory::getEdges() const { return edges; }
+Player Territory::getOwner() const { return *player; }
 //MUTATORS
 void Territory::setId(int id) { ID = id; }
 void Territory::setName(string name_) {*this->name = move(name_);}
 void Territory::setContinentId(int continentId) { this->continent_ID = continentId; }
 void Territory::setNumberOfArmies(int numberOfArmies) { this->number_of_armies = numberOfArmies; }
+void Territory::changeOwner(Player &player_) {this->player = &player_;}
 //TERRITORY DESTRUCTOR
 Territory::~Territory() {
-    /*
+    delete[] edges;
     delete name;
-    name = nullptr;*/
-
+    name = nullptr;
+    edges = nullptr;
+    player = nullptr;
 }
-//MAP IMPLEMENTATION
+//TERRITORY COPY CONSTRUCTOR
+Territory::Territory(const Territory &t) {
+    name = new string();
+    *name = t.getName();
+    ID = t.getId();
+    continent_ID = t.getContinentId();
+    edge_count = t.getEdgeCount();
+    number_of_armies = t.getNumberOfArmies();
+    edges = new Territory*[edge_count]();
+    for (int i = 0; i < edge_count; i++) {
+        edges[i] = t.getEdges()[i];
+    }
+}
+//TERRITORY ASSIGNMENT OPERATOR
+Territory &Territory::operator=(const Territory &t) {
+    if (this == &t) {return *this; }
+    delete[] edges;
+    delete name;
+    delete player;
+    edge_count = t.getEdgeCount();
+    ID = t.getId();
+    continent_ID = t.getContinentId();
+    edges = t.getEdges();
+    return *this;
+}
 
+
+
+//MAP IMPLEMENTATION
 //MAP CONSTRUCTOR
 //Aan array of territories, number of territories
 Map::Map(Territory territories[], int num_of_trs){
@@ -78,9 +111,9 @@ Map::~Map(){
     visited = nullptr;
 }
 //PRINT METHOD
-void Map::printEdges(Territory *ptr, int n) {
+void Map::printEdges(Territory **ptr, int n) {
     for (int i = 0; i < n; i++) {
-        cout << ptr[i].getId() << " ";
+        cout << ptr[i]->getId() << " ";
     }
     cout << endl;
 }
@@ -92,20 +125,19 @@ void Map::printMap() const {
     }
 }
 //METHOD TO VISIT NODES AND COUNT HOW MANY VISITED
-void Map::countVisited(Territory *e, int &count, int size) {
-
+void Map::countVisited(Territory **e, int &count, int size) {
     for (int i = 0; i < size; i++) {
-        int index = e[i].getId()-1;
+        int index = e[i]->getId()-1;
         if (!visited[index]) {
             visited[index] = true;
             count++;
-            countVisited(territories[index].getEdges(), count, territories[index].getEdgeCount());
+            countVisited(e[i]->getEdges(), count, e[i]->getEdgeCount());
         }
     }
 
 }
 //METHOD TO SEE IF MAP IS CONNECTED
-bool Map::isConnected(){
+bool Map::validate() {
     int count = 0;
     for (int i = 1; i < NUM_OF_TRS; i++){
         visited[i] = false;
@@ -116,120 +148,26 @@ bool Map::isConnected(){
     }
     return true;
 }
-/*
-Territory::Territory(int id, string name, int continentId) {
-    this->name = new string();
-    *this->name= name;
-    this->ID=id;
-    this->continent_ID=continentId;
-    this->number_of_armies=0;
-}
-Territory::Territory() {
-    name = new string();
-    *name = "UNKNOWN";
-    ID = -1;
-    continent_ID = -1;
-    number_of_armies = -1;
-}
 
-ostream &operator<<(ostream &os, const Territory &territory) {
-    os << "ID: " << territory.ID << "\tName: " << territory.name << "\tContinent ID: " << territory.continent_ID;
-    return os;
-}
-//ACCESSORS
-int Territory::getId() const  { return ID; }
-string Territory::getName() const   { return *name;}
-int Territory::getContinentId() const{ return continent_ID; }
-int Territory::getNumberOfArmies() const { return number_of_armies; }
-//MUTATORS
-void Territory::setId(int id) { ID = id; }
-void Territory::setName(string name_) {*this->name = name_;}
-void Territory::setContinentId(int continentId) { this->continent_ID = continentId; }
-void Territory::setNumberOfArmies(int numberOfArmies) { this->number_of_armies = numberOfArmies; }
-
-//MAP IMPLEMENTATION
-
-//Method to get a new node
-void Map::AppendNode(int dest, Node* _head)
-{
-    Node  *newNode = new Node; //Create new Node
-    Node *last = _head; //set last to head
-    newNode->value = &territories[dest-1]; //Set its value to the address of the territory it represents
-    newNode->next = nullptr;
-    while (last->next != nullptr) {
-        last = last->next; //Traverse the nodes
-    }
-    last->next = newNode; //put the new node after the last one
-
-}
-//MAP CONSTRUCTOR
-//Takes a vector of edges, an array of territories, number of territories, and number of edges.
-Map::Map(const vector<Edge> &edges, Territory territories[], int num_of_trs){
-    head = new Node*[num_of_trs](); // An array of pointers to Nodes
-    this->NUM_OF_TRS = num_of_trs;
-    this->territories = territories;
-    visited = new bool[NUM_OF_TRS];
-    // initialize head pointer for all vertices, to corresponded with territory.
+Map::Map(const Map &m) {
+    NUM_OF_TRS = m.getNumOfTers();
+    territories = new Territory[NUM_OF_TRS]();
     for (int i = 0; i < NUM_OF_TRS; i++) {
-        head[i] = new Node;
-        head[i]->value = &territories[i];
-        head[i]->next = nullptr;
-    }
-    // add edges to the graph
-    for (Edge edge : edges) {
-        int src = edge.src;
-        int dest = edge.dest;
-        // insert at the end
-        AppendNode(dest, head[src-1]);
+        territories[i] = *new Territory(m.getTerritories()[i]);
     }
 }
-//MAP DESTRUCTOR
-Map::~Map(){
-    for (int i = 0; i < NUM_OF_TRS; i++) {
-        delete[] head[i];
-    }
-    delete[] head;
+
+
+
+int Map::getNumOfTers() const {
+    return NUM_OF_TRS;
 }
-//PRINT NODE METHOD
-void Map::printNode(Node *ptr) {
-    while (ptr != nullptr)
-    {
-        cout << ptr->value->getId() << " ";
-        ptr = ptr->next;
-    }
-    cout << endl;
+
+Territory *Map::getTerritories() const {
+    return territories;
 }
-//PRINT MAP METHOD
-void Map::printMap() const {
-    for (int i = 0; i < NUM_OF_TRS; i++){
-        printNode(head[i]); // print all vertices on a line
-    }
-}
-//METHOD TO VISIT NODES AND COUNT HOW MANY VISITED
-int Map::countVisited(Node *ptr, int &count) {
-    while (ptr != nullptr) {
-        int index = ptr->value->getId()-1;
-        if (!visited[index]) {
-            visited[index] = true;
-            count++;
-            countVisited(head[index], count);
-        }
-        ptr = ptr->next;
-    }
-    return count;
-}
-//METHOD TO SEE IF MAP IS CONNECTED
-bool Map::isConnected(){
-    int count = 0;
-    for (int i = 0; i < NUM_OF_TRS; i++){
-        visited[i] = false;
-    }
-    countVisited(head[0], count);
-    if (count < NUM_OF_TRS) {
-        return false;
-    }
-    return true;
-}*/
+
+
 //CONTINENT IMPLEMENTATION
 
 Continent::Continent() {
@@ -243,7 +181,15 @@ Continent::Continent() {
     subTerritories = nullptr;
     NUM_OF_TERS = -1;
 }
+Continent::~Continent() {
+    delete[] subTerritories;
+    delete name;
+    delete color;
+    name = nullptr;
+    color = nullptr;
+    subTerritories = nullptr;
 
+}
 Continent::Continent(const int ID, string _name, int bonus, string _color) {
     this->name = new string();
     this->color = new string();
@@ -259,14 +205,19 @@ void Continent::createSubMap(int num_of_ters) {
     subTerritories = new Territory*[num_of_ters]();
     NUM_OF_TERS = num_of_ters;
 }
-void Continent::addTerritory(Territory &mapLink) {
-    subTerritories[i] = &mapLink;
-    i++;
+void Continent::addTerritory(Territory *territory) {
+    if (subTerritories != nullptr) {
+        subTerritories[i] = territory;
+        i++;
+    }
+    else {
+        cout << "PLEASE createSubMap() first." << endl;
+    }
 }
 
 ostream &operator<<(ostream &os, const Continent &continent) {
     os << "ID: " << continent.ID << "\tName: " << continent.getName() << "\tBonus: " << continent.bonus << "\tColor: "
-       << continent.getColor();
+    << continent.getColor();
     return os;
 }
 
@@ -280,23 +231,26 @@ string Continent::getName() const { return *name; }
 int Continent::getId() const { return ID; }
 int Continent::getBonus() const { return bonus; }
 string Continent::getColor() const { return *color; }
-Territory* Continent::getTerritories()  const { return *subTerritories; }
+Territory** Continent::getTerritories()  const { return subTerritories; }
 int Continent::getNumOfTers() const {return NUM_OF_TERS;}
-int* Continent::getTerritoryIDs() {
-    int* ids = new int[i]();
-    for (int k = 0; k < i; k++) {
-        ids[k] = subTerritories[k]->getId();
+
+Continent::Continent(const Continent &c) {
+    name = new string();
+    *name = c.getName();
+    color = new string();
+    *color = c.getColor();
+    ID = c.getId();
+    bonus = c.getBonus();
+    NUM_OF_TERS = c.getNumOfTers();
+    subTerritories = new Territory*[NUM_OF_TERS]();
+    for (i = 0; i < NUM_OF_TERS; i++) {
+        subTerritories[i] = c.getTerritories()[i];
     }
-    return ids;
 }
 
-Continent::~Continent() {
-    delete[] subTerritories;
-    delete name;
-    delete color;
-}
 
-MapLoader::MapLoader(const string& filename) {
+
+Map MapLoader::loadMap(const string &filename)  {
     string *str;
     int counter{0};
     vector<string> *continentLine,*countries,*borders;
@@ -336,6 +290,8 @@ MapLoader::MapLoader(const string& filename) {
         }
     }
     input.close();
+    delete str;
+    str = nullptr;
 
 //    Check for invalid file
     if (continentLine->empty() || borders->empty() || countries->empty()) {
@@ -364,7 +320,8 @@ MapLoader::MapLoader(const string& filename) {
         }
         i++;
     }
-
+    delete continentLine;
+    continentLine = nullptr;
 
     int N = countries->size();
     auto *territories = new Territory[N];
@@ -408,6 +365,8 @@ MapLoader::MapLoader(const string& filename) {
             }
         i++;
     }
+    delete countries;
+    countries = nullptr;
     //Add the last count of territories
     continents[past_ID - 1].createSubMap(c_count);
 
@@ -427,32 +386,20 @@ MapLoader::MapLoader(const string& filename) {
         //reset the vector
         edges.clear();
     }
-
-    //Create the map
-    map = new Map(territories, N);
-
-    if (!map->isConnected()) {
-        cout << "MAP IS NOT CONNECTED" << endl;
-    } else {
-        cout << "MAP IS CONNECTED" << endl;
-    }
+    delete borders;
+    borders = nullptr;
 
     for (i = 0; i < N; i++) {
-        int k = map->territories[i].getContinentId();
-        continents[k - 1].addTerritory(map->territories[i]);
+        int k = territories[i].getContinentId();
+        continents[k - 1].addTerritory(&territories[i]);
     }
-    int n = continents[0].getNumOfTers();
-    int *terIds;
-    terIds = continents[0].getTerritoryIDs();
-    for (i = 0; i < n; i++) {
-        cout << terIds[i] << " ";
-    }
-    cout << endl;
+    cout << "RETURN MAP" << endl;
+    return {territories, N};
 }
 
-Map MapLoader::getMap() const {
-    return *map;
-}
+
+
+
 
 
 

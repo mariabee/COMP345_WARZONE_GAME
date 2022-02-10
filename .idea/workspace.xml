@@ -11,14 +11,9 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="59b1a9ae-7398-41f4-a45e-c750b13b7cb0" name="Changes" comment="Simplifide the map class :P">
+    <list default="true" id="59b1a9ae-7398-41f4-a45e-c750b13b7cb0" name="Changes" comment="Added copy constructors and uninitialized player object to map classes">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Part 1/Map.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Part 1/Map.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Part 1/Map.h" beforeDir="false" afterPath="$PROJECT_DIR$/Part 1/Map.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Part 1/MapDriver.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Part 1/MapDriver.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Part 2/Player.h" beforeDir="false" afterPath="$PROJECT_DIR$/Part 2/Player.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/clion-log.txt" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/clion-log.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -133,7 +128,7 @@
       <workItem from="1643994794480" duration="29384000" />
       <workItem from="1644174062976" duration="14209000" />
       <workItem from="1644259471021" duration="1144000" />
-      <workItem from="1644425290764" duration="19103000" />
+      <workItem from="1644425290764" duration="19604000" />
     </task>
     <task id="LOCAL-00001" summary="Moved OrdersList into Orders files, and created seperated Driver file to run testing.">
       <created>1643149106708</created>
@@ -184,7 +179,28 @@
       <option name="project" value="LOCAL" />
       <updated>1644425326582</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="Added copy constructors">
+      <created>1644530682562</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1644530682562</updated>
+    </task>
+    <task id="LOCAL-00009" summary="Added copy constructors and uninitialized player object to map classes">
+      <created>1644530728788</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1644530728788</updated>
+    </task>
+    <task id="LOCAL-00010" summary="Added copy constructors and uninitialized player object to map classes">
+      <created>1644530817056</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1644530817056</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -216,7 +232,7 @@
                   <entry key="branch">
                     <value>
                       <list>
-                        <option value="origin/main" />
+                        <option value="Maria_Change" />
                       </list>
                     </value>
                   </entry>
@@ -261,7 +277,9 @@
     <MESSAGE value="Created continent sub graph" />
     <MESSAGE value="Added mapLoader to Map.cpp, made all strings pointers, and added continent subgraph" />
     <MESSAGE value="Simplifide the map class :P" />
-    <option name="LAST_COMMIT_MESSAGE" value="Simplifide the map class :P" />
+    <MESSAGE value="Added copy constructors" />
+    <MESSAGE value="Added copy constructors and uninitialized player object to map classes" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added copy constructors and uninitialized player object to map classes" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

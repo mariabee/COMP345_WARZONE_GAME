@@ -11,9 +11,16 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="59b1a9ae-7398-41f4-a45e-c750b13b7cb0" name="Changes" comment="Added copy constructors and uninitialized player object to map classes">
+    <list default="true" id="59b1a9ae-7398-41f4-a45e-c750b13b7cb0" name="Changes" comment="cmake file... hmmm">
+      <change afterPath="$PROJECT_DIR$/Debug/MapFiles/DisconnectedMap.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Debug/MapFiles/artic.map" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Debug/MapFiles/canada.map" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Debug/MapFiles/sw_baltic.map" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Part 1/Map.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Part 1/Map.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Part 1/Map.h" beforeDir="false" afterPath="$PROJECT_DIR$/Part 1/Map.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Part 1/MapDriver.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Part 1/MapDriver.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -91,18 +98,19 @@
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\mpbur\CLionProjects\COMP345_WARZONE_GAME\Debug\MapFiles" />
       <recent name="C:\Users\mpbur\CLionProjects\COMP345_WARZONE_GAME\Debug" />
       <recent name="C:\Users\mpbur\CLionProjects\COMP345_WARZONE_GAME\Part 1" />
       <recent name="C:\Users\mpbur\CLionProjects\COMP345_WARZONE_GAME" />
     </key>
   </component>
   <component name="RunManager">
-    <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
+    <configuration name="COMP345_WARZONE_GAME" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="COMP345_WARZONE_GAME" TARGET_NAME="COMP345_WARZONE_GAME" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="COMP345_WARZONE_GAME" RUN_TARGET_NAME="COMP345_WARZONE_GAME">
       <method v="2">
-        <option name="CLION.EXTERNAL.BUILD" enabled="true" />
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration name="COMP345_WARZONE_GAME" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="COMP345_WARZONE_GAME" TARGET_NAME="COMP345_WARZONE_GAME" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="COMP345_WARZONE_GAME" RUN_TARGET_NAME="COMP345_WARZONE_GAME">
+    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
@@ -128,7 +136,8 @@
       <workItem from="1643994794480" duration="29384000" />
       <workItem from="1644174062976" duration="14209000" />
       <workItem from="1644259471021" duration="1144000" />
-      <workItem from="1644425290764" duration="19604000" />
+      <workItem from="1644425290764" duration="19679000" />
+      <workItem from="1644601576287" duration="8714000" />
     </task>
     <task id="LOCAL-00001" summary="Moved OrdersList into Orders files, and created seperated Driver file to run testing.">
       <created>1643149106708</created>
@@ -200,7 +209,14 @@
       <option name="project" value="LOCAL" />
       <updated>1644530817056</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="cmake file... hmmm">
+      <created>1644530979556</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1644530979556</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -279,7 +295,8 @@
     <MESSAGE value="Simplifide the map class :P" />
     <MESSAGE value="Added copy constructors" />
     <MESSAGE value="Added copy constructors and uninitialized player object to map classes" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added copy constructors and uninitialized player object to map classes" />
+    <MESSAGE value="cmake file... hmmm" />
+    <option name="LAST_COMMIT_MESSAGE" value="cmake file... hmmm" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

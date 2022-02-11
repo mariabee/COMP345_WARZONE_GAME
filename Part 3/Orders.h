@@ -2,6 +2,7 @@
 #include <string>
 #include <iostream>
 #include <vector>
+#include "../Part 1/Map.h"
 using namespace std;
 
 //BASE CLASS 
@@ -13,7 +14,8 @@ class order {
 
         virtual ~order();
         virtual bool validate() = 0;
-        virtual void execute() = 0; 
+        virtual void execute() = 0;
+        static bool isBeside(Territory *t1, Territory *t2);
         //Accessors
         string * get_order_type() const;
         string * get_order_effect() const;

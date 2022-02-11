@@ -13,6 +13,14 @@ order::order(const order& other)
     order_type_ = new string(*other.order_type_);
     order_effect_ = new string(*other.order_effect_);
 }
+bool order::isBeside(Territory *t1, Territory *t2) {
+    for (int i = 0; i < t1->getEdgeCount(); i++) {
+        if (t1->getEdges()[i] == t2) {
+            return true;
+        }
+    }
+    return false;
+}
 // = OPERATOR
 order &order::operator=(const order &o) {
     if (this == &o) return *this;
@@ -232,5 +240,6 @@ OrdersList::~OrdersList() {
     list = nullptr;
     ptr = nullptr;
 }
+
 
 

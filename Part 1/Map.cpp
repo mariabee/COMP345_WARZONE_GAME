@@ -1,9 +1,7 @@
 #include "Map.h"
 #include "../Part 2/Player.h"
 #include <utility>
-#include <vector>
 #include <iostream>
-#include <string>
 #include <sstream>
 #include <fstream>
 
@@ -17,6 +15,7 @@ Territory::Territory() {
     edges = nullptr;
     edge_count = 0;
     player = nullptr;
+    visited = false;
 }
 Territory::Territory(int id, string name, int continentId) {
     this->name = new string(move(name));
@@ -26,9 +25,12 @@ Territory::Territory(int id, string name, int continentId) {
     edges = nullptr;
     edge_count = 0;
     player = nullptr;
+    visited = false;
 }
 Territory::Territory(const Territory &t) {
+    visited = t.visited;
     name = new string(*t.getName());
+    player = t.getOwner();
     ID = t.getId();
     continent_ID = t.getContinentId();
     edge_count = t.getEdgeCount();
@@ -42,7 +44,8 @@ Territory &Territory::operator=(const Territory &t) {
     if (this == &t) {return *this; }
     delete[] edges;
     delete name;
-    delete player;
+    visited = t.visited;
+    player = t.getOwner();
     edge_count = t.getEdgeCount();
     ID = t.getId();
     continent_ID = t.getContinentId();
@@ -84,13 +87,13 @@ int Territory::getContinentId() const{ return continent_ID; }
 int Territory::getNumberOfArmies() const { return number_of_armies; }
 int Territory::getEdgeCount() const {return edge_count; }
 Territory **Territory::getEdges() const { return edges; }
-Player Territory::getOwner() const { return *player; }
+Player *Territory::getOwner() const { return player; }
 //MUTATORS
 void Territory::setId(int id) { ID = id; }
 void Territory::setName(string name_) {*this->name = move(name_);}
 void Territory::setContinentId(int continentId) { this->continent_ID = continentId; }
 void Territory::setNumberOfArmies(int numberOfArmies) { this->number_of_armies = numberOfArmies; }
-void Territory::changeOwner(Player &player_) {this->player = &player_;}
+void Territory::changeOwner(Player *player_) {this->player = player_;}
 //CONTINENT IMPLEMENTATION
 
 //CONSTRUCTORS

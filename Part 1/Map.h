@@ -25,21 +25,22 @@ public:
     //OVERLOADED << OPERATOR
     friend ostream &operator<<(ostream &os, const Territory &territory);
     //ACCESSORS
-    string * getName() const;
-    int getId() const;
-    int getContinentId() const;
-    int getNumberOfArmies() const;
-    Player getOwner() const;
-    Territory **getEdges() const;
-    int getEdgeCount() const;
+        string * getName() const;
+        int getId() const;
+        int getContinentId() const;
+        int getNumberOfArmies() const;
+        Player * getOwner() const;
+        Territory **getEdges() const;
+        int getEdgeCount() const;
     //MUTATORS
-    void setId(int id);
-    void setName(string name);
-    void setContinentId(int continentId);
-    void setNumberOfArmies(int numberOfArmies);
-    void changeOwner(Player &player);
+        void setId(int id);
+        void setName(string name);
+        void setContinentId(int continentId);
+        void setNumberOfArmies(int numberOfArmies);
+        void changeOwner(Player *player_);
     //METHOD TO ADD EDGES TO AN ARRAY OF TERRITORIES
     void addEdges(vector<int> edge_nums, Territory *territories);
+
 };
 class Continent {
 private:
@@ -61,17 +62,17 @@ public:
 
     friend ostream &operator<<(ostream &os, const Continent &continent);
     //ACCESSORS
-    int getId() const;
-    int getBonus() const;
-    string * getName() const;
-    string * getColor() const;
-    int getNumOfTers() const;
-    Territory ** getTerritories() const;
+        int getId() const;
+        int getBonus() const;
+        string * getName() const;
+        string * getColor() const;
+        int getNumOfTers() const;
+        Territory ** getTerritories() const;
     //MUTATORS
-    void setId(int id);
-    void setName(string name);
-    void setBonus(int bonus);
-    void setColor(string color);
+        void setId(int id);
+        void setName(string name);
+        void setBonus(int bonus);
+        void setColor(string color);
 };
 
 class Map {

@@ -11,16 +11,14 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="59b1a9ae-7398-41f4-a45e-c750b13b7cb0" name="Changes" comment="cmake file... hmmm">
-      <change afterPath="$PROJECT_DIR$/Debug/MapFiles/DisconnectedMap.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Debug/MapFiles/artic.map" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Debug/MapFiles/canada.map" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Debug/MapFiles/sw_baltic.map" afterDir="false" />
+    <list default="true" id="59b1a9ae-7398-41f4-a45e-c750b13b7cb0" name="Changes" comment="Added continents to map, finished all = and copy constructors">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Part 1/Map.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Part 1/Map.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Part 1/Map.h" beforeDir="false" afterPath="$PROJECT_DIR$/Part 1/Map.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Part 1/MapDriver.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Part 1/MapDriver.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Part 3/Orders.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Part 3/Orders.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Part 3/Orders.h" beforeDir="false" afterPath="$PROJECT_DIR$/Part 3/Orders.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Part 3/OrdersDriver.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Part 3/OrdersDriver.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -137,7 +135,7 @@
       <workItem from="1644174062976" duration="14209000" />
       <workItem from="1644259471021" duration="1144000" />
       <workItem from="1644425290764" duration="19679000" />
-      <workItem from="1644601576287" duration="8714000" />
+      <workItem from="1644601576287" duration="18177000" />
     </task>
     <task id="LOCAL-00001" summary="Moved OrdersList into Orders files, and created seperated Driver file to run testing.">
       <created>1643149106708</created>
@@ -216,7 +214,14 @@
       <option name="project" value="LOCAL" />
       <updated>1644530979556</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="Added continents to map, finished all = and copy constructors">
+      <created>1644610513282</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1644610513282</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -296,7 +301,8 @@
     <MESSAGE value="Added copy constructors" />
     <MESSAGE value="Added copy constructors and uninitialized player object to map classes" />
     <MESSAGE value="cmake file... hmmm" />
-    <option name="LAST_COMMIT_MESSAGE" value="cmake file... hmmm" />
+    <MESSAGE value="Added continents to map, finished all = and copy constructors" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added continents to map, finished all = and copy constructors" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

@@ -5,125 +5,101 @@
 #include <string>
 
 using namespace std;
-
+class Player;
 class Territory {
 private:
     int ID, continent_ID, number_of_armies, edge_count;
     string *name;
-    Territory *edges;
+    Player *player;
+    Territory **edges;
+
 public:
-    void setId(int id);
-    void setName(string name);
-    void setContinentId(int continentId);
-    void setNumberOfArmies(int numberOfArmies);
-    string getName() const;
-    int getId() const;
-    int getContinentId() const;
-    int getNumberOfArmies() const;
-    void addEdges(vector<int> edge_nums, Territory *territories);
-    Territory *getEdges();
-    int getEdgeCount() const;
-    friend ostream &operator<<(ostream &os, const Territory &territory);
-    Territory(int id, string name, int continentId);
+    bool visited;
+    //CONSTRUCTORS
     Territory();
+    Territory(int id, string name, int continentId);
+    Territory(const Territory &t);
+    Territory& operator=(const Territory& t);
+    //DESTRUCTOR
     ~Territory();
-};
-class Map {
-    int NUM_OF_TRS;
-    bool *visited;
-    void countVisited(Territory *t, int &i, int size);
-    static void printEdges(Territory *ptr, int i) ;
-public :
-    Territory *territories;
-    Map(Territory territories[], int num_of_trs);
-    ~Map();
-    void printMap() const;
-    bool isConnected();
-};
-/*
-class Territory{
-private:
-    int ID;
-    string *name;
-    int continent_ID;
-    int number_of_armies;
-public:
-    void setId(int id);
-    void setName(string name);
-    void setContinentId(int continentId);
-    void setNumberOfArmies(int numberOfArmies);
-    string getName() const;
-    int getId() const;
-    int getContinentId() const;
-    int getNumberOfArmies() const;
-
+    //OVERLOADED << OPERATOR
     friend ostream &operator<<(ostream &os, const Territory &territory);
-    Territory(int id, string name, int continentId);
-    Territory();
-};
-struct Node
-{
-    Territory *value;
-    Node* next;
-};
-struct Edge {
-    int src, dest;
-};
-class Map {
-    int NUM_OF_TRS;
-    Territory *territories;
-    void AppendNode(int dest, Node *head);
-    bool *visited;
-    int countVisited(Node *ptr, int &i);
-    static void printNode(Node *ptr);
-public :
-    Node **head;
-    Map(const vector<Edge>&, Territory territories[], int num_of_trs);
-    ~Map();
-    void printMap() const;
-    bool isConnected();
+    //ACCESSORS
+        string * getName() const;
+        int getId() const;
+        int getContinentId() const;
+        int getNumberOfArmies() const;
+        Player * getOwner() const;
+        Territory **getEdges() const;
+        int getEdgeCount() const;
+    //MUTATORS
+        void setId(int id);
+        void setName(string name);
+        void setContinentId(int continentId);
+        void setNumberOfArmies(int numberOfArmies);
+        void changeOwner(Player *player_);
+    //METHOD TO ADD EDGES TO AN ARRAY OF TERRITORIES
+    void addEdges(vector<int> edge_nums, Territory *territories);
 
-};*/
-
+};
 class Continent {
-    private:
-        int ID;
-        string *name;
-        int bonus;
-        string *color;
-        int i;
-        int NUM_OF_TERS;
-        Territory **subTerritories;
-    public:
-        //CONSTRUCTORS
-        Continent();
-        Continent(int ID, string name, int bonus, string color);
-        //DESTRUCTOR
-        ~Continent();
-        //ADD TERRITORIES
-        void createSubMap(int num_of_ters);
-        void addTerritory(Territory &mapLink);
+private:
+    int ID, bonus, count, NUM_OF_TERS;
+    string *name, *color;
+    Territory **subTerritories;
+public:
+    //CONSTRUCTORS
+    Continent();
+    Continent(int ID, string name, int bonus, string color);
+    Continent(const Continent &c);
+    Continent& operator=(const Continent& t);
+    //DESTRUCTOR
+    ~Continent();
+    //METHOD TO INITIALIZE SUBMAP
+    void createSubMap(int num_of_ters);
+    //METHOD TO ADD TERRITORY LINKS TO SUBMAP
+    void addTerritory(Territory territoryPtr);
 
-        friend ostream &operator<<(ostream &os, const Continent &continent);
-        //ACCESSORS
+    friend ostream &operator<<(ostream &os, const Continent &continent);
+    //ACCESSORS
         int getId() const;
         int getBonus() const;
-        string getName() const;
-        string getColor() const;
+        string * getName() const;
+        string * getColor() const;
         int getNumOfTers() const;
-        int* getTerritoryIDs();
-        Territory* getTerritories() const;
-        //MUTATORS
+        Territory ** getTerritories() const;
+    //MUTATORS
         void setId(int id);
         void setName(string name);
         void setBonus(int bonus);
         void setColor(string color);
 };
 
+class Map {
+    int NUM_OF_TRS, NUM_OF_CNTS;
+    bool *visited;
+    Territory *territories;
+    Continent *continents;
+    void visitTerrritories(Territory **e, int size);
+public :
+    //CONSTRUCTORS
+    Map(Territory territories[], int num_of_trs, Continent continents[], int num_of_cnts);
+    Map(const Map &m);
+    Map& operator=(const Map& m);
+    //DESTRUCTOR
+    ~Map();
+    //OVERLOADED << OPERATOR
+    friend ostream &operator<<(ostream &os, const Map &map);
+    //VALIDATE METHOD
+    bool validate();
+    //ACCESSORS
+    int getNumOfTers() const;
+    Territory *getTerritories() const;
+};
+
 class MapLoader {
 private:
-    Map *map;
+    MapLoader();
 public:
-    explicit MapLoader(const string& filename);
-    Map getMap() const;
+    static Map loadMap(const string& filename);
 };

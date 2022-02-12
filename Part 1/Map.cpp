@@ -66,7 +66,7 @@ Territory::~Territory() {
 }
 //OVERLOADED << OPERATOR
 ostream &operator<<(ostream &os, const Territory &territory) {
-    os << "ID: " << territory.ID << "\tName: " << territory.getName() << "\tContinent ID: " << territory.continent_ID;
+    os << "ID: " << territory.getId() << "\tName: " << *territory.getName() << "\tContinent ID: " << territory.getContinentId();
     return os;
 }
 //METHOD TO ADD EDGES/BORDERS TO AN ARRAY OF TERRITORIES
@@ -173,9 +173,9 @@ void Continent::createSubMap(int num_of_ters) {
     NUM_OF_TERS = num_of_ters;
 }
 //METHOD TO ADD TERRITORIES TO SUBTERRITORY MAP
-void Continent::addTerritory(Territory territoryPtr) {
+void Continent::addTerritory(Territory *territoryPtr) {
     if (subTerritories != nullptr) {
-        subTerritories[count] = &territoryPtr;
+        subTerritories[count] = territoryPtr;
         count++;
     }
     else {
@@ -247,31 +247,57 @@ ostream &operator<<(ostream &os, const Map &map) {
     return os;
 }
 //METHOD TO VISIT NODES AND COUNT HOW MANY VISITED
-void Map::visitTerrritories(Territory **e, int size) {
+void Map::visitTerritories(Territory **e, int size, int &count) {
     for (int i = 0; i < size; i++) {
         int index = e[i]->getId()-1;
         if (!territories[index].visited) {
             territories[index].visited = true;
-            visitTerrritories(e[i]->getEdges(), e[i]->getEdgeCount());
+            count++;
+            visitTerritories(e[i]->getEdges(), e[i]->getEdgeCount(), count);
         }
     }
 }
+void Map::visitContinent(int id, Territory *t, int &count) {
+        int n = t->getEdgeCount();
+        for (int i = 0; i < n; i++) {
+            auto e = t->getEdges()[i];
+            if (e->getContinentId() == id && !e->visited) {
+                e->visited = true;
+                count++;
+                visitContinent(id, e, count);
+            }
+        }
+}
+
 
 //METHOD TO SEE IF MAP IS VALID
 bool Map::validate() {
     for (int i = 0; i < NUM_OF_TRS; i++) {
         territories[i].visited = false;
     }
-
-    visitTerrritories(territories[0].getEdges(), territories[0].getEdgeCount());
+    int count = 0;
+    visitTerritories(territories[0].getEdges(), territories[0].getEdgeCount(), count);
+    if (count != NUM_OF_TRS) {
+        cout << "Map is not connected." << endl;
+        return false;
+    }
     for (int i = 0; i < NUM_OF_TRS; i++) {
-        if (!territories[i].visited) {
-            cout << "MAP IS NOT VALID" << endl;
-            return false;
-        }
         territories[i].visited = false;
     }
-    cout << "MAP IS VALID" << endl;
+    int n;
+    for (int i = 0; i < NUM_OF_CNTS; i++) {
+        n = continents[i].getNumOfTers();
+        auto *c = &continents[i];
+        count = 0;
+        if (n != 1) {
+            visitContinent(c->getId(), c->getTerritories()[0], count);
+            if (count != n) {
+                cout << *c->getName() << " is not a connected subgraph." << endl;
+                return false;
+            }
+        }
+    }
+    cout << "Map is valid. " << endl;
     return true;
 }
 
@@ -417,7 +443,7 @@ Map MapLoader::loadMap(const string &filename)  {
 
     for (i = 0; i < N; i++) {
         int k = territories[i].getContinentId();
-        continents[k - 1].addTerritory(territories[i]);
+        continents[k - 1].addTerritory(&territories[i]);
     }
     return {territories, N, continents, C};
 }

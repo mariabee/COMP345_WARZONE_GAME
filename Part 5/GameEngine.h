@@ -6,6 +6,7 @@
 
 class State;
 
+// Class that provides functionality to match a Command.
 class Command
 {
 public:

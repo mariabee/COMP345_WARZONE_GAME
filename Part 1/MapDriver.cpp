@@ -25,8 +25,9 @@ int main() {
     cout << "LOADING BALTIC MAP..." << endl;
     map = new Map(MapLoader::loadMap("../Debug/MapFiles/sw_baltic.map"));
     map->validate();
+    cout << "PRINTING BALTIC MAP (BY TERRITORY ID's)" << endl;
+    cout << *map << endl;
     cout << "DELETING MAP..." << endl;
     delete map;
-
     return 0;
 }

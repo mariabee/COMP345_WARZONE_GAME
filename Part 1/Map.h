@@ -95,7 +95,9 @@ public :
     bool validate();
     //ACCESSORS
     int getNumOfTers() const;
+    int getNumOfCnts() const;
     Territory *getTerritories() const;
+    Continent *getContinents() const;
 };
 
 class MapLoader {

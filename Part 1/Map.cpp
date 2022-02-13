@@ -6,6 +6,7 @@
 #include <fstream>
 
 //TERRITORY IMPLEMENTATION
+
 //CONSTRUCTORS
 Territory::Territory() {
     name = new string("UNKNOWN");
@@ -40,6 +41,7 @@ Territory::Territory(const Territory &t) {
         edges[i] = t.getEdges()[i];
     }
 }
+//COPY ASSIGNMENT
 Territory &Territory::operator=(const Territory &t) {
     if (this == &t) {return *this; }
     delete[] edges;
@@ -73,9 +75,12 @@ ostream &operator<<(ostream &os, const Territory &territory) {
 void Territory::addEdges(vector<int> edge_nums, Territory *territories) {
     edge_count = edge_nums.size();
     int index;
+    //reserve memory for array of Territory pointers
     this->edges = new Territory*[edge_count]();
+    //For every edge
     for (int i = 0; i < edge_count; i++) {
         index = edge_nums[i] - 1;
+        //Add the address of its equivalent territory to the array
         edges[i] = &territories[index];
     }
 }
@@ -131,6 +136,7 @@ Continent::Continent(const Continent &c) {
         }
     }
 }
+//COPY ASSIGNMENT
 Continent &Continent::operator=(const Continent &c) {
     if (this == &c)  return *this;
     delete[] subTerritories;
@@ -169,6 +175,7 @@ ostream &operator<<(ostream &os, const Continent &continent) {
 
 //METHOD TO INITIALIZE SUBTERRITORY MAP
 void Continent::createSubMap(int num_of_ters) {
+    //Reserve memory for array of territory pointers
     subTerritories = new Territory*[num_of_ters]();
     NUM_OF_TERS = num_of_ters;
 }
@@ -185,10 +192,10 @@ void Continent::addTerritory(Territory *territoryPtr) {
 
 //ACCESSORS
 string *Continent::getName() const { return name; }
-int Continent::getId() const { return ID; }
-int Continent::getBonus() const { return bonus; }
 string *Continent::getColor() const { return color; }
 Territory** Continent::getTerritories()  const { return subTerritories; }
+int Continent::getId() const { return ID; }
+int Continent::getBonus() const { return bonus; }
 int Continent::getNumOfTers() const {return NUM_OF_TERS;}
 
 //MUTATORS
@@ -196,9 +203,11 @@ void Continent::setId(int id) { ID = id; }
 void Continent::setName(string _name) { *name = move(_name);}
 void Continent::setBonus(int _bonus) { this->bonus = _bonus; }
 void Continent::setColor(string _color) {*color = move(_color);}
+
 //MAP IMPLEMENTATION
 
 //MAP CONSTRUCTORS
+//Parameterized constructor : takes an array of Territory objects, Continent objects, and the size of each.
 Map::Map(Territory territories[], int num_of_trs, Continent continents[], int num_of_cnts){
     this->NUM_OF_TRS = num_of_trs;
     this->NUM_OF_CNTS = num_of_cnts;
@@ -206,21 +215,32 @@ Map::Map(Territory territories[], int num_of_trs, Continent continents[], int nu
     this->continents = continents;
     visited = nullptr;
 }
+//Copy constructor
 Map::Map(const Map &m) {
     NUM_OF_TRS = m.getNumOfTers();
+    NUM_OF_CNTS = m.getNumOfCnts();
     visited = new bool[NUM_OF_TRS];
     territories = new Territory[NUM_OF_TRS]();
+    continents = new Continent[NUM_OF_CNTS]();
     for (int i = 0; i < NUM_OF_TRS; i++) {
         territories[i] = *new Territory(m.getTerritories()[i]);
     }
+    for (int i = 0; i < NUM_OF_CNTS; i++){
+        continents[i] = *new Continent(m.getContinents()[i]);
+    }
 }
+//Copy assignment
 Map &Map::operator=(const Map &m) {
     if (this == &m) return *this;
     delete[] territories;
     NUM_OF_TRS = m.getNumOfTers();
+    NUM_OF_CNTS = m.getNumOfCnts();
     territories = new Territory[NUM_OF_TRS]();
     for (int i = 0; i < NUM_OF_TRS; i++) {
         territories[i] = *new Territory(m.getTerritories()[i]);
+    }
+    for (int i = 0; i < NUM_OF_CNTS; i++){
+        continents[i] = *new Continent(m.getContinents()[i]);
     }
     return *this;
 }
@@ -230,10 +250,14 @@ Map::~Map(){
     territories = nullptr;
     delete[] visited;
     visited = nullptr;
+    delete[] continents;
+    continents = nullptr;
 }
 //ACCESSORS
 int Map::getNumOfTers() const {return NUM_OF_TRS;}
+int Map::getNumOfCnts() const {return NUM_OF_CNTS;}
 Territory *Map::getTerritories() const {return territories;}
+Continent *Map::getContinents() const {return continents; }
 //OVERLOADED << OPERATOR
 ostream &operator<<(ostream &os, const Map &map) {
     for (int i = 0; i < map.NUM_OF_TRS; i++){
@@ -248,22 +272,31 @@ ostream &operator<<(ostream &os, const Map &map) {
 }
 //METHOD TO VISIT NODES AND COUNT HOW MANY VISITED
 void Map::visitTerritories(Territory **e, int size, int &count) {
+    //For every edge of a territory
     for (int i = 0; i < size; i++) {
         int index = e[i]->getId()-1;
+        //if the edge is not visited...
         if (!territories[index].visited) {
+            //visit it and add to count
             territories[index].visited = true;
             count++;
+            //visit all of its edges
             visitTerritories(e[i]->getEdges(), e[i]->getEdgeCount(), count);
         }
     }
 }
+//METHOD TO VISIT ALL NODES WITHIN A CONTINENT
 void Map::visitContinent(int id, Territory *t, int &count) {
         int n = t->getEdgeCount();
+        //For every edge in a territory
         for (int i = 0; i < n; i++) {
             auto e = t->getEdges()[i];
+            //If the edge is in the continent and not visited...
             if (e->getContinentId() == id && !e->visited) {
+                //visit it and add one to count
                 e->visited = true;
                 count++;
+                //visit all of its edges
                 visitContinent(id, e, count);
             }
         }
@@ -272,24 +305,30 @@ void Map::visitContinent(int id, Territory *t, int &count) {
 
 //METHOD TO SEE IF MAP IS VALID
 bool Map::validate() {
+    //Set all territories to unvisited.
     for (int i = 0; i < NUM_OF_TRS; i++) {
         territories[i].visited = false;
     }
-    int count = 0;
+    int count = 0; //start count at 0.
+    //Traverse all the territories, counting every territory that gets visited.
     visitTerritories(territories[0].getEdges(), territories[0].getEdgeCount(), count);
+    //If not all territories get visited, map is not connected.
     if (count != NUM_OF_TRS) {
         cout << "Map is not connected." << endl;
         return false;
     }
+    //Set all territories to unvisited,
     for (int i = 0; i < NUM_OF_TRS; i++) {
         territories[i].visited = false;
     }
-    int n;
+    //For every continent...
     for (int i = 0; i < NUM_OF_CNTS; i++) {
-        n = continents[i].getNumOfTers();
+        int n = continents[i].getNumOfTers();
         auto *c = &continents[i];
         count = 0;
+        //If continent has more than one territory...
         if (n != 1) {
+            //Traverse its territories, counting every one that gets visited
             visitContinent(c->getId(), c->getTerritories()[0], count);
             if (count != n) {
                 cout << *c->getName() << " is not a connected subgraph." << endl;
@@ -373,38 +412,40 @@ Map MapLoader::loadMap(const string &filename)  {
         i++;
     }
     delete continentLine;
-    continentLine = NULL;
+    continentLine = nullptr;
 
     int N = countries->size();
+    // initialize Territory array
     auto *territories = new Territory[N];
 
-    // Split the string and store the components into territories array
+
     i = 0;
-    //keep track of the continent id that each territory has
-    int past_ID = 1;
-    int id;
-    //keep a count of how many territories have the same continent id
-    int c_count = 0;
+    int pastContinentId = 1; // keep track of previous continent ID
+    int continentId; // keep track of current continent ID
+    int c_count = 0; //keep a count of how many territories a continent has
+
+    //For every line in countries
     for (auto &country: *countries) {
         stringstream ss(country);
         string word;
+        //Go through each word and save the value to its corresponding territory
         while (ss >> word)
             if (counter == 0) {
-                territories[i].setId(stoi(word));
+                territories[i].setId(stoi(word)); //save the ID
                 counter++;
             } else if (counter == 1) {
-                territories[i].setName(word);
+                territories[i].setName(word); //save the name
                 counter++;
             } else if (counter == 2) {
-                id = stoi(word);
-                territories[i].setContinentId(id);
-                //if continent id has changed
-                if (past_ID != id) {
-                    //save the count of territories to the old continent
-                    continents[past_ID - 1].createSubMap(c_count);
-                    //reset the count and past-id
+                continentId = stoi(word);
+                territories[i].setContinentId(continentId); //save the continent ID
+                //if continent continentId has changed
+                if (pastContinentId != continentId) {
+                    //save the count of territories to the previous continent
+                    continents[pastContinentId - 1].createSubMap(c_count);
+                    //reset the count and pastContinentId
                     c_count = 0;
-                    past_ID = id;
+                    pastContinentId = continentId;
                 }
                 c_count++;
                 counter++;
@@ -417,23 +458,25 @@ Map MapLoader::loadMap(const string &filename)  {
             }
         i++;
     }
+    //Add the last count of territories to the last continent
+    continents[pastContinentId - 1].createSubMap(c_count);
     delete countries;
     countries = nullptr;
-    //Add the last count of territories
-    continents[past_ID - 1].createSubMap(c_count);
 
-    //Split the string and store the border numbers in a vector
+    //For every line in borders...
     for (auto &border: *borders) {
         istringstream ss(border);
         string word;
         vector<int> edges;
         int src;
         ss >> word;
+        //set the first number as the source
         src = (stoi(word));
+        //save all the other numbers in a vector of edges
         while (ss >> word) {
             edges.push_back(stoi(word));
         }
-        //Add the edges to the current territory object
+        //Add the edges to the territory whose id matches the src
         territories[src-1].addEdges(edges, territories);
         //reset the vector
         edges.clear();
@@ -441,8 +484,11 @@ Map MapLoader::loadMap(const string &filename)  {
     delete borders;
     borders = nullptr;
 
+    //For every territory...
     for (i = 0; i < N; i++) {
+        //Get the territory's continent ID
         int k = territories[i].getContinentId();
+        //Add a reference to the territory to its continent
         continents[k - 1].addTerritory(&territories[i]);
     }
     return {territories, N, continents, C};

@@ -12,6 +12,12 @@ Command::Command(Command &c)
 	command = c.command;
 }
 
+// Stream insertion operator overload for Command 
+std::ostream& operator<< (std::ostream &out, const Command &c) {
+	out << c.command;
+	return out;
+}
+
 // Destructor for Command
 Command::~Command()
 {
@@ -53,6 +59,12 @@ Transition::Transition(State *f, State *t, std::string o)
 	from = f;
 	to = t;
 	on = new Command(o);
+}
+
+// Stream insertion operator overload for Transition 
+std::ostream& operator<< (std::ostream &out, const Transition &t) {
+	out << t.from << " =" << t.on << "=> " << t.to;
+	return out;
 }
 
 // Destructor for Transition
@@ -98,11 +110,10 @@ State::State(std::string n)
 	name = n;
 }
 
-// Constructor for State 
-State::State(std::string n, Transition **t)
-{
-	name = n;
-	transitions = t;
+// Stream insertion operator overload for State 
+std::ostream& operator<< (std::ostream &out, const State &s) {
+	out << s.name;
+	return out;
 }
 
 // Destructor for State
@@ -113,12 +124,6 @@ State::~State()
 		delete transitions[i];
 	delete transitions;
 	delete acceptedCommands;
-}
-
-// Returns string corresponding with state 
-std::string State::toString()
-{
-	return name;
 }
 
 // Function that the index of the command given, if none match it returns -1
@@ -163,6 +168,12 @@ GameEngine::GameEngine()
 {
 	build();
 	start();
+}
+
+// Stream insertion operator overload for GameEngine 
+std::ostream& operator<< (std::ostream &out, const GameEngine &ge) {
+	out << ge.currentState;
+	return out;
 }
 
 // Destructor for GameEngine
@@ -218,7 +229,7 @@ void GameEngine::start()
 		else
 		{
 			currentState = (currentState->getTransition(index))->getState();
-			std::cout << "Transition to state: \"" << currentState->toString() << "\"" << std::endl;
+			std::cout << "Transition to state: \"" << (*currentState) << "\"" << std::endl;
 		}
 	}
 }

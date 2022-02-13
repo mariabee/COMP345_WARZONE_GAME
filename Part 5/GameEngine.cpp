@@ -126,6 +126,11 @@ State::~State()
 	delete acceptedCommands;
 }
 
+// Function that returns true if the state is an end state and false otherwise
+bool State::isEnd() {
+	return name == END_STATE;
+}
+
 // Function that the index of the command given, if none match it returns -1
 int State::getCommandIndex(std::string s)
 {
@@ -188,7 +193,7 @@ GameEngine::~GameEngine()
 void GameEngine::build()
 {
 
-	auto start = new State("start");
+	auto start = new State(START_STATE);
 	currentState = start;
 	auto map_load = new State("map_loaded");
 	auto map_valid = new State("map_validated");
@@ -197,9 +202,10 @@ void GameEngine::build()
 	auto issue_orders = new State("issue_orders");
 	auto execute_orders = new State("execute_orders");
 	auto win = new State("win");
-	states = new State *[8]
-	{ start, map_load, map_valid, players_added, assign_reinforcement, issue_orders, execute_orders, win };
-	stateCount = 8;
+	auto end = new State(END_STATE);
+	states = new State *[9]
+	{ start, map_load, map_valid, players_added, assign_reinforcement, issue_orders, execute_orders, win, end };
+	stateCount = 9;
 
 	start->setTransitions(new Transition(start, map_load, "loadmap"));
 	map_load->setTransitions(new Transition(map_load, map_load, "loadmap"));
@@ -214,6 +220,7 @@ void GameEngine::build()
 	execute_orders->setTransitions(new Transition(execute_orders, assign_reinforcement, "endexecorders"));
 	execute_orders->setTransitions(new Transition(execute_orders, win, "win"));
 	win->setTransitions(new Transition(win, start, "play"));
+	win->setTransitions(new Transition(win, end, "end"));
 }
 
 // Function that starts the game engine, which waits for player input.
@@ -221,7 +228,7 @@ void GameEngine::start()
 {
 	std::string input;
 	int index;
-	while (true)
+	while (!currentState->isEnd())
 	{
 		std::cin >> input;
 		if ((index = currentState->getCommandIndex(input)) == -1)

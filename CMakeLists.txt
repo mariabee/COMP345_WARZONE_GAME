@@ -6,6 +6,7 @@ set(CMAKE_CXX_STANDARD 14)
 include_directories("Part 1")
 include_directories("Part 2")
 include_directories("Part 3")
+include_directories("Part 4")
 include_directories("Part 5")
 
 add_executable(COMP345_WARZONE_GAME
@@ -18,6 +19,9 @@ add_executable(COMP345_WARZONE_GAME
         "Part 3/Orders.cpp"
         "Part 3/Orders.h"
         "Part 3/OrdersDriver.cpp"
+        "Part 4/Cards.cpp"
+        "Part 4/Cards.h"
+        "Part 4/CardsDriver.cpp"
         "Part 5/GameEngine.cpp"
         "Part 5/GameEngine.h"
         "Part 5/GameEngineDriver.cpp"

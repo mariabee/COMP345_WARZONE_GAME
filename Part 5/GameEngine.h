@@ -13,6 +13,7 @@ public:
 	void operator=(Command &c);
 	Command(Command &c);
 	Command(std::string c);
+	friend std::ostream& operator<<(std::ostream &out, const Command &c);
 	bool matches(std::string s);
 	~Command();
 
@@ -30,6 +31,7 @@ private:
 public:
 	void operator=(Transition &t);
 	Transition(Transition &t);
+	friend std::ostream& operator<<(std::ostream &out, const Transition &t);
 	~Transition();
 	Transition(State *f, State *t, std::string o);
 	State *getState();
@@ -42,9 +44,8 @@ public:
 	void operator=(State &s);
 	State(State &s);
 	State(std::string n);
-	State(std::string n, Transition **t);
+	friend std::ostream& operator<< (std::ostream &out, const State &s);
 	~State();
-	std::string toString();
 	int getCommandIndex(std::string s);
 	Transition *getTransition(int i);
 	void setTransitions(Transition *t);
@@ -67,6 +68,7 @@ public:
 	void operator=(GameEngine &ge);
 	GameEngine(GameEngine &ge);
 	GameEngine();
+	friend std::ostream& operator<< (std::ostream &out, const GameEngine &ge);
 	~GameEngine();
 	void build();
 	void start();

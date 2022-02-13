@@ -15,6 +15,7 @@ order::order(const order& other)
     order_type_ = new string(*other.order_type_);
     order_effect_ = new string(*other.order_effect_);
 }
+
 // = OPERATOR
 order &order::operator=(const order &o) {
     if (this == &o) return *this;
@@ -54,9 +55,9 @@ ostream& operator << (ostream& stream, const order& order_obj) {
 }
 
 //CHECK IS 2 TERRITORIES ARE ADJACENT
-bool order::isBeside(Territory *t1, Territory *t2) {
-    for (int i = 0; i < t1->getEdgeCount(); i++) {
-        if (t1->getEdges()[i] == t2) {
+bool order::isBeside(Territory *src, Territory *target) {
+    for (int i = 0; i < src->getEdgeCount(); i++) {
+        if (src->getEdges()[i] == target) {
             return true;
         }
     }

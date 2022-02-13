@@ -58,7 +58,7 @@ public:
     //METHOD TO INITIALIZE SUBMAP
     void createSubMap(int num_of_ters);
     //METHOD TO ADD TERRITORY LINKS TO SUBMAP
-    void addTerritory(Territory territoryPtr);
+    void addTerritory(Territory *territoryPtr);
 
     friend ostream &operator<<(ostream &os, const Continent &continent);
     //ACCESSORS
@@ -80,7 +80,8 @@ class Map {
     bool *visited;
     Territory *territories;
     Continent *continents;
-    void visitTerrritories(Territory **e, int size);
+    void visitTerritories(Territory **e, int size, int &count);
+    void visitContinent(int id, Territory *t, int &count);
 public :
     //CONSTRUCTORS
     Map(Territory territories[], int num_of_trs, Continent continents[], int num_of_cnts);

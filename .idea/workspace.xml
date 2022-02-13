@@ -14,7 +14,6 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="59b1a9ae-7398-41f4-a45e-c750b13b7cb0" name="Changes" comment="Still have = operator and &lt;&lt; stream only &#10;Will do they tomorrow morning" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -129,10 +128,6 @@
       <workItem from="1644174062976" duration="14209000" />
       <workItem from="1644259471021" duration="1144000" />
       <workItem from="1644425290764" duration="19679000" />
-      <workItem from="1644601576287" duration="20177000" />
-      <workItem from="1644622212364" duration="1597000" />
-      <workItem from="1644682649650" duration="11546000" />
-      <workItem from="1644733981143" duration="82000" />
     </task>
     <task id="LOCAL-00001" summary="Moved OrdersList into Orders files, and created seperated Driver file to run testing.">
       <created>1643149106708</created>
@@ -232,12 +227,6 @@
       <option name="project" value="LOCAL" />
       <updated>1644620013268</updated>
     </task>
-    <task id="LOCAL-00015" summary="Still have = operator and &lt;&lt; stream only &#10;Will do they tomorrow morning">
-      <created>1644734026295</created>
-      <option name="number" value="00015" />
-      <option name="presentableId" value="LOCAL-00015" />
-      <option name="project" value="LOCAL" />
-      <updated>1644734026295</updated>
     </task>
     <option name="localTasksCounter" value="16" />
     <servers />
@@ -322,8 +311,6 @@
     <MESSAGE value="Added continents to map, finished all = and copy constructors" />
     <MESSAGE value="Map finished i think" />
     <MESSAGE value="Added copy constructors, etc" />
-    <MESSAGE value="Still have = operator and &lt;&lt; stream only &#10;Will do they tomorrow morning" />
-    <option name="LAST_COMMIT_MESSAGE" value="Still have = operator and &lt;&lt; stream only &#10;Will do they tomorrow morning" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

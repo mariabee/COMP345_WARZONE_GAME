@@ -12,6 +12,11 @@ int main() {
     map->validate();
     delete map;
 
+    cout << "LOADING DISCONNECTED CONTINENT MAP..." << endl;
+    map = new Map(MapLoader::loadMap("../Debug/MapFiles/DisconnectedContinent.txt"));
+    map->validate();
+    delete map;
+
     cout << "LOADING CANADA MAP..." << endl;
     map = new Map(MapLoader::loadMap("../Debug/MapFiles/canada.map"));
     map->validate();

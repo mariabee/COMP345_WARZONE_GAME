@@ -2,6 +2,8 @@
 #include <bits/stdc++.h>
 
 // BASE CLASS IMPLEMENTATION
+#pragma region Order
+//DEFAULT CONSTRUCTOR
 order::order()
 {
     order_effect_ = new string();
@@ -13,14 +15,7 @@ order::order(const order& other)
     order_type_ = new string(*other.order_type_);
     order_effect_ = new string(*other.order_effect_);
 }
-bool order::isBeside(Territory *src, Territory *target) {
-    for (int i = 0; i < src->getEdgeCount(); i++) {
-        if (src->getEdges()[i] == target) {
-            return true;
-        }
-    }
-    return false;
-}
+
 // = OPERATOR
 order &order::operator=(const order &o) {
     if (this == &o) return *this;
@@ -59,55 +54,187 @@ ostream& operator << (ostream& stream, const order& order_obj) {
     return stream << description_;
 }
 
-//SUBCLASS IMPLEMENTATION 
+//CHECK IS 2 TERRITORIES ARE ADJACENT
+bool order::isBeside(Territory *src, Territory *target) {
+    for (int i = 0; i < src->getEdgeCount(); i++) {
+        if (src->getEdges()[i] == target) {
+            return true;
+        }
+    }
+    return false;
+}
+#pragma endregion Order
 
+//SUBCLASS IMPLEMENTATION 
+#pragma region Deploy
 //DEPLOY
+//DEFAULT CONSTRUCTOR
 Deploy::Deploy()
 {
+    player = nullptr;
+    territory = nullptr;
+    numberOfArmies = 0;
 	set_order_type("Deploy");
 }
-Deploy::Deploy(const Deploy &other) : order(other) {}
+//CONSTRUCTOR
+Deploy::Deploy(Player *p, Territory *t, int nbr) {
+    this->player=p;
+    this->territory=t;
+    this->numberOfArmies=nbr;
+    set_order_type("Deploy");
+}
+//COPY CONSTRUCTOR
+Deploy::Deploy(const Deploy &other) : order(other) {
+    this->player = other.getPlayer();
+    this->numberOfArmies = other.getNumberOfArmies();
+    this->territory = other.getTerritory();
+    set_order_type("Deploy");
+}
+// = OPERATOR
 Deploy &Deploy::operator=(const Deploy &o)  {
     order::operator = (o);
     return *this;
 }
+//EXECUTE
 void Deploy::execute() {
     if (validate()) {
         set_order_effect("Troops have been deployed.");
         cout << *get_order_effect() << endl;
     }
 }
+//VALIDATE
 bool Deploy::validate() {
-    //PLACEHOLDER
-        // if the territory belongs to the player
-    return true;
+    if(territory->getOwner() !=player){
+        return false;
+    }else
+        return true;
+}
+//GETTERS
+Player *Deploy::getPlayer() const {
+    return player;
+}
+Territory *Deploy::getTerritory() const {
+    return territory;
+}
+int Deploy::getNumberOfArmies() const {
+    return numberOfArmies;
+}
+//SETTERS
+void Deploy::setPlayer(Player *player) {
+    Deploy::player = player;
+}
+void Deploy::setTerritory(Territory *territory) {
+    Deploy::territory = territory;
+}
+void Deploy::setNumberOfArmies(int numberOfArmies) {
+    Deploy::numberOfArmies = numberOfArmies;
+}
+//DESTRUCTOR
+Deploy::~Deploy() {
+    player= nullptr;
+    territory= nullptr;
 }
 
+#pragma endregion Deploy
+
+#pragma region Advance
 //ADVANCE
-Advance::Advance() { set_order_type("Advance"); }
-Advance::Advance(const Advance &other) : order(other) {}
+//DEFAULT CONSTRUCTOR
+Advance::Advance() {
+    player = nullptr;
+    start = nullptr;
+    target = nullptr;
+    armies = 0;
+    set_order_type("Advance");
+}
+//CONSTRUCTOR
+Advance::Advance(Player* player,Territory* start, Territory* target, int armies) {
+    this->player=player;
+    this->start=start;
+    this->target=target;
+    this->armies=armies;
+    set_order_type("Advance");
+}
+//COPY CONSTRUCTOR
+Advance::Advance(const Advance &other) : order(other) {
+    this->player = other.getPlayer();
+    this->start = other.getStart();
+    this->target = other.getTarget();
+    this->armies = other.getArmies();
+    set_order_type("Advance");
+}
+// = OPERATOR
 Advance&Advance::operator=(const Advance &o)  {
     order::operator = (o);
     return *this;
 }
+//EXECUTE
 void Advance::execute() {
     if (validate()) {
         set_order_effect("Troops have advanced.*");
         cout << *get_order_effect() << endl;
     }
 }
+//VALIDATE
 bool Advance::validate() {
-    /*
-        * If the map territory does not belong to the player
-        * Then an attack happens with other player
-        */
-    return true; 
+    if(start->getOwner() != player || !isBeside(start,target) || start->getNumberOfArmies() < armies){
+        return false;
+    }else
+        return true;
 }
+//SETTERS
+void Advance::setPlayer(Player *player) {
+    Advance::player = player;
+}
+void Advance::setStart(Territory *start) {
+    Advance::start = start;
+}
+void Advance::setTarget(Territory *target) {
+    Advance::target = target;
+}
+void Advance::setArmies(int armies) {
+    Advance::armies = armies;
+}
+//GETTERS
+Player *Advance::getPlayer() const {
+    return player;
+}
+Territory *Advance::getStart() const {
+    return start;
+}
+Territory *Advance::getTarget() const {
+    return target;
+}
+int Advance::getArmies() const {
+    return armies;
+}
+//DESTRUCTOR
+Advance::~Advance() {
+    player= nullptr;
+    start= nullptr;
+    target= nullptr;
+}
+#pragma endregion Advance
 
+#pragma region Bomb
 //BOMB
-//CONSTRUCTORS
+//DEFAULT CONSTRUCTOR
 Bomb::Bomb() { set_order_type("Bomb"); }
-Bomb::Bomb(const Bomb &other) : order(other){}
+//CONSTRUCTOR
+Bomb::Bomb(Player* player, Territory* start, Territory* target) {
+    this->player=player;
+    this->start=start;
+    this->target=target;
+    set_order_type("Bomb");
+}
+//COPY CONSTRUCTOR
+Bomb::Bomb(const Bomb &other) : order(other){
+    this->player= other.getPlayer();
+    this->start=other.getStart();
+    this->target=other.getTarget();
+    set_order_type("Bomb");
+}
+// = OPERATOR
 Bomb &Bomb::operator=(const Bomb &o) {
     order::operator = (o);
     return *this;
@@ -119,70 +246,229 @@ void Bomb::execute() {
     }
 }
 bool Bomb::validate() {
-    {
-        //PLACEHOLDER
-        // if the target territory is adjacent to the player's territory
+    if(start->getOwner() != player || target->getOwner() == player || !isBeside(start,target)){
+        return false;
+    }else
         return true;
-        //else return false
-    }}
+}
+//GETTERS
+Player *Bomb::getPlayer() const {
+    return player;
+}
+Territory *Bomb::getStart() const {
+    return start;
+}
+Territory *Bomb::getTarget() const {
+    return target;
+}
+//SETTERS
+void Bomb::setPlayer(Player *player) {
+    Bomb::player = player;
+}
+void Bomb::setStart(Territory *start) {
+    Bomb::start = start;
+}
+void Bomb::setTarget(Territory* target){
+    Bomb::target = target;
+}
+//DESTRUCTOR
+Bomb::~Bomb(){
+    player= nullptr;
+    start= nullptr;
+    target= nullptr;
+}
+#pragma endregion Bomb
+
+#pragma region Blockade
 //BLOCKADE
+//DEFAULT CONSTRUCTOR
 Blockade::Blockade() { set_order_type("Blockade"); }
-Blockade::Blockade(const Blockade &other) : order(other) {}
+//CONSTRUCTOR
+Blockade::Blockade(Player* player, Territory* territory) {
+    this->player=player;
+    this->territory=territory;
+    set_order_type("Blockade");
+}
+//COPY CONSTRUCTOR
+Blockade::Blockade(const Blockade &other) : order(other) {
+    this->player=other.getPlayer();
+    this->territory=other.getTerritory();
+    set_order_type("Blockade");
+}
+// = OPERATOR
 Blockade &Blockade::operator=(const Blockade &o) {
     order::operator = (o);
     return *this;
 }
+//EXECUTE
 void Blockade::execute() {
     if (validate()) {
         set_order_effect("Troops have tripled.\nThe territory is now neutral. ");
         cout << *get_order_effect() << endl;
     }
 }
+//VALIDATE
 bool Blockade::validate() {
-    //PLACEHOLDER
-        //if the territory belongs to the player
-    return true;
-    //else false
+    if(territory->getOwner() !=player){
+        return false;
+    }else
+        return true;
 }
-//AIRLIFT 
+//GETTERS
+Player *Blockade::getPlayer() const {
+    return player;
+}
+Territory *Blockade::getTerritory() const {
+    return territory;
+}
+//SETTERS
+void Blockade::setPlayer(Player *player) {
+    Blockade::player = player;
+}
+void Blockade::setTerritory(Territory *territory) {
+    Blockade::territory = territory;
+}
+//DESTRUCTOR
+Blockade::~Blockade() {
+    player = nullptr;
+    territory = nullptr;
+}
+#pragma endregion Blockade
+
+#pragma region Airlift
+//AIRLIFT
+//DEFAULT CONSTRUCTOR
 Airlift::Airlift() { set_order_type("Airlift"); }
-Airlift::Airlift(const Airlift &other) : order(other) {}
+//CONSTRUCTOR
+Airlift::Airlift(Player* player, Territory* start, Territory* target, int armies) {
+    this->player=player;
+    this->start=start;
+    this->target=target;
+    this->troops=armies;
+    set_order_type("Airlift");
+}
+//COPY CONSTRUCTOR
+Airlift::Airlift(const Airlift &other) : order(other) {
+    this->player=other.getPlayer();
+    this->start=other.getStart();
+    this->target=other.getTarget();
+    this->troops=other.getTroops();
+    set_order_type("Airlift");
+}
+// = OPERATOR
 Airlift &Airlift::operator=(const Airlift &o) {
     order::operator = (o);
     return *this;
 }
+//EXECUTE
 void Airlift::execute() {
     if (validate()) {
         set_order_effect("Troops have moved.");
         cout << *get_order_effect() << endl;
-        //if the target territory does not belong to the player
-        //then an attack happens
     }
 }
+//VALIDATE
 bool Airlift::validate() {
-    //PLACEHOLDER
-    return true;
+    if(start->getOwner() != player || start->getNumberOfArmies()<troops){
+        return false;
+    }else
+        return true;
 }
-//NEGOTIATE 
+//GETTERS
+Player *Airlift::getPlayer() const {
+    return player;
+}
+Territory *Airlift::getStart() const {
+    return start;
+}
+Territory *Airlift::getTarget() const {
+    return target;
+}
+int Airlift::getTroops() const {
+    return troops;
+}
+//SETTERS
+void Airlift::setPlayer(Player *player) {
+    Airlift::player = player;
+}
+void Airlift::setStart(Territory *start) {
+    Airlift::start = start;
+}
+void Airlift::setTarget(Territory *target) {
+    Airlift::target = target;
+}
+void Airlift::setTroops(int troops) {
+    Airlift::troops = troops;
+}
+//DESTRUCTOR
+Airlift::~Airlift() {
+    player= nullptr;
+    start= nullptr;
+    target= nullptr;
+}
+
+#pragma endregion Airlift
+
+#pragma region Negotiate
+//NEGOTIATE
+//DEFAULT CONSTRUCTOR
 Negotiate::Negotiate() { set_order_type("Negotiate"); }
-Negotiate::Negotiate(const Negotiate &other) : order(other) {}
+//CONSTRUCTOR
+Negotiate::Negotiate(Player* player1,Player* player2) {
+    this->player1=player1;
+    this->player2=player2;
+    set_order_type("Negotiate");
+}
+//COPY CONSTRUCTOR
+Negotiate::Negotiate(const Negotiate &other) : order(other) {
+    this->player1=other.getPlayer1();
+    this->player2=other.getPlayer2();
+    set_order_type("Negotiate");
+}
+// = OPERATOR
 Negotiate &Negotiate::operator=(const Negotiate &o) {
     order::operator = (o);
     return *this;
 }
+//EXECUTE
 void Negotiate::execute() {
     if (validate()) {
         set_order_effect("Attacks have been prevented until the end of turn.");
         cout << *get_order_effect() << endl;
     }
 }
+//VALIDATE
 bool Negotiate::validate() {
-    //PLACEHOLDER
+    if(player1 == player2){
+        return false;
+    }
     return true;
 }
+//GETTERS
+Player *Negotiate::getPlayer1() const {
+    return player1;
+}
+Player *Negotiate::getPlayer2() const {
+    return player2;
+}
+//SETTERS
+void Negotiate::setPlayer1(Player *player1) {
+    Negotiate::player1 = player1;
+}
+void Negotiate::setPlayer2(Player *player2) {
+    Negotiate::player2 = player2;
+}
+//DESTRUCTOR
+Negotiate::~Negotiate() {
+    player1= nullptr;
+    player2= nullptr;
+}
+
+
+#pragma endregion Negotiate
 
 //ORDERS LIST IMPLEMENTATION
-
+#pragma region OrderList
 void OrdersList::add(order* o) {
     list->push_back(o);
 }
@@ -240,6 +526,7 @@ OrdersList::~OrdersList() {
     list = nullptr;
     ptr = nullptr;
 }
+#pragma endregion OrderList
 
 
 

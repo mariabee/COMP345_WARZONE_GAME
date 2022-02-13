@@ -8,10 +8,11 @@ using namespace std;
 //BASE CLASS 
 class order {
 	public:
+        //Constructors
         order(); 
         order(const order& other);
         order& operator=(const order& o);
-
+        //Destructor
         virtual ~order();
         virtual bool validate() = 0;
         virtual void execute() = 0;
@@ -22,7 +23,6 @@ class order {
         //Mutators
         void set_order_type(const string &order);
         void set_order_effect(const string &effect);
-
     private:
         friend ostream& operator<<(ostream&, const order&);
         string* order_type_;
@@ -32,62 +32,149 @@ class order {
 //SUBCLASSES - TYPES OF ORDERS 
 
 class Deploy : public order {
+    private:
+        bool validate() override;
+        Player *player;
+        Territory *territory;
+        int numberOfArmies;
     public:
         //Constructors
         Deploy();
+        Deploy(Player*,Territory*,int);
         Deploy(const Deploy& other);
         Deploy& operator=(const Deploy& o);
+        //Destructor
+        virtual ~Deploy();
+        //Getters
+        Player *getPlayer() const;
+        Territory *getTerritory() const;
+        int getNumberOfArmies() const;
+        //Setters
+        void setPlayer(Player *player);
+        void setTerritory(Territory *territory);
+        void setNumberOfArmies(int numberOfArmies);
         void execute() override;
-    private:
-        bool validate() override;
+
 };
 class Advance : public order {
+    private:
+        Player* player;
+        Territory* start;
+        Territory* target;
+        int armies;
+        bool validate() override;
     public:
-        //Default constructor 
+        //Constructors
         Advance();
+        Advance(Player*,Territory*, Territory*, int);
         Advance(const Advance& other);
         Advance& operator=(const Advance& other);
         void execute() override;
-    private:
-        bool validate() override;
+        //Destructor
+        virtual ~Advance();
+        //Setters
+        void setPlayer(Player *player);
+        void setStart(Territory *start);
+        void setTarget(Territory *target);
+        void setArmies(int armies);
+        //Getters
+        Player *getPlayer() const;
+        Territory *getStart() const;
+        Territory *getTarget() const;
+        int getArmies() const;
+
 };
 class Bomb : public order {
     public:
-        //Default constructor 
+        //Constructors
         Bomb();
+        Bomb(Player*,Territory*,Territory*);
         Bomb(const Bomb& other);
         Bomb& operator=(const Bomb& o);
-    void execute() override;
+        //Destructor
+        virtual ~Bomb();
+        //Getters
+        Player *getPlayer() const;
+        Territory *getStart() const;
+        Territory *getTarget() const;
+        //Setters
+        void setPlayer(Player *player);
+        void setStart(Territory *start);
+        void setTarget(Territory* target);
+        void execute() override;
     private:
+        Player* player;
+        Territory* start;
+        Territory* target;
         bool validate() override;
 };
 class Blockade : public order {
     public:
-        //Default constructor 
+        //Constructors
         Blockade();
+        Blockade(Player*,Territory*);
         Blockade(const Blockade& other);
         Blockade& operator=(const Blockade& o);
+        //Destructor
+        virtual ~Blockade();
+        //Getters
+        Player *getPlayer() const;
+        Territory *getTerritory() const;
+        //Setters
+        void setPlayer(Player *player);
+        void setTerritory(Territory *territory);
         void execute() override;
     private:
+        Player* player;
+        Territory* territory;
         bool validate() override;
 };
 class Airlift : public order {
     public:
-        //Default constructor 
+        //Constructors
         Airlift();
+        Airlift(Player*, Territory*,Territory*,int);
         Airlift(const Airlift& other);
         Airlift& operator=(const Airlift& o);
+        //Destructor
+        virtual ~Airlift();
+        //Getters
+        Player *getPlayer() const;
+        Territory *getStart() const;
+        Territory *getTarget() const;
+        int getTroops() const;
+        //Setters
+        void setPlayer(Player *player);
+        void setStart(Territory *start);
+        void setTarget(Territory *target);
+        void setTroops(int troops);
         void execute() override;
     private:
+        Player* player;
+        Territory* start;
+        Territory* target;
+        int troops;
         bool validate() override;
 };
 class Negotiate : public order {
     public:
+        //Constructors
         Negotiate();
+        Negotiate(Player*,Player*);
         Negotiate(const Negotiate &other);
         Negotiate& operator=(const Negotiate& o);
+        //Destructor
+        virtual ~Negotiate();
         void execute() override;
+        //Getters
+        Player *getPlayer1() const;
+        Player *getPlayer2() const;
+        //Setters
+        void setPlayer1(Player *player1);
+        void setPlayer2(Player *player2);
     private:
+        Player* player1;
+        Player* player2;
         bool validate() override;
 };
 

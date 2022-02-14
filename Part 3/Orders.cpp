@@ -515,6 +515,13 @@ OrdersList::OrdersList(){
     list = new vector<order *>();
     ptr = new vector<order *>::iterator();
 }
+OrdersList::OrdersList(const OrdersList &other) {
+    list = new vector<order *>();
+    ptr = new vector<order *>::iterator();
+    for (order *o : *other.list) {
+        add(o);
+    }
+}
 
 OrdersList::~OrdersList() {
     for (order *o : *list) {

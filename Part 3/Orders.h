@@ -170,7 +170,7 @@ class Negotiate : public order {
 class OrdersList{
 public:
     OrdersList();
-
+    OrdersList(const OrdersList &other);
     void add(order *o);
     bool move(order* o, int position);
     bool remove(order* o);

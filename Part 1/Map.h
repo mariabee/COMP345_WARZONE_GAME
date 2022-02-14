@@ -6,18 +6,20 @@
 
 using namespace std;
 class Player;
+class Continent;
 class Territory {
 private:
-    int ID, continent_ID, number_of_armies, edge_count;
+    int ID, number_of_armies, edge_count;
     string *name;
     Player *player;
+    Continent *continent;
     Territory **edges;
 
 public:
     bool visited;
     //CONSTRUCTORS
     Territory();
-    Territory(int id, string name, int continentId);
+    Territory(int id, string name, Continent *continent);
     Territory(const Territory &t);
     Territory& operator=(const Territory& t);
     //DESTRUCTOR
@@ -27,7 +29,7 @@ public:
     //ACCESSORS
         string * getName() const;
         int getId() const;
-        int getContinentId() const;
+        Continent * getContinent() const;
         int getNumberOfArmies() const;
         Player * getOwner() const;
         Territory **getEdges() const;
@@ -35,7 +37,7 @@ public:
     //MUTATORS
         void setId(int id);
         void setName(string name);
-        void setContinentId(int continentId);
+        void setContinent(Continent * continent);
         void setNumberOfArmies(int numberOfArmies);
         void changeOwner(Player *player_);
     //METHOD TO ADD EDGES TO AN ARRAY OF TERRITORIES

@@ -11,17 +11,17 @@
 Territory::Territory() {
     name = new string("UNKNOWN");
     ID = -1;
-    continent_ID = -1;
     number_of_armies = -1;
     edges = nullptr;
     edge_count = 0;
     player = nullptr;
+    continent = nullptr;
     visited = false;
 }
-Territory::Territory(int id, string name, int continentId) {
+Territory::Territory(int id, string name, Continent *continent) {
     this->name = new string(move(name));
     this->ID=id;
-    this->continent_ID=continentId;
+    this->continent=continent;
     this->number_of_armies=0;
     edges = nullptr;
     edge_count = 0;
@@ -33,7 +33,7 @@ Territory::Territory(const Territory &t) {
     name = new string(*t.getName());
     player = t.getOwner();
     ID = t.getId();
-    continent_ID = t.getContinentId();
+    continent = t.getContinent();
     edge_count = t.getEdgeCount();
     number_of_armies = t.getNumberOfArmies();
     edges = new Territory*[edge_count]();
@@ -50,7 +50,7 @@ Territory &Territory::operator=(const Territory &t) {
     player = t.getOwner();
     edge_count = t.getEdgeCount();
     ID = t.getId();
-    continent_ID = t.getContinentId();
+    continent = t.getContinent();
     name = new string(*t.getName());
     edges = new Territory*[edge_count]();
     for (int i = 0; i < edge_count; i++) {
@@ -65,10 +65,12 @@ Territory::~Territory() {
     name = nullptr;
     edges = nullptr;
     player = nullptr;
+    continent = nullptr;
 }
 //OVERLOADED << OPERATOR
 ostream &operator<<(ostream &os, const Territory &territory) {
-    os << "ID: " << territory.getId() << "\tName: " << *territory.getName() << "\tContinent ID: " << territory.getContinentId();
+    os << "ID: " << territory.getId() << "\tName: " << *territory.getName() << "\tContinent: " << *territory.getContinent()->getName();
+    if (territory.getOwner()) {os << "Currently occupied by : " << *territory.getOwner();}
     return os;
 }
 //METHOD TO ADD EDGES/BORDERS TO AN ARRAY OF TERRITORIES
@@ -88,7 +90,7 @@ void Territory::addEdges(vector<int> edge_nums, Territory *territories) {
 //ACCESSORS
 int Territory::getId() const  { return ID; }
 string *Territory::getName() const   { return name;}
-int Territory::getContinentId() const{ return continent_ID; }
+Continent *Territory::getContinent() const{ return continent; }
 int Territory::getNumberOfArmies() const { return number_of_armies; }
 int Territory::getEdgeCount() const {return edge_count; }
 Territory **Territory::getEdges() const { return edges; }
@@ -96,7 +98,7 @@ Player *Territory::getOwner() const { return player; }
 //MUTATORS
 void Territory::setId(int id) { ID = id; }
 void Territory::setName(string name_) {*this->name = move(name_);}
-void Territory::setContinentId(int continentId) { this->continent_ID = continentId; }
+void Territory::setContinent(Continent *continent) { this->continent = continent; }
 void Territory::setNumberOfArmies(int numberOfArmies) { this->number_of_armies = numberOfArmies; }
 void Territory::changeOwner(Player *player_) {this->player = player_;}
 //CONTINENT IMPLEMENTATION
@@ -292,7 +294,7 @@ void Map::visitContinent(int id, Territory *t, int &count) {
         for (int i = 0; i < n; i++) {
             auto e = t->getEdges()[i];
             //If the edge is in the continent and not visited...
-            if (e->getContinentId() == id && !e->visited) {
+            if (e->getContinent()->getId() == id && !e->visited) {
                 //visit it and add one to count
                 e->visited = true;
                 count++;
@@ -438,7 +440,7 @@ Map MapLoader::loadMap(const string &filename)  {
                 counter++;
             } else if (counter == 2) {
                 continentId = stoi(word);
-                territories[i].setContinentId(continentId); //save the continent ID
+                territories[i].setContinent(&continents[continentId-1]); //save the continent ID
                 //if continent continentId has changed
                 if (pastContinentId != continentId) {
                     //save the count of territories to the previous continent
@@ -487,7 +489,7 @@ Map MapLoader::loadMap(const string &filename)  {
     //For every territory...
     for (i = 0; i < N; i++) {
         //Get the territory's continent ID
-        int k = territories[i].getContinentId();
+        int k = territories[i].getContinent()->getId();
         //Add a reference to the territory to its continent
         continents[k - 1].addTerritory(&territories[i]);
     }

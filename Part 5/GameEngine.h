@@ -4,6 +4,9 @@
 #include <string>
 #include <iostream>
 
+#define START_STATE "start"
+#define END_STATE "end"
+
 class State;
 
 // Class that provides functionality to match a Command.
@@ -46,6 +49,7 @@ public:
 	State(std::string n);
 	friend std::ostream& operator<< (std::ostream &out, const State &s);
 	~State();
+	bool isEnd();
 	int getCommandIndex(std::string s);
 	Transition *getTransition(int i);
 	void setTransitions(Transition *t);

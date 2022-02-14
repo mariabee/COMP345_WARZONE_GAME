@@ -16,7 +16,7 @@ Player Player::operator=(Player &p)
     delete name;
     delete hand;
     delete[] territories;
-    delete[] orderList;
+    delete orderList;
 
 	name = new string(*p.name);
 	hand = new Hand(*p.getHand());

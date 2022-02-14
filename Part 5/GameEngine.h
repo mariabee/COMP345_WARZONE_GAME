@@ -13,15 +13,15 @@ class State;
 class Command
 {
 public:
-	void operator=(Command &c);
-	Command(Command &c);
+	Command& operator=(const Command &c);
+	Command(const Command &c);
 	Command(std::string c);
 	friend std::ostream& operator<<(std::ostream &out, const Command &c);
 	bool matches(std::string s);
 	~Command();
 
 private:
-	std::string command;
+	std::string* command;
 };
 
 class Transition
@@ -32,8 +32,8 @@ private:
 	Command *on;
 
 public:
-	void operator=(Transition &t);
-	Transition(Transition &t);
+	Transition& operator=(const Transition &t);
+	Transition(const Transition &t);
 	friend std::ostream& operator<<(std::ostream &out, const Transition &t);
 	~Transition();
 	Transition(State *f, State *t, std::string o);
@@ -44,8 +44,8 @@ public:
 class State
 {
 public:
-	void operator=(State &s);
-	State(State &s);
+	State& operator=(const State &s);
+	State(const State &s);
 	State(std::string n);
 	friend std::ostream& operator<< (std::ostream &out, const State &s);
 	~State();
@@ -55,7 +55,7 @@ public:
 	void setTransitions(Transition *t);
 
 private:
-	std::string name;
+	std::string* name;
 	int index = 0;
 	Transition **transitions = new Transition *[2];
 	Command *acceptedCommands;
@@ -69,8 +69,8 @@ private:
 	int stateCount;
 
 public:
-	void operator=(GameEngine &ge);
-	GameEngine(GameEngine &ge);
+	GameEngine& operator=(const GameEngine &ge);
+	GameEngine(const GameEngine &ge);
 	GameEngine();
 	friend std::ostream& operator<< (std::ostream &out, const GameEngine &ge);
 	~GameEngine();

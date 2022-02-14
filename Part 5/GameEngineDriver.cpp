@@ -1,5 +1,7 @@
 #include "./GameEngine.h"
 
 int main() {
-	GameEngine();
+	GameEngine* ge = new GameEngine();
+	ge->start();
+	delete ge;
 }

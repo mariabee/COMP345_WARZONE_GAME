@@ -1,55 +1,62 @@
 #include "GameEngine.h"
 
 // Assignment operator overload for Command
-void Command::operator=(Command &c)
+Command& Command::operator=(const Command &c)
 {
-	command = c.command;
+	delete command;
+	
+	command = new std::string(*c.command);
+	return *this;
 }
 
 // Copy constructor for Command
-Command::Command(Command &c)
+Command::Command(const Command &c)
 {
-	command = c.command;
+	command = new std::string(*c.command);
 }
 
 // Stream insertion operator overload for Command 
 std::ostream& operator<< (std::ostream &out, const Command &c) {
-	out << c.command;
+	out << *c.command;
 	return out;
 }
 
 // Destructor for Command
 Command::~Command()
 {
-	std::cout << "Deleting command: \"" << command << "\"" << std::endl;
+	std::cout << "Deleting command: \"" << *this << "\"" << std::endl;
 }
 
 // Constructor for Command that takes a string
 Command::Command(std::string c)
 {
-	command = c;
+	command = new std::string(c);
 }
 
 // Function that returns a boolean corresponding to whether a given string matches the command
 bool Command::matches(std::string s)
 {
-	return command == s;
+	return *command == s;
 }
 
 // Assignment operator overload for Transition
-void Transition::operator=(Transition &t)
+Transition& Transition::operator=(const Transition &t)
 {
+	delete on;
+
 	from = t.from;
 	to = t.to;
-	on = t.on;
+	on = new Command(*t.on);
+
+	return *this;
 }
 
 // Copy constructor for Transition
-Transition::Transition(Transition &t)
+Transition::Transition(const Transition &t)
 {
 	from = t.from;
 	to = t.to;
-	on = t.on;
+	on = new Command(*t.on);
 }
 
 // Constructor for Transtion that takes two states one start and one destination, 
@@ -63,7 +70,7 @@ Transition::Transition(State *f, State *t, std::string o)
 
 // Stream insertion operator overload for Transition 
 std::ostream& operator<< (std::ostream &out, const Transition &t) {
-	out << t.from << " =" << t.on << "=> " << t.to;
+	out << *t.from << " =" << *t.on << "=> " << *t.to;
 	return out;
 }
 
@@ -87,39 +94,50 @@ bool Transition::matches(std::string s)
 }
 
 // Assignment operator overload for State
-void State::operator=(State &s)
+State& State::operator=(const State &s)
 {
-	acceptedCommands = s.acceptedCommands;
+	for (int i = 0; i < index; i++)
+		delete transitions[i];
+	delete transitions;
+	delete acceptedCommands;
+
+	acceptedCommands = new Command(*s.acceptedCommands);
 	index = s.index;
-	name = s.name;
-	transitions = s.transitions;
+	name = new std::string(*s.name);
+	transitions = new Transition*[s.index];
+	for (int i =0; i<index; i++)
+		transitions[i] = new Transition(*s.transitions[i]);
+	
+	return *this;
 }
 
 // Copy constructor for State
-State::State(State &s)
+State::State(const State &s)
 {
-	acceptedCommands = s.acceptedCommands;
+	acceptedCommands = new Command(*s.acceptedCommands);
 	index = s.index;
-	name = s.name;
-	transitions = s.transitions;
+	name = new std::string(*s.name);
+	transitions = new Transition*[s.index];
+	for (int i =0; i<index; i++)
+		transitions[i] = new Transition(*s.transitions[i]);
 }
 
 // Constructor for State that takes in a name
 State::State(std::string n)
 {
-	name = n;
+	name = new std::string(n);
 }
 
 // Stream insertion operator overload for State 
 std::ostream& operator<< (std::ostream &out, const State &s) {
-	out << s.name;
+	out << *s.name;
 	return out;
 }
 
 // Destructor for State
 State::~State()
 {
-	std::cout << "Deleting state: \"" << name << "\"" << std::endl;
+	std::cout << "Deleting state: \"" << *this << "\"" << std::endl;
 	for (int i = 0; i < index; i++)
 		delete transitions[i];
 	delete transitions;
@@ -128,7 +146,7 @@ State::~State()
 
 // Function that returns true if the state is an end state and false otherwise
 bool State::isEnd() {
-	return name == END_STATE;
+	return *name == END_STATE;
 }
 
 // Function that the index of the command given, if none match it returns -1
@@ -155,24 +173,35 @@ void State::setTransitions(Transition *t)
 }
 
 // Assignment operator overload for GameEngine
-void GameEngine::operator=(GameEngine &ge)
+GameEngine& GameEngine::operator=(const GameEngine &ge)
 {
-	currentState = ge.currentState;
-	start();
+	for (int i = 0; i < stateCount; i++)
+		delete states[i];
+	delete states;
+
+	stateCount = ge.stateCount;
+	for (int i = 0; i < stateCount; i++)
+		states[i] = new State(*ge.states[i]);
+
+	currentState = new State(*ge.currentState);
+
+	return *this;
 }
 
 // Copy constructor for GameEngine
-GameEngine::GameEngine(GameEngine &ge)
+GameEngine::GameEngine(const GameEngine &ge)
 {
-	currentState = ge.currentState;
-	start();
+	stateCount = ge.stateCount;
+	for (int i = 0; i < stateCount; i++)
+		states[i] = new State(*ge.states[i]);
+
+	currentState = new State(*ge.currentState);
 }
 
 // Default constructor for GameEngine
 GameEngine::GameEngine()
 {
 	build();
-	start();
 }
 
 // Stream insertion operator overload for GameEngine 

@@ -1,40 +1,110 @@
 #include "Player.h"
 #include <map>
 
-class Territory;
-std::vector<Territory *> Player::toDefend()
+// Constructor for Player
+Player::Player(std::string n)
 {
-	std::vector<Territory *> out;
+	name = n;
+	orderList = new OrdersList();
+	hand = new Hand();
+}
 
-	for (int i = 0; i < territories.size(); i++)
-		out.push_back(territories[i]);
+// Assignment operator overload for Player
+void Player::operator=(Player &p)
+{
+	name = p.name;
+	hand = p.hand;
+	territories = p.territories;
+	territoryCount = p.territoryCount;
+	orderList = p.orderList;
+}
+
+// Copy constructor for Player
+Player::Player(Player &p)
+{
+	name = p.name;
+	hand = p.hand;
+	territories = p.territories;
+	territoryCount = p.territoryCount;
+	orderList = p.orderList;
+}
+
+// Stream insertion operator overload for Player
+std::ostream &operator<<(std::ostream &out, const Player &p)
+{
+	out << p.name;
+	return out;
+}
+
+// Destructor for Player
+Player::~Player()
+{
+	delete hand;
+	delete orderList;
+
+	// Delete only the array since the territories should be deleted from the map not the player
+	delete territories;
+}
+
+// Function that returns a pointer to the players hand
+Hand *Player::getHand()
+{
+	return hand;
+}
+
+// Function that returns a list of territories corresponding to the Territories the player would like to defend
+Territory **Player::toDefend(int &defendCount)
+{
+	Territory **out;
+
+	defendCount = (territoryCount / 2);
+
+	out = new Territory *[defendCount];
+
+	int index = 0;
+	for (int i = 0; i < territoryCount; i++)
+		if (i % 2 == 1)
+			out[index++] = territories[i];
 
 	return out;
 }
 
-std::vector<Territory *> Player::toAttack()
+// Function that returns a list of territories corresponding to the Territories the player would like to attack
+Territory **Player::toAttack(int &attackCount)
 {
-	std::vector<Territory *> out;
+	Territory **out;
 
-	// std::string orderTypes = {"deploy"};
+	attackCount = (territoryCount / 2) + 1;
 
-	for (int i = 0; i < territories.size(); i++)
-		out.push_back(territories[i]);
+	out = new Territory *[attackCount];
+
+	int index = 0;
+	for (int i = 0; i < territoryCount; i++)
+		if (i % 2 == 0)
+			out[index++] = territories[i];
 
 	return out;
 }
 
+// Function that sets the Player's territories to a given list and count
+void Player::setTerritories(Territory **t, int count)
+{
+	territories = t;
+	territoryCount = count;
+}
+
+// Function that creates an order based on the type passed as a string
 void Player::issueOrder(std::string type)
 {
-	map<std::string, int> test;
-	test["deploy"] = 0;
-	test["advance"] = 1;
-	test["bomb"] = 2;
-	test["blockade"] = 3;
-	test["airlift"] = 4;
+	map<std::string, int> typeMap;
+	typeMap["deploy"] = 0;
+	typeMap["advance"] = 1;
+	typeMap["bomb"] = 2;
+	typeMap["blockade"] = 3;
+	typeMap["airlift"] = 4;
 	order *o;
 
-	switch (test.at(type))
+	switch (typeMap.at(type))
 	{
 	case 0:
 		o = new Deploy();
@@ -52,10 +122,10 @@ void Player::issueOrder(std::string type)
 		o = new Airlift();
 		break;
 	default:
-		std::cout << "Error::Player - Unknown Type: " << type;
+		std::cout << "Error::Player - Unknown Type: " << type << std::endl;
 		return;
 	}
 
-	std::cout << "Player - Successfully issued order: " << type;
+	std::cout << "Player - Successfully issued order: " << type << std::endl;
 	orderList->add(o);
 }

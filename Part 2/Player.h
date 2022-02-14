@@ -3,20 +3,29 @@
 
 #include "../Part 1/Map.h"
 #include "../Part 3/Orders.h"
+#include "../Part 4/Cards.h"
 
 #include <string>
 
 class Player {
 	private:
+		std::string name;
 		OrdersList* orderList;
-		std::vector<Territory*> territories;
-		// Hand* hand;
+		Territory** territories;
+		int territoryCount = 0;
+		Hand* hand;
 
 	public:
-		std::vector<Territory*> toDefend();
-		std::vector<Territory*> toAttack();
-
+		Player(std::string);
+		void operator=(Player &p);
+		Player(Player &p);
+		friend std::ostream& operator<< (std::ostream &out, const Player &p);
+		~Player();
+		void setTerritories(Territory** t, int count);
+		Territory** toDefend(int& c);
+		Territory** toAttack(int& c);
 		void issueOrder(std::string);
+		Hand* getHand();
 };
 
 #endif

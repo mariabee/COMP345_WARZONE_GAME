@@ -13,12 +13,12 @@ int main(){
 	Territory** attacking = p.toAttack(ct);
 
 	for (int i = 0; i < ct; i++)
-		std::cout << p << ": Preparing to attack: " << attacking[i] << std::endl;
+		std::cout << p << ": Preparing to attack: " << *attacking[i] << std::endl;
 
 
 	Territory** defending = p.toDefend(ct);
 	for (int i = 0; i < ct; i++)
-		std::cout << p << ": Preparing to defend: " << defending[i] << std::endl;
+		std::cout << p << ": Preparing to defend: " << *defending[i] << std::endl;
 
 	p.issueOrder("deploy");
 }

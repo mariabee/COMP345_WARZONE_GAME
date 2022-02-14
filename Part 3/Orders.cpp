@@ -1,4 +1,5 @@
 #include "Orders.h"
+#include "../Part 2/Player.h"
 #include <bits/stdc++.h>
 
 // BASE CLASS IMPLEMENTATION
@@ -30,7 +31,6 @@ order &order::operator=(const order &o) {
 //DESTRUCTOR 
 order::~order()
 {
-    cout << "DELETING " << * order_type_ << endl;
     delete order_effect_;
     delete order_type_;
     order_effect_ = nullptr;
@@ -50,7 +50,7 @@ void order::set_player(Player *player_) { this->player = player_; }
 ostream& operator << (ostream& stream, const order& order_obj) {
     stream << *order_obj.get_order_type() << " has been ordered ";
     if (order_obj.get_player()) {
-        stream << "by " << order_obj.get_player() << ".";
+        stream << "by " << *order_obj.get_player() << ".";
     }
     else {
         stream << "by unknown player.";
@@ -113,6 +113,9 @@ void Deploy::execute() {
 }
 //VALIDATE
 bool Deploy::validate() {
+    if (!territory) {
+        set_order_effect("Order was missing information and will not be executed.");
+    }
     if(territory->getOwner() != get_player()){
         set_order_effect("Order was not valid and will not be executed.");
         return false;
@@ -181,6 +184,10 @@ void Advance::execute() {
 }
 //VALIDATE
 bool Advance::validate() {
+    if (!start || !target) {
+        set_order_effect("Order was missing information and will not be executed.");
+        return false;
+    }
     if(start->getOwner() != get_player() || !isBeside(start,target) || start->getNumberOfArmies() < armies){
         set_order_effect("Order was not valid and will not be executed.");
         return false;
@@ -249,6 +256,10 @@ void Bomb::execute() {
     }
 }
 bool Bomb::validate() {
+    if (start == nullptr || target == nullptr) {
+        set_order_effect("Order was missing information and will not be executed.");
+        return false;
+    }
     if(start->getOwner() != get_player() || target->getOwner() == get_player() || !isBeside(start,target)){
         set_order_effect("Order was not valid and will not be executed.");
         return false;
@@ -309,6 +320,10 @@ void Blockade::execute() {
 }
 //VALIDATE
 bool Blockade::validate() {
+    if (!territory) {
+        set_order_effect("Order was missing information and will not be executed.");
+        return false;
+    }
     if(territory->getOwner() != get_player()){
         set_order_effect("Order was not valid and will not be executed.");
         return false;
@@ -372,6 +387,10 @@ void Airlift::execute() {
 }
 //VALIDATE
 bool Airlift::validate() {
+    if (!start) {
+        set_order_effect("Order was missing information and will not be executed.");
+        return false;
+    }
     if(start->getOwner() != get_player() || start->getNumberOfArmies() < troops){
         set_order_effect("Order was not valid and will not be executed.");
         return false;
@@ -439,6 +458,10 @@ void Negotiate::execute() {
 }
 //VALIDATE
 bool Negotiate::validate() {
+    if (!player2) {
+        set_order_effect("Order was missing information and will not be executed.");
+        return false;
+    }
     if(get_player() == player2){
         set_order_effect("Order was not valid and will not be executed.");
         return false;
@@ -546,6 +569,13 @@ OrdersList::~OrdersList() {
     ptr = nullptr;
 }
 vector<order *> *OrdersList::getList() const { return list; }
+
+ostream &operator<<(ostream &out, const OrdersList &orderlist) {
+    for (order *o : *orderlist.list) {
+        out << *o;
+    }
+    return out;
+}
 
 #pragma endregion OrderList
 

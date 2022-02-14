@@ -68,7 +68,7 @@ Player::~Player()
 	delete hand;
 	delete orderList;
 
-	// Delete only the array since the territories should be deleted from the map not the player
+	// Delete only the array of pointers since the territories should be deleted from the map not the player
 	delete[] territories;
 }
 

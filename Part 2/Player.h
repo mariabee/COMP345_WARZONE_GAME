@@ -8,7 +8,7 @@
 
 class Player {
 	private:
-		std::string name;
+		std::string *name;
 		OrdersList* orderList;
 		Territory** territories;
 		int territoryCount = 0;
@@ -16,7 +16,7 @@ class Player {
 
 	public:
 		Player(std::string);
-		void operator=(Player &p);
+		Player operator=(Player &p);
 		Player(Player &p);
 		friend std::ostream& operator<< (std::ostream &out, const Player &p);
 		~Player();

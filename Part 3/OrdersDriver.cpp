@@ -1,10 +1,15 @@
 //MAIN METHOD FOR TESTING
 #include "Orders.h"
+#include "../Part 2/Player.h"
+
 
 int main() {
     auto *testList = new OrdersList();
     auto *t1 = new Territory();
-    auto *d = new Deploy();
+    Player *p1 = new Player("Jane Doe");
+    t1->changeOwner(p1);
+
+    auto *d = new Deploy(p1, t1, 5);
     d->setTerritory(t1);
     d->setNumberOfArmies(5);
     auto *a = new Advance();
@@ -26,11 +31,15 @@ int main() {
     testList->remove(a);
     cout << "Removing advance order again... " << endl;
     testList->remove(a);
-    cout << endl << "Making new negotiate object...." << endl;
-    auto *n2 = new Negotiate(*n);
-    n2->execute();
-    cout << *n2 << endl;
-    cout << endl << "DELETING LIST AND ALL ORDERS IN IT. " << endl;
+    cout << endl << "Executing orders...." << endl;
+    b->execute();
+    d->execute();
+    bl->execute();
+    ai->execute();
+    n->execute();
+    cout << "Printing list..." << endl;
+    cout << *testList << endl;
+    cout << endl << "DELETING LIST AND ALL ORDERS IN IT. ";
     delete testList;
 }
 

@@ -182,6 +182,7 @@ public:
     vector<order *> *getList() const;
 
 private:
+    friend ostream& operator<<(ostream&, const OrdersList&);
     vector<order *> *list;
     vector<order *>::iterator *ptr;
 };

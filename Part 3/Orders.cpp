@@ -30,7 +30,6 @@ order &order::operator=(const order &o) {
 //DESTRUCTOR 
 order::~order()
 {
-    cout << "DELETING " << * order_type_ << endl;
     delete order_effect_;
     delete order_type_;
     order_effect_ = nullptr;

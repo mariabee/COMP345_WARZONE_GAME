@@ -170,13 +170,16 @@ class Negotiate : public order {
 class OrdersList{
 public:
     OrdersList();
-
+    OrdersList(const OrdersList &other);
+    OrdersList& operator=(const OrdersList& o);
     void add(order *o);
     bool move(order* o, int position);
     bool remove(order* o);
     bool contain(order *o);
     //Destructor
     ~OrdersList();
+    //Accessors
+    vector<order *> *getList() const;
 
 private:
     vector<order *> *list;

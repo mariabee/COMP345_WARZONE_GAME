@@ -14,15 +14,12 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="fb62c439-f59a-4880-90da-ca031f99db12" name="Changes" comment="">
+    <list default="true" id="fb62c439-f59a-4880-90da-ca031f99db12" name="Changes" comment="added ordersList copy constructor">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Part 1/Map.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Part 1/Map.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Part 1/Map.h" beforeDir="false" afterPath="$PROJECT_DIR$/Part 1/Map.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Part 3/Orders.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Part 3/Orders.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Part 3/Orders.h" beforeDir="false" afterPath="$PROJECT_DIR$/Part 3/Orders.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Part 3/OrdersDriver.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Part 3/OrdersDriver.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/clion-log.txt" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/clion-log.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Part 4/Cards.h" beforeDir="false" afterPath="$PROJECT_DIR$/Part 4/Cards.h" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -111,12 +108,12 @@
     </key>
   </component>
   <component name="RunManager">
-    <configuration name="COMP345_WARZONE_GAME" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="COMP345_WARZONE_GAME" TARGET_NAME="COMP345_WARZONE_GAME" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="COMP345_WARZONE_GAME" RUN_TARGET_NAME="COMP345_WARZONE_GAME">
+    <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
       <method v="2">
-        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+        <option name="CLION.EXTERNAL.BUILD" enabled="true" />
       </method>
     </configuration>
-    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
+    <configuration name="COMP345_WARZONE_GAME" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="COMP345_WARZONE_GAME" TARGET_NAME="COMP345_WARZONE_GAME" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="COMP345_WARZONE_GAME" RUN_TARGET_NAME="COMP345_WARZONE_GAME">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
@@ -125,7 +122,7 @@
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="59b1a9ae-7398-41f4-a45e-c750b13b7cb0" name="Changes" comment="" />
+      <changelist id="fb62c439-f59a-4880-90da-ca031f99db12" name="Changes" comment="added comments and continents accessor in Map" />
       <created>1643145126750</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
@@ -143,6 +140,7 @@
       <workItem from="1644174062976" duration="14209000" />
       <workItem from="1644259471021" duration="1144000" />
       <workItem from="1644425290764" duration="19679000" />
+      <workItem from="1644789950305" duration="7169000" />
     </task>
     <task id="LOCAL-00001" summary="Moved OrdersList into Orders files, and created seperated Driver file to run testing.">
       <created>1643149106708</created>
@@ -242,7 +240,42 @@
       <option name="project" value="LOCAL" />
       <updated>1644620013268</updated>
     </task>
-    <option name="localTasksCounter" value="16" />
+    <task id="LOCAL-00016" summary="Copy assignment and destructors for orders">
+      <created>1644785258434</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1644785258434</updated>
+    </task>
+    <task id="LOCAL-00017" summary="added comments and continents accessor in Map">
+      <created>1644785283542</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1644785283542</updated>
+    </task>
+    <task id="LOCAL-00018" summary="Changed copy assignment, copy constructors, and destructor. Made name a pointer.">
+      <created>1644799919982</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1644799919982</updated>
+    </task>
+    <task id="LOCAL-00019" summary="added ordersList copy constructor">
+      <created>1644799936452</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1644799936452</updated>
+    </task>
+    <task id="LOCAL-00020" summary="added ordersList copy constructor">
+      <created>1644800172700</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1644800172700</updated>
+    </task>
+    <option name="localTasksCounter" value="21" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -274,13 +307,18 @@
                   <entry key="branch">
                     <value>
                       <list>
-                        <option value="Maria_Change" />
+                        <option value="origin/main" />
                       </list>
                     </value>
                   </entry>
                 </map>
               </option>
             </State>
+          </value>
+        </entry>
+        <entry key="a071d34e-7943-4aba-8b16-3ea94de12e44">
+          <value>
+            <State />
           </value>
         </entry>
       </map>
@@ -325,16 +363,11 @@
     <MESSAGE value="Added continents to map, finished all = and copy constructors" />
     <MESSAGE value="Map finished i think" />
     <MESSAGE value="Added copy constructors, etc" />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/Part 2/Player.h</url>
-          <option name="timeStamp" value="3" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
+    <MESSAGE value="Copy assignment and destructors for orders" />
+    <MESSAGE value="added comments and continents accessor in Map" />
+    <MESSAGE value="Changed copy assignment, copy constructors, and destructor. Made name a pointer." />
+    <MESSAGE value="added ordersList copy constructor" />
+    <option name="LAST_COMMIT_MESSAGE" value="added ordersList copy constructor" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

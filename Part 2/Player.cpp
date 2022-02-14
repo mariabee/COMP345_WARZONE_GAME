@@ -4,46 +4,70 @@
 // Constructor for Player
 Player::Player(std::string n)
 {
-	name = n;
+	name = new string(n);
 	orderList = new OrdersList();
 	hand = new Hand();
 }
 
 // Assignment operator overload for Player
-void Player::operator=(Player &p)
+Player Player::operator=(Player &p)
 {
-	name = p.name;
-	hand = p.hand;
+    if (this == &p) return *this;
+    delete name;
+    delete hand;
+    delete[] territories;
+    delete orderList;
+
+	name = new string(*p.name);
+	hand = new Hand(*p.getHand());
+    territoryCount = p.territoryCount;
+    territories = new Territory*[territoryCount];
+    for (int i = 0; i < territoryCount; i++) {
+        territories[i] = p.territories[i];
+    }
+    orderList = new OrdersList(*p.orderList);
+    /*
+    name = p.name;
+    hand = p.hand;
 	territories = p.territories;
 	territoryCount = p.territoryCount;
 	orderList = p.orderList;
+    */
 }
 
 // Copy constructor for Player
 Player::Player(Player &p)
 {
-	name = p.name;
-	hand = p.hand;
+	name = new string(*p.name);
+	hand = new Hand(*p.hand);
+    territoryCount = p.territoryCount;
+    /*
 	territories = p.territories;
-	territoryCount = p.territoryCount;
 	orderList = p.orderList;
+     */
+    territories = new Territory*[territoryCount];
+    for (int i = 0; i < territoryCount; i++) {
+        territories[i] = p.territories[i];
+    }
+    orderList = new OrdersList(*p.orderList);
 }
 
 // Stream insertion operator overload for Player
 std::ostream &operator<<(std::ostream &out, const Player &p)
 {
-	out << p.name;
+	out << *p.name;
 	return out;
 }
 
 // Destructor for Player
 Player::~Player()
 {
+    delete name;
 	delete hand;
 	delete orderList;
 
 	// Delete only the array since the territories should be deleted from the map not the player
-	delete territories;
+	delete[] territories;
 }
 
 // Function that returns a pointer to the players hand

@@ -515,8 +515,27 @@ OrdersList::OrdersList(){
     list = new vector<order *>();
     ptr = new vector<order *>::iterator();
 }
+OrdersList::OrdersList(const OrdersList &other) {
+    list = new vector<order *>();
+    ptr = new vector<order *>::iterator();
+    for (order *o : *other.getList()) {
+        add(o);
+    }
+}
+OrdersList &OrdersList:: operator=(const OrdersList& o) {
+    if (this == &o) return *this;
+    for (order *o : *list) {
+        delete o;
+    }
+    list->clear();
+    for (order *o : *o.getList()) {
+        add(o);
+    }
+    return *this;
+}
 
 OrdersList::~OrdersList() {
+    //Deleting OrdersList also currently deletes the orders it references.
     for (order *o : *list) {
         delete o;
     }
@@ -526,6 +545,8 @@ OrdersList::~OrdersList() {
     list = nullptr;
     ptr = nullptr;
 }
+vector<order *> *OrdersList::getList() const { return list; }
+
 #pragma endregion OrderList
 
 

@@ -14,11 +14,9 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="fb62c439-f59a-4880-90da-ca031f99db12" name="Changes" comment="added comments and continents accessor in Map">
+    <list default="true" id="fb62c439-f59a-4880-90da-ca031f99db12" name="Changes" comment="added ordersList copy constructor">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Part 2/Player.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Part 2/Player.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Part 2/Player.h" beforeDir="false" afterPath="$PROJECT_DIR$/Part 2/Player.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Part 3/Orders.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Part 3/Orders.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Part 3/Orders.h" beforeDir="false" afterPath="$PROJECT_DIR$/Part 3/Orders.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Part 4/Cards.h" beforeDir="false" afterPath="$PROJECT_DIR$/Part 4/Cards.h" afterDir="false" />
@@ -142,7 +140,7 @@
       <workItem from="1644174062976" duration="14209000" />
       <workItem from="1644259471021" duration="1144000" />
       <workItem from="1644425290764" duration="19679000" />
-      <workItem from="1644789950305" duration="5841000" />
+      <workItem from="1644789950305" duration="7169000" />
     </task>
     <task id="LOCAL-00001" summary="Moved OrdersList into Orders files, and created seperated Driver file to run testing.">
       <created>1643149106708</created>
@@ -256,7 +254,28 @@
       <option name="project" value="LOCAL" />
       <updated>1644785283542</updated>
     </task>
-    <option name="localTasksCounter" value="18" />
+    <task id="LOCAL-00018" summary="Changed copy assignment, copy constructors, and destructor. Made name a pointer.">
+      <created>1644799919982</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1644799919982</updated>
+    </task>
+    <task id="LOCAL-00019" summary="added ordersList copy constructor">
+      <created>1644799936452</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1644799936452</updated>
+    </task>
+    <task id="LOCAL-00020" summary="added ordersList copy constructor">
+      <created>1644800172700</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1644800172700</updated>
+    </task>
+    <option name="localTasksCounter" value="21" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -346,7 +365,9 @@
     <MESSAGE value="Added copy constructors, etc" />
     <MESSAGE value="Copy assignment and destructors for orders" />
     <MESSAGE value="added comments and continents accessor in Map" />
-    <option name="LAST_COMMIT_MESSAGE" value="added comments and continents accessor in Map" />
+    <MESSAGE value="Changed copy assignment, copy constructors, and destructor. Made name a pointer." />
+    <MESSAGE value="added ordersList copy constructor" />
+    <option name="LAST_COMMIT_MESSAGE" value="added ordersList copy constructor" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

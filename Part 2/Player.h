@@ -16,7 +16,7 @@ class Player {
 
 	public:
 		Player(std::string);
-		Player operator=(Player &p);
+		Player &operator=(const Player &p);
 		Player(Player &p);
 		friend std::ostream& operator<< (std::ostream &out, const Player &p);
 		~Player();

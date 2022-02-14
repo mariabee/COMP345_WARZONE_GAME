@@ -4,13 +4,14 @@
 // Constructor for Player
 Player::Player(std::string n)
 {
-	name = new string(n);
+	name = new string(move(n));
 	orderList = new OrdersList();
 	hand = new Hand();
+    territories = nullptr;
 }
 
 // Assignment operator overload for Player
-Player Player::operator=(Player &p)
+Player &Player::operator=(const Player &p)
 {
     if (this == &p) return *this;
     delete name;
@@ -19,7 +20,7 @@ Player Player::operator=(Player &p)
     delete orderList;
 
 	name = new string(*p.name);
-	hand = new Hand(*p.getHand());
+	hand = new Hand(*p.hand);
     territoryCount = p.territoryCount;
     territories = new Territory*[territoryCount];
     for (int i = 0; i < territoryCount; i++) {
@@ -33,6 +34,7 @@ Player Player::operator=(Player &p)
 	territoryCount = p.territoryCount;
 	orderList = p.orderList;
     */
+    return *this;
 }
 
 // Copy constructor for Player

@@ -1,13 +1,18 @@
 #ifndef COMP345_CARD_H
 #define COMP345_CARD_H
 
+#include <iostream>
 //for randomness
 #include <stdlib.h>
 #include <time.h>
 
+#include "../Part 2/Player.h"
 
-enum cardType { BOMB, REINFORCEMENT, BLOCKADE, AIRLIFT, DIPLOMACY }; // Type possible for a give card
 
+enum cardType {BOMB, REINFORCEMENT, BLOCKADE, AIRLIFT, DIPLOMACY }; // Type possible for a give card
+
+extern class Deck deck;
+extern class Hand hand;
 
 class Card {
 private:
@@ -17,15 +22,19 @@ public:
     //constructor
     Card();
     Card(cardType t);
+    Card(const Card &obj);
 
     //destructor
     ~Card();
 
-    //play a card (will be more useful when we use it with the player part)
-    void play();
+    //assignment operator overloading
+    void operator = (const Card & card);
 
-    //print
-    void printCard();
+    //stream insertion overloading (print card)
+    friend std::ostream &operator << ( std::ostream &out, const Card &card );
+
+    //play a card (will be more useful when we use it with the player part)
+    void play(Deck* deck, Player* player);
 
 };
 
@@ -43,23 +52,33 @@ public:
     //constructor
     Deck();
     Deck(int deckSize);
+    Deck(const Deck &obj);
 
     //destructor
     ~Deck();
 
-    //Get number of card not in a players hand
+    //assignment operator overloading
+    void operator = (const Deck & deck);
+
+    //stream insertion overloading (print deck)
+    friend std::ostream &operator << ( std::ostream &out, const Deck &deck );
+
+    //create all the Cards object in the deck
+    void initialize();
+
+    //get number of card not in a players hand
     int getCurrentSize();
 
-    //Put cards back in the deck when it's played
+    //put cards back in the deck when it's played
     void addCardBackToDeck(Card* card);
 
-    //Draw card from the deck
+    //draw card from the deck
     Card* draw();
 
 };
 
 
-class Hand: public Card{
+class Hand{
 
 private:
     int nbCardsInHand; //number of cards in hand
@@ -69,16 +88,22 @@ private:
 public:
     //constructor
     Hand();
-    // destructor
+    Hand(const Hand &obj);
+
+    //destructor
     ~Hand();
-    // Draw a card from the deck (add a card in hand)
+
+    //assignment operator overloading
+    void operator = (const Hand & hand);
+
+    //draw a card from the deck (add a card in hand)
     void drawFromDeck(Deck* deck);
 
-    //Play a card in the hand and return it in the deck
-    void playRound(Deck* deck);
+    //play a card in the hand and return it in the deck
+    void playRound(Deck* deck, Player* player);
 
-    //Print list of cards in hand
-    void printHand();
+    //stream insertion operator overloading(print list of cards in hand)
+    friend std::ostream &operator << ( std::ostream &out, const Hand &hand );
 };
 
 

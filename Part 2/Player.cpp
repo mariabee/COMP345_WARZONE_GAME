@@ -7,34 +7,29 @@ Player::Player(std::string n)
 	name = new string(move(n));
 	orderList = new OrdersList();
 	hand = new Hand();
-    territories = nullptr;
+	territories = nullptr;
 }
 
 // Assignment operator overload for Player
 Player &Player::operator=(const Player &p)
 {
-    if (this == &p) return *this;
-    delete name;
-    delete hand;
-    delete[] territories;
-    delete orderList;
+	if (this == &p)
+		return *this;
+	delete name;
+	delete hand;
+	delete[] territories;
+	delete orderList;
 
 	name = new string(*p.name);
 	hand = new Hand(*p.hand);
-    territoryCount = p.territoryCount;
-    territories = new Territory*[territoryCount];
-    for (int i = 0; i < territoryCount; i++) {
-        territories[i] = p.territories[i];
-    }
-    orderList = new OrdersList(*p.orderList);
-    /*
-    name = p.name;
-    hand = p.hand;
-	territories = p.territories;
 	territoryCount = p.territoryCount;
-	orderList = p.orderList;
-    */
-    return *this;
+	territories = new Territory *[territoryCount];
+	for (int i = 0; i < territoryCount; i++)
+	{
+		territories[i] = p.territories[i];
+	}
+	orderList = new OrdersList(*p.orderList);
+	return *this;
 }
 
 // Copy constructor for Player
@@ -42,16 +37,13 @@ Player::Player(Player &p)
 {
 	name = new string(*p.name);
 	hand = new Hand(*p.hand);
-    territoryCount = p.territoryCount;
-    /*
-	territories = p.territories;
-	orderList = p.orderList;
-     */
-    territories = new Territory*[territoryCount];
-    for (int i = 0; i < territoryCount; i++) {
-        territories[i] = p.territories[i];
-    }
-    orderList = new OrdersList(*p.orderList);
+	territoryCount = p.territoryCount;
+	territories = new Territory *[territoryCount];
+	for (int i = 0; i < territoryCount; i++)
+	{
+		territories[i] = p.territories[i];
+	}
+	orderList = new OrdersList(*p.orderList);
 }
 
 // Stream insertion operator overload for Player
@@ -64,7 +56,7 @@ std::ostream &operator<<(std::ostream &out, const Player &p)
 // Destructor for Player
 Player::~Player()
 {
-    delete name;
+	delete name;
 	delete hand;
 	delete orderList;
 
@@ -122,15 +114,15 @@ void Player::setTerritories(Territory **t, int count)
 // Function that creates an order based on the type passed as a string
 void Player::issueOrder(std::string type)
 {
-	map<std::string, int> typeMap;
-	typeMap["deploy"] = 0;
-	typeMap["advance"] = 1;
-	typeMap["bomb"] = 2;
-	typeMap["blockade"] = 3;
-	typeMap["airlift"] = 4;
-	order *o;
+	std::string typeMap[6] {"deploy", "advance", "bomb", "blockade", "airlift", "negotiate"};
 
-	switch (typeMap.at(type))
+	int index = -1;
+
+	for(index = 0; index < 6; index++)
+		if (type == typeMap[index]) break;
+
+	order *o;
+	switch (index)
 	{
 	case 0:
 		o = new Deploy();
@@ -146,6 +138,10 @@ void Player::issueOrder(std::string type)
 		break;
 	case 4:
 		o = new Airlift();
+		break;
+
+	case 5:
+		o = new Negotiate();
 		break;
 	default:
 		std::cout << "Error::Player - Unknown Type: " << type << std::endl;

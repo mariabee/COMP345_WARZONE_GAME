@@ -26,9 +26,13 @@ Card::Card(){
             break;
     }
 }
-
+//Card constructor of specific type
 Card::Card(cardType t){
     type = t;
+}
+//copy constructor
+Card::Card(const Card & obj){
+    type = obj.type;
 }
 
 //destructor
@@ -36,48 +40,60 @@ Card::~Card(){
 
 }
 
-//Print card
-void Card::printCard()
+//assignment operator overloading
+void Card::operator = (const Card & card)
 {
-    switch ( type ) {
+    type = card.type;
+}
+
+//stream insertion overloading (print card)
+std::ostream &operator << ( std::ostream &out, const Card &card ){
+    switch ( card.type ) {
         case BOMB:
-            cout << "BOMB\n";
+            out << "BOMB\n";
             break;
         case REINFORCEMENT:
-            cout << "REINFORCEMENT\n";
+            out << "REINFORCEMENT\n";
             break;
         case BLOCKADE:
-            cout << "BLOCKADE\n";
+            out << "BLOCKADE\n";
             break;
         case AIRLIFT:
-            cout << "AIRLIFT\n";
+            out << "AIRLIFT\n";
             break;
         case DIPLOMACY:
-            cout << "DIPLOMACY\n";
+            out << "DIPLOMACY\n";
             break;
     }
+    return out;
 }
 
 //Different effects of the cards based on their type
-void Card::play()
+void Card::play(Deck* deck, Player* player)
 {
     switch ( type ) {
         case BOMB:
             cout << "You PLAYED your BOMB card\n";
+            player->issueOrder("bomb");
             break;
         case REINFORCEMENT:
             cout << "You PLAYED your REINFORCEMENT card\n";
+            player->issueOrder("deploy");
             break;
         case BLOCKADE:
             cout << "You PLAYED your BLOCKADE card\n";
+            player->issueOrder("blockade");
             break;
         case AIRLIFT:
             cout << "You PLAYED your AIRLIFT card\n";
+            player->issueOrder("airlift");
             break;
         case DIPLOMACY:
             cout << "You PLAYED your DIPLOMACY card\n";
+            player->issueOrder("negotiate");
             break;
     }
+    deck->addCardBackToDeck(this);
 }
 
 // ___________________
@@ -92,11 +108,8 @@ Deck::Deck()
     cardsInDeck = new Card*[initialDeckSize];
     initialDeck = new Card[initialDeckSize];
 
-    for (int i = 0 ; i < initialDeckSize ; i ++){
-        Card c1 = Card();
-        initialDeck[i] = c1;
-        cardsInDeck[i] = &initialDeck[i];
-    }
+    this->initialize();
+
     cout << "Deck object were successfully CREATED\n";
 }
 
@@ -111,6 +124,21 @@ Deck::Deck(int deckSize)
     nbCardInDeck = initialDeckSize;
     cardsInDeck = new Card*[initialDeckSize];
     initialDeck = new Card[initialDeckSize];
+
+    this->initialize();
+
+    cout << "Deck object were successfully CREATED\n";
+}
+//copy constructor
+Deck::Deck(const Deck &obj){
+    Card** cardsInDeck = new Card*[initialDeckSize];
+    Card* initialDeck = new Card[initialDeckSize];
+
+    **cardsInDeck = **obj.cardsInDeck;
+    *initialDeck = *obj.initialDeck;
+    initialDeckSize = obj.initialDeckSize;
+    nbCardInDeck = obj.nbCardInDeck;
+
     cout << "Deck object were successfully CREATED\n";
 }
 
@@ -124,6 +152,31 @@ Deck::~Deck()
     cout << "Deck object were successfully DELETED\n";
 }
 
+//assignment operator overloading
+void Deck::operator = (const Deck & deck){
+    **cardsInDeck = **deck.cardsInDeck;
+    *initialDeck = *deck.initialDeck;
+    initialDeckSize = deck.initialDeckSize;
+    nbCardInDeck = deck.nbCardInDeck;
+}
+
+//stream insertion overloading (print deck)
+std::ostream &operator << ( std::ostream &out, const Deck &deck ){
+    for( int i = 0 ; i < deck.nbCardInDeck; i++ ){
+        out << "Card #" << i+1 << " " << deck.cardsInDeck[i];
+    }
+    return out;
+}
+
+//Create all the Cards object in the deck
+void Deck::initialize (){
+    for (int i = 0 ; i < initialDeckSize ; i ++){
+        Card c1 = Card();
+        initialDeck[i] = c1;
+        cardsInDeck[i] = &initialDeck[i];
+    }
+}
+
 //Get number of card not in a players hand
 int Deck::getCurrentSize()
 {
@@ -134,9 +187,10 @@ int Deck::getCurrentSize()
 void Deck::addCardBackToDeck(Card* card)
 {
     for (int i = 0 ; i < nbCardInDeck; i++ ){
-        if (cardsInDeck[i] == NULL){
+        if (cardsInDeck[i] == nullptr){
             cardsInDeck[i] = card;
-            nbCardInDeck ++;
+            this->nbCardInDeck ++;
+            cout << "Card was successfully placed back in the deck";
             break;
         }
     }
@@ -148,11 +202,12 @@ Card* Deck::draw()
     Card* pickedCard ;
 
     while( nbCardInDeck > 0 ){
-        pickedCard = cardsInDeck[rand() % initialDeckSize];
+        int temp = rand() % initialDeckSize;
+        pickedCard = cardsInDeck[temp];
         if (pickedCard != nullptr) {
+            cardsInDeck[temp] = nullptr;
             this->nbCardInDeck--;
-            cout << "You've just received this NEW CARD: \n";
-            pickedCard->printCard();
+            cout << "You've just received this NEW CARD: \n" << *pickedCard;
             return pickedCard;
         }
     }
@@ -167,7 +222,15 @@ Card* Deck::draw()
 Hand::Hand(){
     nbCardsInHand = 0;
     maxCard = 5;
-    cardsInHand = new Card*[maxCard];
+    cardsInHand = new Card*[maxCard]();
+    cout << "Hand object were successfully CREATED\n";
+}
+//copy constructor
+Hand::Hand(const Hand &obj){
+    Card** cardsInHand = new Card*[maxCard]();
+    *cardsInHand = *obj.cardsInHand;
+    maxCard = obj.maxCard;
+    nbCardsInHand = obj.nbCardsInHand;
     cout << "Hand object were successfully CREATED\n";
 }
 
@@ -178,6 +241,13 @@ Hand::~Hand(){
     cout << "Hand object were successfully DELETED\n";
 }
 
+//assignment operator overloading
+void Hand::operator = (const Hand & hand){
+    *cardsInHand = *hand.cardsInHand;
+    maxCard = hand.maxCard;
+    nbCardsInHand = hand.nbCardsInHand;
+}
+
 // Draw a card from the deck (add a card in hand)
 void Hand::drawFromDeck(Deck* deck){
     if (nbCardsInHand == maxCard){
@@ -185,7 +255,7 @@ void Hand::drawFromDeck(Deck* deck){
     }
     else{
         for (int i = 0 ; i < maxCard; i++ ){
-            if (cardsInHand[i] == NULL){
+            if (cardsInHand[i] == nullptr){
                 cardsInHand[i] = deck->draw();
                 nbCardsInHand++;
                 break;
@@ -195,15 +265,14 @@ void Hand::drawFromDeck(Deck* deck){
 }
 
 //Play a card in the hand and return it in the deck
-void Hand::playRound(Deck* deck)
+void Hand::playRound(Deck* deck, Player* player)
 {
     if (nbCardsInHand == 0){
         cout << "You don't have any card in your hand at the moment.\n";
     }
     else{
         //Print out of all the cards in hand
-        cout << "\nHere are the cards you have in your hand: \n";
-        printHand();
+        cout << "\nHere are the cards you have in your hand: \n" << *this;
 
         //Ask user which card they would like to play
         cout << "\n\nEnter the position of the card you would like to play (1 for the first card printed). " <<
@@ -212,9 +281,8 @@ void Hand::playRound(Deck* deck)
         cin >> cardChoice;
 
         //Invalid input results in no cards being played
-        if (cardChoice > 0 && cardChoice < nbCardsInHand) {
-            cardsInHand[cardChoice-1]->play();
-            deck->addCardBackToDeck(cardsInHand[cardChoice-1]);
+        if (cardChoice > 0 && cardChoice <= nbCardsInHand) {
+            cardsInHand[cardChoice-1]->play(deck, player);
             for(int i = cardChoice-1; i < maxCard; i++){
                 cardsInHand[i] = cardsInHand[i+1];
             }
@@ -225,14 +293,9 @@ void Hand::playRound(Deck* deck)
 }
 
 // Print all the cards in hand
-void Hand::printHand()
-{
-    for( int i = 0 ; i < nbCardsInHand ; i++ ){
-        cout << "Card #" << i+1 << " ";
-        cardsInHand[i]->printCard();
+std::ostream &operator << (std::ostream &out, const Hand &hand ){
+    for( int i = 0 ; i < hand.nbCardsInHand ; i++ ){
+        out << "\nCard #" << i+1 << " " << *hand.cardsInHand[i];
     }
+    return out;
 }
-
-
-
-

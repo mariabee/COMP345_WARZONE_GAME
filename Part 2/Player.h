@@ -6,6 +6,8 @@
 
 #include <string>
 
+class Hand;
+
 class Player {
 	private:
 		std::string *name;

@@ -73,7 +73,8 @@ bool order::isBeside(Territory *src, Territory *target) {
 }
 #pragma endregion Order
 
-//SUBCLASS IMPLEMENTATION 
+//SUBCLASS IMPLEMENTATION
+
 #pragma region Deploy
 //DEPLOY
 //DEFAULT CONSTRUCTOR
@@ -106,7 +107,9 @@ Deploy &Deploy::operator=(const Deploy &o)  {
 //EXECUTE
 void Deploy::execute() {
     if (validate()) {
-        set_order_effect("Troops have been deployed.");
+        territory->setNumberOfArmies(territory->getNumberOfArmies()+numberOfArmies);
+        get_player()->setArmies(get_player()->getArmies()-numberOfArmies);
+        set_order_effect("Armies have been deployed.");
         cout << *get_order_effect() << endl;
     }
 
@@ -118,6 +121,9 @@ bool Deploy::validate() {
     }
     if(territory->getOwner() != get_player()){
         set_order_effect("Order was not valid and will not be executed.");
+        return false;
+    }
+    if (numberOfArmies > get_player()->getArmies()){
         return false;
     }else
         return true;
@@ -178,6 +184,14 @@ Advance&Advance::operator=(const Advance &other)  {
 //EXECUTE
 void Advance::execute() {
     if (validate()) {
+        if(start->getOwner() == target->getOwner()){
+            target->setNumberOfArmies(target->getNumberOfArmies()+armies);
+            start->setNumberOfArmies(start->getNumberOfArmies()-armies);
+        }else{
+            cout<<"An attack has been initiated";
+
+        }
+
         set_order_effect("Troops have advanced.*");
         cout << *get_order_effect() << endl;
     }
@@ -192,6 +206,7 @@ bool Advance::validate() {
         set_order_effect("Order was not valid and will not be executed.");
         return false;
     }else
+
         return true;
     //Returns true if player owns start territory, if target is beside the start territory, and if start territory has enough armies.
 }
@@ -251,6 +266,7 @@ Bomb&Bomb::operator=(const Bomb &o) {
 }
 void Bomb::execute() {
     if (validate()) {
+        target->setNumberOfArmies((target->getNumberOfArmies())/2);
         set_order_effect("Territory has been bombed.*");
         cout << *get_order_effect() << endl;
     }
@@ -314,6 +330,7 @@ Blockade &Blockade::operator=(const Blockade &o) {
 //EXECUTE
 void Blockade::execute() {
     if (validate()) {
+        territory->setNumberOfArmies(territory->getNumberOfArmies()*2);
         set_order_effect("Troops have tripled. The territory is now neutral. ");
         cout << *get_order_effect() << endl;
     }
@@ -381,6 +398,8 @@ Airlift &Airlift::operator=(const Airlift &other) {
 //EXECUTE
 void Airlift::execute() {
     if (validate()) {
+        target->setNumberOfArmies(target->getNumberOfArmies()+troops);
+        start->setNumberOfArmies(start->getNumberOfArmies()-troops);
         set_order_effect("Troops have moved.");
         cout << *get_order_effect() << endl;
     }
@@ -391,7 +410,7 @@ bool Airlift::validate() {
         set_order_effect("Order was missing information and will not be executed.");
         return false;
     }
-    if(start->getOwner() != get_player() || start->getNumberOfArmies() < troops){
+    if(start->getOwner() != get_player() || target->getOwner() != get_player() || start->getNumberOfArmies() < troops){
         set_order_effect("Order was not valid and will not be executed.");
         return false;
     }else
@@ -452,6 +471,7 @@ Negotiate &Negotiate::operator=(const Negotiate &o) {
 //EXECUTE
 void Negotiate::execute() {
     if (validate()) {
+
         set_order_effect("Attacks have been prevented until the end of turn.");
         cout << *get_order_effect() << endl;
     }

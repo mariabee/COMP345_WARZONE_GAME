@@ -8,6 +8,7 @@ Player::Player(std::string n)
 	orderList = new OrdersList();
 	hand = new Hand();
 	territories = nullptr;
+    armies =3;
 }
 
 // Assignment operator overload for Player
@@ -44,6 +45,7 @@ Player::Player(Player &p)
 		territories[i] = p.territories[i];
 	}
 	orderList = new OrdersList(*p.orderList);
+    armies = p.armies;
 }
 
 // Stream insertion operator overload for Player
@@ -70,6 +72,12 @@ Hand *Player::getHand()
 	return hand;
 }
 
+int Player::getArmies() const {
+    return armies;
+}
+void Player::setArmies(int armies) {
+    Player::armies = armies;
+}
 // Function that returns a list of territories corresponding to the Territories the player would like to defend
 Territory **Player::toDefend(int &defendCount)
 {
@@ -151,3 +159,6 @@ void Player::issueOrder(std::string type)
 	std::cout << "Player - Successfully issued order: " << type << std::endl;
 	orderList->add(o);
 }
+
+
+

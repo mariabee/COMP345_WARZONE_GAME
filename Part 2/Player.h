@@ -15,6 +15,7 @@ class Player {
 		Territory** territories;
 		int territoryCount = 0;
 		Hand* hand;
+        int armies;
 
 	public:
 		Player(std::string);
@@ -23,10 +24,12 @@ class Player {
 		friend std::ostream& operator<< (std::ostream &out, const Player &p);
 		~Player();
 		void setTerritories(Territory** t, int count);
-		Territory** toDefend(int& c);
+        Territory** toDefend(int& c);
 		Territory** toAttack(int& c);
 		void issueOrder(std::string);
 		Hand* getHand();
+        int getArmies() const;
+        void setArmies(int armies);
 };
 
 #endif

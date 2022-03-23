@@ -7,7 +7,8 @@ Player::Player(std::string n)
 	name = new string(move(n));
 	orderList = new OrdersList();
 	hand = new Hand();
-	territories = nullptr;
+    territories = new vector<Territory *>();
+    continents = new vector<Continent *>();
     armies =3;
 }
 
@@ -24,11 +25,15 @@ Player &Player::operator=(const Player &p)
 	name = new string(*p.name);
 	hand = new Hand(*p.hand);
 	territoryCount = p.territoryCount;
-	territories = new Territory *[territoryCount];
-	for (int i = 0; i < territoryCount; i++)
+	territories = new vector<Territory *>();
+    continents = new vector<Continent *>();
+	for (Territory *t : *p.territories )
 	{
-		territories[i] = p.territories[i];
+		territories->push_back(t);
 	}
+    for (Continent *c : *p.continents) {
+        continents->push_back(c);
+    }
 	orderList = new OrdersList(*p.orderList);
 	return *this;
 }
@@ -39,7 +44,7 @@ Player::Player(Player &p)
 	name = new string(*p.name);
 	hand = new Hand(*p.hand);
 	territoryCount = p.territoryCount;
-	territories = new Territory *[territoryCount];
+	territories = new vector<Territory *>();
 	for (int i = 0; i < territoryCount; i++)
 	{
 		territories[i] = p.territories[i];
@@ -90,8 +95,7 @@ Territory **Player::toDefend(int &defendCount)
 	int index = 0;
 	for (int i = 0; i < territoryCount; i++)
 		if (i % 2 == 1)
-			out[index++] = territories[i];
-
+			out[index++] = territories->at(i);
 	return out;
 }
 
@@ -107,13 +111,13 @@ Territory **Player::toAttack(int &attackCount)
 	int index = 0;
 	for (int i = 0; i < territoryCount; i++)
 		if (i % 2 == 0)
-			out[index++] = territories[i];
+			out[index++] = territories->at(i);
 
 	return out;
 }
 
 // Function that sets the Player's territories to a given list and count
-void Player::setTerritories(Territory **t, int count)
+void Player::setTerritories(vector<Territory *> *t, int count)
 {
 	territories = t;
 	territoryCount = count;
@@ -159,6 +163,59 @@ void Player::issueOrder(std::string type)
 	std::cout << "Player - Successfully issued order: " << type << std::endl;
 	orderList->add(o);
 }
+
+int Player::getTerritoryCount() const {
+    return territoryCount;
+}
+
+void Player::addTerritory(Territory *t) {
+    territories->push_back(t);
+    territoryCount++;
+}
+
+bool Player::removeTerritory(Territory *toRemove) {
+    for (int i = 0; i < territories->size(); i++) {
+        Territory *t = territories->at(i);
+        if (t->getId() == toRemove->getId()) {
+            territories->erase(territories->begin() + i);
+            Continent *c = t->getContinent();
+            if (c->getOwner() == this) {
+                removeContinent(c);
+            }
+            territoryCount--;
+            return true;
+        }
+    }
+    return false;
+
+}
+void Player::addContinent(Continent *c) {
+    continents->push_back(c);
+}
+bool Player::removeContinent(Continent *c) {
+    for (int i = 0; i < continents->size(); i++) {
+        if (continents->at(i)->getId() == c->getId()) {
+            c->setOwner(nullptr);
+            continents->erase(continents->begin() + i);
+            return true;
+        }
+    }
+    return false;
+}
+
+vector<Territory *> * Player::getTerritories() {
+    return territories;
+}
+
+vector<Continent *> * Player::getContinents() {
+    return continents;
+}
+
+OrdersList *Player::getOrdersList() {
+    return orderList;
+}
+
+
 
 
 

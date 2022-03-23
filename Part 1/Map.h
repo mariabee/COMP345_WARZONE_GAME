@@ -49,6 +49,7 @@ private:
     int ID, bonus, count, NUM_OF_TERS;
     string *name, *color;
     Territory **subTerritories;
+    Player *owner;
 public:
     //CONSTRUCTORS
     Continent();
@@ -70,11 +71,13 @@ public:
         string * getColor() const;
         int getNumOfTers() const;
         Territory ** getTerritories() const;
+        Player * getOwner() const;
     //MUTATORS
         void setId(int id);
         void setName(string name);
         void setBonus(int bonus);
         void setColor(string color);
+        void setOwner(Player *p);
 };
 
 class Map {
@@ -100,6 +103,7 @@ public :
     int getNumOfCnts() const;
     Territory *getTerritories() const;
     Continent *getContinents() const;
+    void checkContinentOwners();
 };
 
 class MapLoader {

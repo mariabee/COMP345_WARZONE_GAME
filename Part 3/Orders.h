@@ -176,6 +176,7 @@ public:
     bool move(order* o, int position);
     bool remove(order* o);
     bool contain(order *o);
+    order * popTop();
     //Destructor
     ~OrdersList();
     //Accessors

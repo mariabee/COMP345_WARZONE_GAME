@@ -538,6 +538,12 @@ bool OrdersList::remove(order* o) {
     }
     return false;
 }
+order * OrdersList::popTop() {
+    order *o = list->front();
+    list->erase(list->begin());
+    return o;
+}
+
 bool OrdersList::contain(order *o) {
     *ptr = find(list->begin(), list->end(), o);
     if (*ptr != list->end())

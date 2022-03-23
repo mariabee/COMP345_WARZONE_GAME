@@ -206,6 +206,14 @@ void Continent::setName(string _name) { *name = move(_name);}
 void Continent::setBonus(int _bonus) { this->bonus = _bonus; }
 void Continent::setColor(string _color) {*color = move(_color);}
 
+void Continent::setOwner(Player *p) {
+    owner = p;
+}
+
+Player *Continent::getOwner() const {
+    return owner;
+}
+
 //MAP IMPLEMENTATION
 
 //MAP CONSTRUCTORS
@@ -340,6 +348,22 @@ bool Map::validate() {
     }
     cout << "Map is valid. " << endl;
     return true;
+}
+
+void Map::checkContinentOwners() {
+    for (int i = 0; i < NUM_OF_CNTS; i++) {
+        bool owned = true;
+        Player *past_p = continents[i].getTerritories()[0]->getOwner();
+        for (int i = 1; i < continents[i].getNumOfTers(); i++){
+            if (continents[i].getTerritories()[i]->getOwner() != past_p) {
+                owned = false;
+                break;
+            }
+        }
+        if (owned) {
+            past_p->addContinent(&continents[i]);
+        }
+    }
 }
 
 //STATIC MAPLOADER METHOD

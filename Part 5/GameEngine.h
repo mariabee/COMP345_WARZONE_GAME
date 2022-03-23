@@ -3,6 +3,8 @@
 
 #include <string>
 #include <iostream>
+#include "Player.h"
+#include "Map.h"
 
 #define START_STATE "start"
 #define END_STATE "end"
@@ -64,10 +66,15 @@ private:
 class GameEngine
 {
 private:
+    vector <Player*> players;
+    Map *map;
 	State *currentState;
 	State **states;
 	int stateCount;
-
+    bool gameOver;
+    bool reinforcementPhase();
+    bool issueOrdersPhase(int first_up);
+    bool executeOrdersPhase(int first_up);
 public:
 	GameEngine& operator=(const GameEngine &ge);
 	GameEngine(const GameEngine &ge);
@@ -76,6 +83,7 @@ public:
 	~GameEngine();
 	void build();
 	void start();
+    void mainGameLoop();
 };
 
 #endif

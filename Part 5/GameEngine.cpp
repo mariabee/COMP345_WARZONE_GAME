@@ -1,5 +1,6 @@
 #include "GameEngine.h"
 
+
 // Assignment operator overload for Command
 Command& Command::operator=(const Command &c)
 {
@@ -201,6 +202,7 @@ GameEngine::GameEngine(const GameEngine &ge)
 // Default constructor for GameEngine
 GameEngine::GameEngine()
 {
+    gameOver = false;
 	build();
 }
 
@@ -268,4 +270,81 @@ void GameEngine::start()
 			std::cout << "Transition to state: \"" << (*currentState) << "\"" << std::endl;
 		}
 	}
+}
+void GameEngine::mainGameLoop() {
+    gameOver = false;
+    map->checkContinentOwners();
+    while (!gameOver) {
+        reinforcementPhase();
+        int firstUp = 0;
+        issueOrdersPhase(firstUp);
+        executeOrdersPhase(firstUp);
+    }
+    bool playAgain = false;
+    if (playAgain) {
+        start();
+    }
+    else {
+        //exit() ?
+    }
+}
+
+
+
+bool GameEngine::issueOrdersPhase(int firstUp) {
+    int current = firstUp;
+    while (true) {
+        Player *current_p = players.at(current);
+        Hand *player_hand = current_p->getHand();
+        if (player_hand) {
+            current_p->issueOrder("TBA");
+        }
+        current++;
+        if (current == players.size()) {
+            current = 0;
+        }
+        if (current == firstUp) {
+            return true;
+        }
+    }
+}
+bool GameEngine::reinforcementPhase() {
+    int n;
+    for (Player *p : players) {
+        if (p->getTerritoryCount() == map->getNumOfTers()) {
+            gameOver = true;
+            return true;
+        }
+        n = p->getTerritoryCount()/3;
+        for (Continent *c : *p->getContinents()) {
+            n += c->getBonus();
+        }
+        p->setArmies(n);
+    }
+    return true;
+}
+bool GameEngine::executeOrdersPhase(int firstUp) {
+    int skipped;
+    int current = firstUp;
+    while (true) {
+        if (current == firstUp) {
+            skipped = 0;
+        }
+        Player *current_p = players.at(current);
+        OrdersList *orders = current_p->getOrdersList();
+        if (!orders->getList()->empty()) {
+            orders->popTop()->execute();
+        }
+        else {
+            skipped++;
+        }
+
+        if (skipped == players.size()) {
+            return true;
+        }
+        current++;
+        if (current == players.size()) {
+            current = 0;
+        }
+    }
 }

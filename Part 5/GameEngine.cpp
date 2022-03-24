@@ -27,7 +27,7 @@ std::ostream& operator<< (std::ostream &out, const Command &c) {
 // Destructor for Command
 Command::~Command()
 {
-	std::cout << "Deleting command: \"" << *this << "\"" << std::endl;
+	//std::cout << "Deleting command: \"" << *this << "\"" << std::endl;
 }
 
 // Constructor for Command that takes a string
@@ -80,7 +80,7 @@ std::ostream& operator<< (std::ostream &out, const Transition &t) {
 // Destructor for Transition
 Transition::~Transition()
 {
-	std::cout << "Deleting transition" << std::endl;
+	// std::cout << "Deleting transition" << std::endl;
 	delete on;
 }
 
@@ -140,7 +140,7 @@ std::ostream& operator<< (std::ostream &out, const State &s) {
 // Destructor for State
 State::~State()
 {
-	std::cout << "Deleting state: \"" << *this << "\"" << std::endl;
+	//std::cout << "Deleting state: \"" << *this << "\"" << std::endl;
 	for (int i = 0; i < index; i++)
 		delete transitions[i];
 	delete transitions;
@@ -277,7 +277,7 @@ void GameEngine::build()
 	auto end = new State(END_STATE);
 	states = new State *[10]
 	{ start, map_load, map_valid, players_added, game_start, assign_reinforcement, issue_orders, execute_orders, win, end };
-	stateCount = 9;
+	stateCount = 10;
 
 	start->setTransitions(new Transition(start, map_load, "loadmap"));
 	map_load->setTransitions(new Transition(map_load, map_load, "loadmap"));
@@ -373,6 +373,7 @@ void GameEngine::startupPhase()
 
 		}
 	}
+    std::cout << "Game over! Thank you for playing!" << std::endl;
 }
 void GameEngine::mainGameLoop() {
     gameOver = false;

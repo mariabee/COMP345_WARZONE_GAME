@@ -8,7 +8,7 @@
       <config projectName="COMP345_WARZONE_GAME" targetName="COMP345_WARZONE_GAME" />
     </generated>
   </component>
-  <component name="CMakeSettings">
+  <component name="CMakeSettings" AUTO_RELOAD="true">
     <configurations>
       <configuration PROFILE_NAME="Debug" ENABLED="true" CONFIG_NAME="Debug" />
     </configurations>
@@ -16,14 +16,12 @@
   <component name="ChangeListManager">
     <list default="true" id="fb62c439-f59a-4880-90da-ca031f99db12" name="Changes" comment="added ordersList copy constructor">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Part 1/Map.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Part 1/Map.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Part 1/Map.h" beforeDir="false" afterPath="$PROJECT_DIR$/Part 1/Map.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Part 2/Player.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Part 2/Player.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Part 2/Player.h" beforeDir="false" afterPath="$PROJECT_DIR$/Part 2/Player.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Part 3/Orders.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Part 3/Orders.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Part 3/Orders.h" beforeDir="false" afterPath="$PROJECT_DIR$/Part 3/Orders.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Part 4/Cards.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Part 4/Cards.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Part 5/GameEngine.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Part 5/GameEngine.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Part 5/GameEngine.h" beforeDir="false" afterPath="$PROJECT_DIR$/Part 5/GameEngine.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Part 5/GameEngineDriver.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Part 5/GameEngineDriver.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/clion-log.txt" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/clion-log.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -96,7 +94,7 @@
     <property name="cf.first.check.clang-format" value="false" />
     <property name="cidr.known.project.marker" value="true" />
     <property name="cmake.loaded.for.project" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/CMakeLists.txt" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
@@ -145,6 +143,9 @@
       <workItem from="1647964769309" duration="3300000" />
       <workItem from="1647968572256" duration="160000" />
       <workItem from="1647969181321" duration="1000" />
+      <workItem from="1648066478696" duration="15424000" />
+      <workItem from="1648088501137" duration="5707000" />
+      <workItem from="1648160002997" duration="496000" />
     </task>
     <task id="LOCAL-00001" summary="Moved OrdersList into Orders files, and created seperated Driver file to run testing.">
       <created>1643149106708</created>
@@ -372,6 +373,17 @@
     <MESSAGE value="Changed copy assignment, copy constructors, and destructor. Made name a pointer." />
     <MESSAGE value="added ordersList copy constructor" />
     <option name="LAST_COMMIT_MESSAGE" value="added ordersList copy constructor" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/Part 1/MapDriver.cpp</url>
+          <line>1</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

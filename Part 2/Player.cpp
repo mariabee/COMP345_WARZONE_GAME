@@ -56,7 +56,7 @@ Player::Player(Player &p)
 // Stream insertion operator overload for Player
 std::ostream &operator<<(std::ostream &out, const Player &p)
 {
-	out << *p.name;
+    out << *p.name;
 	return out;
 }
 

@@ -127,7 +127,7 @@ Deck::Deck(int deckSize)
 
     this->initialize();
 
-    cout << "Deck object were successfully CREATED\n";
+//    cout << "Deck object were successfully CREATED\n";
 }
 //copy constructor
 Deck::Deck(const Deck &obj){

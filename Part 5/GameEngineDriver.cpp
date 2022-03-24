@@ -2,6 +2,6 @@
 
 int main() {
     GameEngine *ge = new GameEngine();
-    ge->start();
+    ge->startupPhase();
     delete ge;
 }

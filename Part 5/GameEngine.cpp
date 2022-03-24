@@ -269,13 +269,14 @@ void GameEngine::build()
 	auto map_load = new State("map_loaded");
 	auto map_valid = new State("map_validated");
 	auto players_added = new State("players_added");
+    auto game_start = new State("game_start");
 	auto assign_reinforcement = new State("assign_reinforcement");
 	auto issue_orders = new State("issue_orders");
 	auto execute_orders = new State("execute_orders");
 	auto win = new State("win");
 	auto end = new State(END_STATE);
-	states = new State *[9]
-	{ start, map_load, map_valid, players_added, assign_reinforcement, issue_orders, execute_orders, win, end };
+	states = new State *[10]
+	{ start, map_load, map_valid, players_added, game_start, assign_reinforcement, issue_orders, execute_orders, win, end };
 	stateCount = 9;
 
 	start->setTransitions(new Transition(start, map_load, "loadmap"));
@@ -283,7 +284,8 @@ void GameEngine::build()
 	map_load->setTransitions(new Transition(map_load, map_valid, "validatemap"));
 	map_valid->setTransitions(new Transition(map_valid, players_added, "addplayer"));
 	players_added->setTransitions(new Transition(players_added, players_added, "addplayer"));
-	players_added->setTransitions(new Transition(players_added, assign_reinforcement, "assigncountries"));
+	players_added->setTransitions(new Transition(players_added, game_start, "gamestart"));
+    game_start->setTransitions(new Transition(game_start, issue_orders, "issueorder"));
 	assign_reinforcement->setTransitions(new Transition(assign_reinforcement, issue_orders, "issueorder"));
 	issue_orders->setTransitions(new Transition(issue_orders, issue_orders, "issueorder"));
 	issue_orders->setTransitions(new Transition(issue_orders, execute_orders, "endissueorders"));
@@ -295,12 +297,13 @@ void GameEngine::build()
 }
 
 // Function that starts the game engine, which waits for player input.
-void GameEngine::start()
+void GameEngine::startupPhase()
 {
 	std::string input;
     Player* temp_player;
     int num_of_players;
 	int index;
+
 	while (!currentState->isEnd())
 	{
         std::cout << "Currently at state " << (*currentState) << ". Enter the state you want to transition to: " << std::endl;
@@ -351,10 +354,17 @@ void GameEngine::start()
                     distributeTerritories();
 //                    std::cout << *(players.at(0)->getTerritories()->at(2)->getName()) << std::endl;
                     randomizePlayOrder();
+                    std::cout << "The order of turn is as follow: ";
+                    for (int i{0}; i < players.size() - 1; i++)
+                        std::cout << " || Player " << *(players.at(i)) << " ";
+                    std::cout << " || Player " << *(players.at(players.size() - 1)) << " || ";
+                    std::cout << std::endl;
 //                    std::cout << *(players.at(0)->getTerritories()->at(2)->getName()) << std::endl;
                     initializeDeck();
                     for (int i {0}; i < players.size(); i++) {
                         players.at(i)->setArmies(50);
+                        std::cout << "Player " << *(players.at(i)) << " currently has " << players.at(i)->getArmies() << " reserved troops in their inventory."<< std::endl;
+                        std::cout << "Player " << *(players.at(i)) << " will now pick 2 cards from the deck!" << std::endl;
                         players.at(i)->getHand()->drawFromDeck(new_deck);
                         players.at(i)->getHand()->drawFromDeck(new_deck);
                     }
@@ -375,7 +385,7 @@ void GameEngine::mainGameLoop() {
     }
     bool playAgain = false;
     if (playAgain) {
-        start();
+        startupPhase();
     }
     else {
         //exit() ?

@@ -162,6 +162,7 @@ public:
     //Setters
     void setPlayer2(Player *player2);
 private:
+    //hi
     Player* player2;
     bool validate() override;
 };

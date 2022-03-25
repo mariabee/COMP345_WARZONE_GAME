@@ -1,4 +1,3 @@
-/*
 //MAIN METHOD FOR TESTING
 #include "Orders.h"
 #include "../Part 2/Player.h"
@@ -44,4 +43,4 @@ int main() {
     delete testList;
 }
 
-*/
+

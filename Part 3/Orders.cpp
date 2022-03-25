@@ -1,4 +1,5 @@
 #include "Orders.h"
+#include<cstdlib>
 #include "../Part 2/Player.h"
 #include <bits/stdc++.h>
 
@@ -12,7 +13,7 @@ order::order()
     player = nullptr;
 }
 //COPY CONSTRUCTOR
-order::order(const order& other) 
+order::order(const order& other)
 {
     order_type_ = new string(*other.get_order_type());
     order_effect_ = new string(*other.get_order_effect());
@@ -28,7 +29,7 @@ order &order::operator=(const order &o) {
     order_type_ = new string(*o.get_order_type());
     return *this;
 }
-//DESTRUCTOR 
+//DESTRUCTOR
 order::~order()
 {
     delete order_effect_;
@@ -42,11 +43,11 @@ order::~order()
 string *order::get_order_type() const { return order_type_;}
 string *order::get_order_effect() const {return order_effect_;}
 Player *order::get_player() const {return player; }
-//MUTATOR IMPLEMENTATION 
+//MUTATOR IMPLEMENTATION
 void order::set_order_type(string order) { *order_type_ = move(order); }
 void order::set_order_effect(string effect) { *order_effect_ = move(effect); }
 void order::set_player(Player *player_) { this->player = player_; }
-//STREAM INSERTION OPERATOR IMPLEMENTATION 
+//STREAM INSERTION OPERATOR IMPLEMENTATION
 ostream& operator << (ostream& stream, const order& order_obj) {
     stream << *order_obj.get_order_type() << " has been ordered ";
     if (order_obj.get_player()) {
@@ -82,7 +83,7 @@ Deploy::Deploy()
 {
     territory = nullptr;
     numberOfArmies = 0;
-	set_order_type("Deploy");
+    set_order_type("Deploy");
 }
 //CONSTRUCTOR
 Deploy::Deploy(Player *p, Territory *t, int nbr) {
@@ -124,6 +125,7 @@ bool Deploy::validate() {
         return false;
     }
     if (numberOfArmies > get_player()->getArmies()){
+        set_order_effect("Order was not valid and will not be executed.");
         return false;
     }else
         return true;
@@ -187,12 +189,30 @@ void Advance::execute() {
         if(start->getOwner() == target->getOwner()){
             target->setNumberOfArmies(target->getNumberOfArmies()+armies);
             start->setNumberOfArmies(start->getNumberOfArmies()-armies);
+            set_order_effect("Troops have advanced.*");
         }else{
             cout<<"An attack has been initiated";
-
+            float random;
+            srand(time(NULL));
+            while(target->getNumberOfArmies()!=0 || start->getNumberOfArmies()!=0){
+                random=((float)rand() / (float)RAND_MAX );
+                if(random>0.4){
+                    //PERFORMANCE ISSUE??
+                    target->setNumberOfArmies(target->getNumberOfArmies()-1);
+                }
+                if(random>0.3){
+                    //PERFORMANCE ISSUE??
+                    start->setNumberOfArmies(start->getNumberOfArmies()-1);
+                }
+            }
+            if(target->getNumberOfArmies()==0){
+                target->changeOwner(get_player());
+                set_order_effect("Troops have advanced.*");
+            }
+            else{
+                set_order_effect("Battle lost.*");
+            }
         }
-
-        set_order_effect("Troops have advanced.*");
         cout << *get_order_effect() << endl;
     }
 }
@@ -206,9 +226,7 @@ bool Advance::validate() {
         set_order_effect("Order was not valid and will not be executed.");
         return false;
     }else
-
         return true;
-    //Returns true if player owns start territory, if target is beside the start territory, and if start territory has enough armies.
 }
 //SETTERS
 void Advance::setStart(Territory *start) {
@@ -311,7 +329,7 @@ Blockade::Blockade() {
     territory = nullptr;
     set_order_type("Blockade"); }
 //CONSTRUCTOR
-Blockade::Blockade(Player* player, Territory* territory) {
+Blockade::Blockade(Player* player, Territory* territory, Player* neutral) {
     this->territory=territory;
     set_order_type("Blockade");
     set_player(player);
@@ -331,6 +349,7 @@ Blockade &Blockade::operator=(const Blockade &o) {
 void Blockade::execute() {
     if (validate()) {
         territory->setNumberOfArmies(territory->getNumberOfArmies()*2);
+        territory->changeOwner(neutral);
         set_order_effect("Troops have tripled. The territory is now neutral. ");
         cout << *get_order_effect() << endl;
     }
@@ -538,12 +557,6 @@ bool OrdersList::remove(order* o) {
     }
     return false;
 }
-order * OrdersList::popTop() {
-    order *o = list->front();
-    list->erase(list->begin());
-    return o;
-}
-
 bool OrdersList::contain(order *o) {
     *ptr = find(list->begin(), list->end(), o);
     if (*ptr != list->end())

@@ -584,7 +584,11 @@ bool OrdersList::contain(order *o) {
         return false;
     }
 }
-
+order * OrdersList::popTop() {
+    order *o = list->back();
+    list->pop_back();
+    return o;
+}
 OrdersList::OrdersList(){
     list = new vector<order *>();
     ptr = new vector<order *>::iterator();

@@ -399,33 +399,42 @@ bool GameEngine::issueOrdersPhase(int firstUp) {
     int current = firstUp;
     while (true) {
         Player *current_p = players.at(current);
-        current_p->issueOrder("TBA");
-        int num = 5;
-        Territory ** toAttack = current_p->toAttack(num);
-        Territory ** toDefend = current_p->toDefend(num);
-        int i;
+        vector<Territory *> *toAttack = current_p->toAttack();
+        vector<Territory *> *toDefend = current_p->toDefend();
+        vector<Territory *> *toMove = current_p->getToMove();
         int armies = current_p->getArmies();
+        int i;
         while (armies > 0) {
-            current_p->issueOrder("Deploy");
-            //at toDefend[i]
+            current_p->issueOrder(new Deploy(current_p, toDefend->at(i), 1)); //at toDefend[i]
             i++;
+            if (i == toDefend->size()) {
+                i = 0;
+            }
             armies--;
         }
         current_p->setArmies(0);
-        for (Territory *t : *current_p->getToMove()) {
-            bool moved;
-            for (int i = 0; i < num; i++) { //get Num of to Attack
-                if (order::isBeside(t, toAttack[i])) {
-                    current_p->issueOrder("Advance"); //src : t, target : toAttack[i]
-                }
+        for (Territory *t : *toMove) {
+            bool moved = false;
+            int n = t->getNumberOfArmies();
+            for (Territory *D : *toDefend) {
+                current_p->issueOrder(new Advance(current_p, t, D, n)); //src : t, target : toDefend[i]
+                moved = true;
             }
-            for (int i = 0; i < num; i++) { // get num of toDefend
-                if (order::isBeside(t, toAttack[i])) {
-                    current_p->issueOrder("Advance"); // src : t, target : toDefend[i] //
+            if (!moved) {
+                current_p->issueOrder(new Advance(current_p, t, t->getEdges()[0], n/2));
+            }
+        }
+        for (Territory *A : *toAttack) {
+            for (Territory *t : *toDefend) {
+                if (order::isBeside(t, A)) {
+                    int n = t->getNumberOfArmies();
+                    current_p->issueOrder(new Advance(current_p, t, A, n)); // src : t, target : toAttack[i] //
                 }
             }
         }
-        //current player issue order from hand
+        //current player issues order from hand somehow...
+        Hand *h = current_p->getHand();
+
         current++;
         if (current == players.size()) {
             current = 0;

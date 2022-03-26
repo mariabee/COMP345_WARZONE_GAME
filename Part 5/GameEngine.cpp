@@ -380,7 +380,7 @@ void GameEngine::mainGameLoop() {
     map->checkContinentOwners();
     while (!gameOver) {
         reinforcementPhase();
-        int firstUp = 0;
+        int firstUp = rand() % players.size();
         issueOrdersPhase(firstUp);
         executeOrdersPhase(firstUp);
     }
@@ -398,13 +398,13 @@ void GameEngine::mainGameLoop() {
 bool GameEngine::issueOrdersPhase(int firstUp) {
     int current = firstUp;
     while (true) {
-        Player *current_p = players.at(current);
-        vector<Territory *> *toAttack = current_p->toAttack();
-        vector<Territory *> *toDefend = current_p->toDefend();
-        vector<Territory *> *toMove = current_p->getToMove();
+        Player *current_p = players.at(current); //get current player
+        vector<Territory *> *toAttack = current_p->toAttack(); //get list of territories toAttack
+        vector<Territory *> *toDefend = current_p->toDefend(); //get list of territories toDefend
+        vector<Territory *> *toMove = current_p->getToMove(); //get list of territories to move troops from
         int armies = current_p->getArmies();
         int i;
-        while (armies > 0) {
+        while (armies > 0) { //Deploy armies evenly across all to Defend territories
             current_p->issueOrder(new Deploy(current_p, toDefend->at(i), 1)); //at toDefend[i]
             i++;
             if (i == toDefend->size()) {
@@ -412,28 +412,34 @@ bool GameEngine::issueOrdersPhase(int firstUp) {
             }
             armies--;
         }
-        current_p->setArmies(0);
-        for (Territory *t : *toMove) {
+        current_p->setArmies(0); //reset player armies
+        for (Territory *t : *toMove) { //for every territory NOT bordering an enemy territory with armies
             bool moved = false;
             int n = t->getNumberOfArmies();
-            for (Territory *D : *toDefend) {
-                current_p->issueOrder(new Advance(current_p, t, D, n)); //src : t, target : toDefend[i]
-                moved = true;
+            for (Territory *D : *toDefend) { //if that territory borders a toDefend territory, advance troops there
+                if (order::isBeside(t, D)) {
+                    current_p->issueOrder(new Advance(current_p, t, D, n)); //src : t, target : toDefend[i]
+                    moved = true;
+                    break;
+                }
             }
-            if (!moved) {
+            if (!moved) { //otherwise spread the troops out between a bordering territory
                 current_p->issueOrder(new Advance(current_p, t, t->getEdges()[0], n/2));
             }
         }
-        for (Territory *A : *toAttack) {
-            for (Territory *t : *toDefend) {
-                if (order::isBeside(t, A)) {
-                    int n = t->getNumberOfArmies();
-                    current_p->issueOrder(new Advance(current_p, t, A, n)); // src : t, target : toAttack[i] //
-                }
-            }
+        while (!toAttack->empty()) {
+            Territory *player_t = toAttack->back(); //pop the player territory bordering an enemy's
+            int n = player_t->getNumberOfArmies();
+            toAttack->pop_back();
+            Territory *enemy_t = toAttack->back(); //pop the enemy's territory
+            toAttack->pop_back();
+            current_p->issueOrder(new Advance(current_p, player_t, enemy_t, n)); //Attack it
         }
+
+
         //current player issues order from hand somehow...
         Hand *h = current_p->getHand();
+        h->playRound(new_deck, current_p);
 
         current++;
         if (current == players.size()) {

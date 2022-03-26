@@ -269,7 +269,7 @@ void Hand::drawFromDeck(Deck* deck){
 }
 
 //Play a card in the hand and return it in the deck
-void Hand::playRound(Deck* deck, Player* player)
+void Hand::playRound(Deck* deck, Player* player, Player *other)
 {
     if (nbCardsInHand == 0){
         cout << "You don't have any card in your hand at the moment.\n";
@@ -286,7 +286,7 @@ void Hand::playRound(Deck* deck, Player* player)
 
         //Invalid input results in no cards being played
         if (cardChoice > 0 && cardChoice <= nbCardsInHand) {
-            cardsInHand[cardChoice-1]->play(deck, player);
+            cardsInHand[cardChoice-1]->play(deck, player, other);
             for(int i = cardChoice-1; i < maxCard; i++){
                 cardsInHand[i] = cardsInHand[i+1];
             }

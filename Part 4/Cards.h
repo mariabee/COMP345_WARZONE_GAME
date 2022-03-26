@@ -100,7 +100,7 @@ public:
     void drawFromDeck(Deck* deck);
 
     //play a card in the hand and return it in the deck
-    void playRound(Deck* deck, Player* player);
+    void playRound(Deck* deck, Player* player, Player *other);
 
     //stream insertion operator overloading(print list of cards in hand)
     friend std::ostream &operator << ( std::ostream &out, const Hand &hand );

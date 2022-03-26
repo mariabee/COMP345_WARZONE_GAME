@@ -78,8 +78,8 @@ private:
 	int stateCount;
     bool gameOver;
     bool reinforcementPhase();
-    bool issueOrdersPhase(int first_up);
-    bool executeOrdersPhase(int first_up);
+    bool issueOrdersPhase();
+    bool executeOrdersPhase();
 public:
 	GameEngine& operator=(const GameEngine &ge);
 	GameEngine(const GameEngine &ge);

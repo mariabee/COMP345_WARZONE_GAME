@@ -2,6 +2,7 @@
 #define GAME_ENGINE_H
 
 #include <string>
+#include <vector>
 #include <iostream>
 #include "Player.h"
 #include "Map.h"
@@ -66,10 +67,14 @@ private:
 class GameEngine
 {
 private:
-    vector <Player*> players;
+    const std::string dir {"../Debug/MapFiles/"};
+    const int MAX_NUM_PLAYERS {6};
+    const int MIN_NUM_PLAYERS {2};
+    vector<Player *> players;
     Map *map;
 	State *currentState;
 	State **states;
+    Deck* new_deck;
 	int stateCount;
     bool gameOver;
     bool reinforcementPhase();
@@ -82,8 +87,11 @@ public:
 	friend std::ostream& operator<< (std::ostream &out, const GameEngine &ge);
 	~GameEngine();
 	void build();
-	void start();
+	void startupPhase();
+    void distributeTerritories();
     void mainGameLoop();
+    void randomizePlayOrder();
+    void initializeDeck();
 };
 
 #endif

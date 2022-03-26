@@ -127,7 +127,7 @@ Deck::Deck(int deckSize)
 
     this->initialize();
 
-    cout << "Deck object were successfully CREATED\n";
+//    cout << "Deck object were successfully CREATED\n";
 }
 //copy constructor
 Deck::Deck(const Deck &obj){
@@ -223,7 +223,7 @@ Hand::Hand(){
     nbCardsInHand = 0;
     maxCard = 5;
     cardsInHand = new Card*[maxCard]();
-    cout << "Hand object were successfully CREATED\n";
+//    cout << "Hand object were successfully CREATED\n";
 }
 //copy constructor
 Hand::Hand(const Hand &obj){

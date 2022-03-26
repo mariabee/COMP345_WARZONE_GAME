@@ -1,3 +1,5 @@
+#include <random>
+#include <algorithm>
 #include "GameEngine.h"
 
 
@@ -5,7 +7,7 @@
 Command& Command::operator=(const Command &c)
 {
 	delete command;
-	
+
 	command = new std::string(*c.command);
 	return *this;
 }
@@ -16,7 +18,7 @@ Command::Command(const Command &c)
 	command = new std::string(*c.command);
 }
 
-// Stream insertion operator overload for Command 
+// Stream insertion operator overload for Command
 std::ostream& operator<< (std::ostream &out, const Command &c) {
 	out << *c.command;
 	return out;
@@ -25,7 +27,7 @@ std::ostream& operator<< (std::ostream &out, const Command &c) {
 // Destructor for Command
 Command::~Command()
 {
-	std::cout << "Deleting command: \"" << *this << "\"" << std::endl;
+	//std::cout << "Deleting command: \"" << *this << "\"" << std::endl;
 }
 
 // Constructor for Command that takes a string
@@ -60,7 +62,7 @@ Transition::Transition(const Transition &t)
 	on = new Command(*t.on);
 }
 
-// Constructor for Transtion that takes two states one start and one destination, 
+// Constructor for Transtion that takes two states one start and one destination,
 // and a string corresponding to the command that transitions between them
 Transition::Transition(State *f, State *t, std::string o)
 {
@@ -69,7 +71,7 @@ Transition::Transition(State *f, State *t, std::string o)
 	on = new Command(o);
 }
 
-// Stream insertion operator overload for Transition 
+// Stream insertion operator overload for Transition
 std::ostream& operator<< (std::ostream &out, const Transition &t) {
 	out << *t.from << " =" << *t.on << "=> " << *t.to;
 	return out;
@@ -78,7 +80,7 @@ std::ostream& operator<< (std::ostream &out, const Transition &t) {
 // Destructor for Transition
 Transition::~Transition()
 {
-	std::cout << "Deleting transition" << std::endl;
+	// std::cout << "Deleting transition" << std::endl;
 	delete on;
 }
 
@@ -108,7 +110,7 @@ State& State::operator=(const State &s)
 	transitions = new Transition*[s.index];
 	for (int i =0; i<index; i++)
 		transitions[i] = new Transition(*s.transitions[i]);
-	
+
 	return *this;
 }
 
@@ -129,7 +131,7 @@ State::State(std::string n)
 	name = new std::string(n);
 }
 
-// Stream insertion operator overload for State 
+// Stream insertion operator overload for State
 std::ostream& operator<< (std::ostream &out, const State &s) {
 	out << *s.name;
 	return out;
@@ -138,7 +140,7 @@ std::ostream& operator<< (std::ostream &out, const State &s) {
 // Destructor for State
 State::~State()
 {
-	std::cout << "Deleting state: \"" << *this << "\"" << std::endl;
+	//std::cout << "Deleting state: \"" << *this << "\"" << std::endl;
 	for (int i = 0; i < index; i++)
 		delete transitions[i];
 	delete transitions;
@@ -206,7 +208,7 @@ GameEngine::GameEngine()
 	build();
 }
 
-// Stream insertion operator overload for GameEngine 
+// Stream insertion operator overload for GameEngine
 std::ostream& operator<< (std::ostream &out, const GameEngine &ge) {
 	out << ge.currentState;
 	return out;
@@ -220,6 +222,44 @@ GameEngine::~GameEngine()
 	delete states;
 }
 
+void GameEngine::distributeTerritories() {
+    size_t num_of_ter = map->getNumOfTers();
+    size_t num_of_player = players.size();
+    size_t start_index {0};
+    size_t end_index {0};
+    size_t divide = num_of_ter / num_of_player;
+    size_t remain = num_of_ter % num_of_player;
+
+
+    for (int i{0}; i < num_of_player; i++) {
+        auto *t = new vector<Territory*>();
+        if (remain == 0) {
+            end_index = start_index + divide;
+        } else {
+            end_index = start_index + divide + 1;
+            remain--;
+        }
+        for (size_t j = start_index; j < end_index; j++) {
+            auto* ter = new Territory(map->getTerritories()[j]);
+            t->push_back(ter);
+        }
+        players.at(i)->setTerritories(t, (int)t->size());
+        start_index = end_index;
+    }
+}
+
+void GameEngine::randomizePlayOrder()
+{
+    default_random_engine randEngine{random_device{}()};
+    shuffle(players.begin(), players.end(), randEngine);
+}
+
+void GameEngine::initializeDeck()
+{
+    new_deck = new Deck(100);
+}
+
+
 // Function that builds the transition graph corresponding to the game engine, game state and commands.
 void GameEngine::build()
 {
@@ -229,21 +269,23 @@ void GameEngine::build()
 	auto map_load = new State("map_loaded");
 	auto map_valid = new State("map_validated");
 	auto players_added = new State("players_added");
+    auto game_start = new State("game_start");
 	auto assign_reinforcement = new State("assign_reinforcement");
 	auto issue_orders = new State("issue_orders");
 	auto execute_orders = new State("execute_orders");
 	auto win = new State("win");
 	auto end = new State(END_STATE);
-	states = new State *[9]
-	{ start, map_load, map_valid, players_added, assign_reinforcement, issue_orders, execute_orders, win, end };
-	stateCount = 9;
+	states = new State *[10]
+	{ start, map_load, map_valid, players_added, game_start, assign_reinforcement, issue_orders, execute_orders, win, end };
+	stateCount = 10;
 
 	start->setTransitions(new Transition(start, map_load, "loadmap"));
 	map_load->setTransitions(new Transition(map_load, map_load, "loadmap"));
 	map_load->setTransitions(new Transition(map_load, map_valid, "validatemap"));
 	map_valid->setTransitions(new Transition(map_valid, players_added, "addplayer"));
 	players_added->setTransitions(new Transition(players_added, players_added, "addplayer"));
-	players_added->setTransitions(new Transition(players_added, assign_reinforcement, "assigncountries"));
+	players_added->setTransitions(new Transition(players_added, game_start, "gamestart"));
+    game_start->setTransitions(new Transition(game_start, issue_orders, "issueorder"));
 	assign_reinforcement->setTransitions(new Transition(assign_reinforcement, issue_orders, "issueorder"));
 	issue_orders->setTransitions(new Transition(issue_orders, issue_orders, "issueorder"));
 	issue_orders->setTransitions(new Transition(issue_orders, execute_orders, "endissueorders"));
@@ -255,21 +297,83 @@ void GameEngine::build()
 }
 
 // Function that starts the game engine, which waits for player input.
-void GameEngine::start()
+void GameEngine::startupPhase()
 {
 	std::string input;
+    Player* temp_player;
+    int num_of_players;
 	int index;
+
 	while (!currentState->isEnd())
 	{
+        std::cout << "Currently at state " << (*currentState) << ". Enter the state you want to transition to: " << std::endl;
 		std::cin >> input;
 		if ((index = currentState->getCommandIndex(input)) == -1)
-			std::cout << "No command: \"" << input << "\" usable from current state!" << std::endl;
+			std::cout << "No command: \"" << input << "\" usable from current state! Currently at state " << (*currentState) << std::endl;
 		else
 		{
 			currentState = (currentState->getTransition(index))->getState();
 			std::cout << "Transition to state: \"" << (*currentState) << "\"" << std::endl;
+
+            if (currentState == states[1]) {
+                std::cout << "Enter the map you want to load in the game: " << std::endl;
+                std::cin >> input;
+                map = new Map(MapLoader::loadMap( dir + input));
+                std::cout << "Map " << input << " loaded successfully" << std::endl;
+ //               std::cout << map->getTerritories()[2] << std::endl;
+            }
+
+            if (currentState == states[2]) {
+                if (!map->validate()) {
+                    std::cout << "Map not valid, please reenter a valid map file" << std::endl;
+                    currentState = states[0];
+                }
+            }
+
+            if (currentState == states[3]) {
+                std::cout << "Enter the number of players joining the game (2-6): " << std::endl;
+                std::cin >> num_of_players;
+                if (num_of_players + players.size() > MAX_NUM_PLAYERS) {
+                    std::cout << "Max number of players reached, failed to add these players!" << std::endl;
+                    continue;
+                }
+                for (int i {0}; i < num_of_players; i++) {
+                    std::cout << "Enter the player's name: " << std::endl;
+                    std::cin >> input;
+                    temp_player = new Player(input);
+                    players.push_back(temp_player);
+                }
+                std::cout << "Players added successfully" << std::endl;
+            }
+
+            if (currentState == states[4]) {
+                if (players.size() < MIN_NUM_PLAYERS) {
+                    std::cout << "Not enough players! Waiting for more players to join!" << std::endl;
+                    currentState = states[3];
+                } else {
+                    distributeTerritories();
+//                    std::cout << *(players.at(0)->getTerritories()->at(2)->getName()) << std::endl;
+                    randomizePlayOrder();
+                    std::cout << "The order of turn is as follow: ";
+                    for (int i{0}; i < players.size() - 1; i++)
+                        std::cout << " || Player " << *(players.at(i)) << " ";
+                    std::cout << " || Player " << *(players.at(players.size() - 1)) << " || ";
+                    std::cout << std::endl;
+//                    std::cout << *(players.at(0)->getTerritories()->at(2)->getName()) << std::endl;
+                    initializeDeck();
+                    for (int i {0}; i < players.size(); i++) {
+                        players.at(i)->setArmies(50);
+                        std::cout << "Player " << *(players.at(i)) << " currently has " << players.at(i)->getArmies() << " reserved troops in their inventory."<< std::endl;
+                        std::cout << "Player " << *(players.at(i)) << " will now pick 2 cards from the deck!" << std::endl;
+                        players.at(i)->getHand()->drawFromDeck(new_deck);
+                        players.at(i)->getHand()->drawFromDeck(new_deck);
+                    }
+                }
+            }
+
 		}
 	}
+    std::cout << "Game over! Thank you for playing!" << std::endl;
 }
 void GameEngine::mainGameLoop() {
     gameOver = false;
@@ -282,7 +386,7 @@ void GameEngine::mainGameLoop() {
     }
     bool playAgain = false;
     if (playAgain) {
-        start();
+        startupPhase();
     }
     else {
         //exit() ?

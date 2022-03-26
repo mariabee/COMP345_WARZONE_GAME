@@ -370,19 +370,18 @@ void GameEngine::startupPhase()
                     }
                 }
             }
-
 		}
 	}
     std::cout << "Game over! Thank you for playing!" << std::endl;
 }
 void GameEngine::mainGameLoop() {
+    std::cout << "Main Game Loop starting..." << std::endl;
     gameOver = false;
     map->checkContinentOwners();
     while (!gameOver) {
         reinforcementPhase();
-        int firstUp = rand() % players.size();
-        issueOrdersPhase(firstUp);
-        executeOrdersPhase(firstUp);
+        issueOrdersPhase();
+        executeOrdersPhase();
     }
     bool playAgain = false;
     if (playAgain) {
@@ -395,16 +394,17 @@ void GameEngine::mainGameLoop() {
 
 
 
-bool GameEngine::issueOrdersPhase(int firstUp) {
-    int current = firstUp;
-    while (true) {
+bool GameEngine::issueOrdersPhase() {
+    std::cout << "Entering the issue orders phase. "<< std::endl;
+    //Go through each player
+    for (int current = 0; current < players.size(); current++) {
         Player *current_p = players.at(current); //get current player
         vector<Territory *> *toAttack = current_p->toAttack(); //get list of territories toAttack
         vector<Territory *> *toDefend = current_p->toDefend(); //get list of territories toDefend
         vector<Territory *> *toMove = current_p->getToMove(); //get list of territories to move troops from
         int armies = current_p->getArmies();
         int i;
-        while (armies > 0) { //Deploy armies evenly across all to Defend territories
+        while (armies > 0) { //Deploy armies evenly across all the toDefend territories
             current_p->issueOrder(new Deploy(current_p, toDefend->at(i), 1)); //at toDefend[i]
             i++;
             if (i == toDefend->size()) {
@@ -439,41 +439,43 @@ bool GameEngine::issueOrdersPhase(int firstUp) {
         Hand *h = current_p->getHand();
         int next = current + 1;
         h->playRound(new_deck, current_p, players[next]);
-
-        current++;
-        if (current == players.size()) {
-            current = 0;
-        }
-        if (current == firstUp) {
-            return true;
-        }
     }
 }
 bool GameEngine::reinforcementPhase() {
     int n;
+    //Go through every player
     for (Player *p : players) {
+        //If player owns all the Territories, the game over.
         if (p->getTerritoryCount() == map->getNumOfTers()) {
+            cout << *p->getName() << " has won the game!" << endl;
             gameOver = true;
             return false;
         }
+        //Otherwise, calculate reinforcement pool and give it to the player.
         n = p->getTerritoryCount()/3;
         for (Continent *c : *p->getContinents()) {
             n += c->getBonus();
+        }
+        if (n < 3) {
+            n = 3;
         }
         p->setArmies(n);
     }
     return true;
 }
-bool GameEngine::executeOrdersPhase(int firstUp) {
+bool GameEngine::executeOrdersPhase() {
     int skipped;
-    int current = firstUp;
+    int current = 0;
+    //Until there are no more orders to be executed...
     while (true) {
-        if (current == firstUp) {
+        //Players execute orders round robin.
+        if (current == 0) {
             skipped = 0;
         }
         Player *current_p = players.at(current);
         OrdersList *orders = current_p->getOrdersList();
         if (!orders->getList()->empty()) {
+            //If a player's order's list is not empty, pop it off the top and execute it.
             orders->popTop()->execute();
         }
         else {
@@ -481,6 +483,7 @@ bool GameEngine::executeOrdersPhase(int firstUp) {
         }
 
         if (skipped == players.size()) {
+            //If all the players have skipped, phase is over and return true
             return true;
         }
         current++;

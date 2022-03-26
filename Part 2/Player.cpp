@@ -9,7 +9,8 @@ Player::Player(std::string n)
 	hand = new Hand();
     territories = new vector<Territory *>();
     continents = new vector<Continent *>();
-    armies =3;
+    toMove = new vector<Territory *>();
+    armies = 3;
 }
 
 // Assignment operator overload for Player
@@ -20,6 +21,8 @@ Player &Player::operator=(const Player &p)
 	delete name;
 	delete hand;
 	delete[] territories;
+    delete[] continents;
+    delete[] toMove;
 	delete orderList;
 
 	name = new string(*p.name);
@@ -43,6 +46,7 @@ Player::Player(Player &p) {
     name = new string(*p.name);
     hand = new Hand(*p.hand);
     territoryCount = p.territoryCount;
+    armies = p.getArmies();
     territories = new vector<Territory *>();
     continents = new vector<Continent *>();
     toMove = new vector<Territory *>();
@@ -52,6 +56,7 @@ Player::Player(Player &p) {
     for (Territory *t: *p.getToMove()) {
         territories->push_back(t);
     }
+    orderList = new OrdersList(*p.getOrdersList());
 }
 
 // Stream insertion operator overload for Player

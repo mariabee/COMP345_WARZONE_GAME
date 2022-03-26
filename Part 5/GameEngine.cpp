@@ -435,11 +435,10 @@ bool GameEngine::issueOrdersPhase(int firstUp) {
             toAttack->pop_back();
             current_p->issueOrder(new Advance(current_p, player_t, enemy_t, n)); //Attack it
         }
-
-
         //current player issues order from hand somehow...
         Hand *h = current_p->getHand();
-        h->playRound(new_deck, current_p);
+        int next = current + 1;
+        h->playRound(new_deck, current_p, players[next]);
 
         current++;
         if (current == players.size()) {

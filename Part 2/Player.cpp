@@ -123,7 +123,6 @@ vector<Territory *> *Player::toAttack()
             if (target->getOwner() != this) {
                     out->push_back(t);
                     out->push_back(target);
-                }
             }
         }
     }
@@ -164,7 +163,7 @@ void Player::issueOrder(Negotiate* b) {
 }
 
 // Function that creates an order based on the type passed as a string
-bool Player::issueOrder(std::string type)
+void Player::issueOrder(std::string type)
 {
 	std::string typeMap[6] {"deploy", "advance", "bomb", "blockade", "airlift", "negotiate"};
 
@@ -197,7 +196,7 @@ bool Player::issueOrder(std::string type)
 		break;
 	default:
 		std::cout << "Error::Player - Unknown Type: " << type << std::endl;
-		return true;
+		return;
 	}
 }
 

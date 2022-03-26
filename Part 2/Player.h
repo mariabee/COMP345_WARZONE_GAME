@@ -38,7 +38,7 @@ class Player {
         void issueOrder(Negotiate *b);
         vector<Territory *> * toDefend();
         vector<Territory*> * toAttack();
-		bool issueOrder(std::string);
+		void issueOrder(std::string);
 		Hand* getHand();
         int getArmies() const;
         int getTerritoryCount() const;

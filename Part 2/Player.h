@@ -32,7 +32,12 @@ class Player {
         bool removeTerritory(Territory *t);
         void addContinent(Continent *c);
         bool removeContinent(Continent *c);
-
+        void issueOrder(Deploy *d);
+        void issueOrder(Advance *a);
+        void issueOrder(Bomb *b);
+        void issueOrder(Blockade *b);
+        void issueOrder(Airlift *b);
+        void issueOrder(Negotiate *b);
         Territory** toDefend(int& c);
 		Territory** toAttack(int& c);
 		bool issueOrder(std::string);
@@ -44,6 +49,8 @@ class Player {
         vector<Territory *> * getToMove();
         OrdersList *getOrdersList();
         void setArmies(int armies);
+
+
 };
 
 #endif

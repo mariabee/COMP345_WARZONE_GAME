@@ -115,8 +115,10 @@ public:
     ~Blockade() override;
     //Getters
     Territory *getTerritory() const;
+    Player *getNeutral() const;
     //Setters
     void setTerritory(Territory *territory);
+    void setNeutral(Player *neutral);
     void execute() override;
 private:
     Territory* territory;

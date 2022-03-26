@@ -110,10 +110,10 @@ void Deploy::execute() {
     if (validate()) {
         territory->setNumberOfArmies(territory->getNumberOfArmies()+numberOfArmies);
         get_player()->setArmies(get_player()->getArmies()-numberOfArmies);
+        cout<<*territory->getName()<<" has now "<<territory->getNumberOfArmies()<<" armies.\n";
         set_order_effect("Armies have been deployed.");
-        cout << *get_order_effect() << endl;
     }
-
+    cout << *get_order_effect() << endl;
 }
 //VALIDATE
 bool Deploy::validate() {
@@ -189,12 +189,12 @@ void Advance::execute() {
         if(start->getOwner() == target->getOwner()){
             target->setNumberOfArmies(target->getNumberOfArmies()+armies);
             start->setNumberOfArmies(start->getNumberOfArmies()-armies);
-            set_order_effect("Troops have advanced.*");
+            set_order_effect("Troops have advanced.");
         }else{
-            cout<<"An attack has been initiated";
+            cout<<"An attack has been initiated\n";
             float random;
             srand(time(NULL));
-            while(target->getNumberOfArmies()!=0 || start->getNumberOfArmies()!=0){
+            while(target->getNumberOfArmies() != 0 && start->getNumberOfArmies() != 0){
                 random=((float)rand() / (float)RAND_MAX );
                 if(random>0.4){
                     //PERFORMANCE ISSUE??
@@ -207,14 +207,14 @@ void Advance::execute() {
             }
             if(target->getNumberOfArmies()==0){
                 target->changeOwner(get_player());
-                set_order_effect("Troops have advanced.*");
+                set_order_effect("New territory has been conquered.");
             }
             else{
-                set_order_effect("Battle lost.*");
+                set_order_effect("Battle lost.");
             }
         }
-        cout << *get_order_effect() << endl;
     }
+    cout << *get_order_effect() << endl;
 }
 //VALIDATE
 bool Advance::validate() {
@@ -222,7 +222,7 @@ bool Advance::validate() {
         set_order_effect("Order was missing information and will not be executed.");
         return false;
     }
-    if(start->getOwner() != get_player() || !isBeside(start,target) || start->getNumberOfArmies() < armies){
+    if(start->getOwner() != get_player() || /*!isBeside(start,target) ||*/ start->getNumberOfArmies() < armies){
         set_order_effect("Order was not valid and will not be executed.");
         return false;
     }else
@@ -286,8 +286,8 @@ void Bomb::execute() {
     if (validate()) {
         target->setNumberOfArmies((target->getNumberOfArmies())/2);
         set_order_effect("Territory has been bombed.*");
-        cout << *get_order_effect() << endl;
     }
+    cout << *get_order_effect() << endl;
 }
 bool Bomb::validate() {
     if (start == nullptr || target == nullptr) {
@@ -334,6 +334,7 @@ Blockade::Blockade(Player* player, Territory* territory, Player* neutral) {
     this->territory=territory;
     set_order_type("Blockade");
     set_player(player);
+    this->neutral = neutral;
 }
 //COPY CONSTRUCTOR
 Blockade::Blockade(const Blockade &other) : order(other) {
@@ -344,6 +345,7 @@ Blockade &Blockade::operator=(const Blockade &o) {
     if (this == &o) return *this;
     order::operator = (o);
     this->territory=o.getTerritory();
+    this->neutral=o.getNeutral();
     return *this;
 }
 //EXECUTE
@@ -352,8 +354,8 @@ void Blockade::execute() {
         territory->setNumberOfArmies(territory->getNumberOfArmies()*2);
         territory->changeOwner(neutral);
         set_order_effect("Troops have tripled. The territory is now neutral. ");
-        cout << *get_order_effect() << endl;
     }
+    cout << *get_order_effect() << endl;
 }
 //VALIDATE
 bool Blockade::validate() {
@@ -382,6 +384,15 @@ void Blockade::setTerritory(Territory *territory) {
 Blockade::~Blockade() {
     territory = nullptr;
 }
+
+Player *Blockade::getNeutral() const {
+    return neutral;
+}
+
+void Blockade::setNeutral(Player *neutral) {
+    Blockade::neutral = neutral;
+}
+
 #pragma endregion Blockade
 
 #pragma region Airlift
@@ -421,8 +432,8 @@ void Airlift::execute() {
         target->setNumberOfArmies(target->getNumberOfArmies()+troops);
         start->setNumberOfArmies(start->getNumberOfArmies()-troops);
         set_order_effect("Troops have moved.");
-        cout << *get_order_effect() << endl;
     }
+    cout << *get_order_effect() << endl;
 }
 //VALIDATE
 bool Airlift::validate() {
@@ -618,6 +629,5 @@ ostream &operator<<(ostream &out, const OrdersList &orderlist) {
 }
 
 #pragma endregion OrderList
-
 
 

@@ -123,6 +123,32 @@ void Player::setTerritories(vector<Territory *> *t, int count)
 	territoryCount = count;
 }
 
+//ISSUE ORDERS
+void Player::issueOrder(Deploy* d) {
+    orderList->add(d);
+    std::cout << "Player - Successfully issued order: DEPLOY \n ";
+}
+void Player::issueOrder(Advance* a) {
+    orderList->add(a);
+    std::cout << "Player - Successfully issued order: ADVANCE \n";
+}
+void Player::issueOrder(Bomb* b) {
+    orderList->add(b);
+    std::cout << "Player - Successfully issued order: BOMB \n";
+}
+void Player::issueOrder(Blockade* b) {
+    orderList->add(b);
+    std::cout << "Player - Successfully issued order: BLOCKADE \n";
+}
+void Player::issueOrder(Airlift* b) {
+    orderList->add(b);
+    std::cout << "Player - Successfully issued order: AIRLIFT \n";
+}
+void Player::issueOrder(Negotiate* b) {
+    orderList->add(b);
+    std::cout << "Player - Successfully issued order: DIPLOMACY \n";
+}
+
 // Function that creates an order based on the type passed as a string
 bool Player::issueOrder(std::string type)
 {
@@ -159,9 +185,6 @@ bool Player::issueOrder(std::string type)
 		std::cout << "Error::Player - Unknown Type: " << type << std::endl;
 		return true;
 	}
-
-	std::cout << "Player - Successfully issued order: " << type << std::endl;
-	orderList->add(o);
 }
 
 int Player::getTerritoryCount() const {

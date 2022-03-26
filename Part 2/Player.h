@@ -14,7 +14,10 @@ class Player {
 		OrdersList* orderList;
 		vector<Territory *> *territories;
         vector<Continent *> *continents;
+        vector<Territory *> *toMove;
 		int territoryCount = 0;
+        int attackNum = 0;
+        int defendNum = 0;
 		Hand* hand;
         int armies;
 
@@ -32,12 +35,13 @@ class Player {
 
         Territory** toDefend(int& c);
 		Territory** toAttack(int& c);
-		void issueOrder(std::string);
+		bool issueOrder(std::string);
 		Hand* getHand();
         int getArmies() const;
         int getTerritoryCount() const;
         vector<Territory *> * getTerritories();
         vector<Continent *> * getContinents();
+        vector<Territory *> * getToMove();
         OrdersList *getOrdersList();
         void setArmies(int armies);
 };

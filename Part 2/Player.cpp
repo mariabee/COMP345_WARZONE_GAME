@@ -121,14 +121,7 @@ vector<Territory *> *Player::toAttack()
         for (int i = 0; i < t->getEdgeCount(); i++) {
             Territory *target = t->getEdges()[i];
             if (target->getOwner() != this) {
-                bool alreadyIn = false;
-                for (Territory *toAttack : *out) {
-                    if (toAttack == target) {
-                        alreadyIn = true;
-                        break;
-                    }
-                }
-                if (!alreadyIn) {
+                    out->push_back(t);
                     out->push_back(target);
                 }
             }

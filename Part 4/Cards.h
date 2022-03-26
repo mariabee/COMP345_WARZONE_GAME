@@ -34,7 +34,7 @@ public:
     friend std::ostream &operator << ( std::ostream &out, const Card &card );
 
     //play a card (will be more useful when we use it with the player part)
-    void play(Deck* deck, Player* player);
+    void play(Deck* deck, Player* player, Player *other_Player);
 
 };
 

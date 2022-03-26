@@ -14,9 +14,10 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="fb62c439-f59a-4880-90da-ca031f99db12" name="Changes" comment="added changes to constructor and destructor">
+    <list default="true" id="fb62c439-f59a-4880-90da-ca031f99db12" name="Changes" comment="Implemented issueOrderPhase">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Part 5/GameEngine.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Part 5/GameEngine.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Part 3/Orders.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Part 3/Orders.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Part 3/Orders.h" beforeDir="false" afterPath="$PROJECT_DIR$/Part 3/Orders.h" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -142,7 +143,7 @@
       <workItem from="1648088501137" duration="5707000" />
       <workItem from="1648160002997" duration="1081000" />
       <workItem from="1648163287344" duration="2590000" />
-      <workItem from="1648320727881" duration="2538000" />
+      <workItem from="1648320727881" duration="2903000" />
     </task>
     <task id="LOCAL-00001" summary="Moved OrdersList into Orders files, and created seperated Driver file to run testing.">
       <created>1643149106708</created>
@@ -298,7 +299,14 @@
       <option name="project" value="LOCAL" />
       <updated>1648321465020</updated>
     </task>
-    <option name="localTasksCounter" value="24" />
+    <task id="LOCAL-00024" summary="Implemented issueOrderPhase">
+      <created>1648323348889</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1648323348889</updated>
+    </task>
+    <option name="localTasksCounter" value="25" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -393,7 +401,8 @@
     <MESSAGE value="Added part 3 rough implementation and added new methods in Map, Player, Orders" />
     <MESSAGE value="Changed toDefend and toAttack implementation" />
     <MESSAGE value="added changes to constructor and destructor" />
-    <option name="LAST_COMMIT_MESSAGE" value="added changes to constructor and destructor" />
+    <MESSAGE value="Implemented issueOrderPhase" />
+    <option name="LAST_COMMIT_MESSAGE" value="Implemented issueOrderPhase" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

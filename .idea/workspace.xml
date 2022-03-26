@@ -14,13 +14,14 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="fb62c439-f59a-4880-90da-ca031f99db12" name="Changes" comment="added ordersList copy constructor">
+    <list default="true" id="fb62c439-f59a-4880-90da-ca031f99db12" name="Changes" comment="Added part 3 rough implementation and added new methods in Map, Player, Orders">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Part 5/GameEngine.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Part 5/GameEngine.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cmake-build-debug/.ninja_deps" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/.ninja_deps" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cmake-build-debug/.ninja_log" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/.ninja_log" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cmake-build-debug/COMP345_WARZONE_GAME.exe" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/COMP345_WARZONE_GAME.exe" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cmake-build-debug/Testing/Temporary/LastTest.log" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/Testing/Temporary/LastTest.log" afterDir="false" />
+
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -141,10 +142,12 @@
       <workItem from="1647964769309" duration="3300000" />
       <workItem from="1647968572256" duration="160000" />
       <workItem from="1647969181321" duration="1000" />
+      <workItem from="1648312019691" duration="3747000" />
       <workItem from="1648066478696" duration="15424000" />
       <workItem from="1648088501137" duration="5707000" />
       <workItem from="1648160002997" duration="1081000" />
       <workItem from="1648163287344" duration="2590000" />
+
     </task>
     <task id="LOCAL-00001" summary="Moved OrdersList into Orders files, and created seperated Driver file to run testing.">
       <created>1643149106708</created>
@@ -279,7 +282,14 @@
       <option name="project" value="LOCAL" />
       <updated>1644800172700</updated>
     </task>
-    <option name="localTasksCounter" value="21" />
+    <task id="LOCAL-00021" summary="Added part 3 rough implementation and added new methods in Map, Player, Orders">
+      <created>1648066040275</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1648066040275</updated>
+    </task>
+    <option name="localTasksCounter" value="22" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -371,7 +381,8 @@
     <MESSAGE value="added comments and continents accessor in Map" />
     <MESSAGE value="Changed copy assignment, copy constructors, and destructor. Made name a pointer." />
     <MESSAGE value="added ordersList copy constructor" />
-    <option name="LAST_COMMIT_MESSAGE" value="added ordersList copy constructor" />
+    <MESSAGE value="Added part 3 rough implementation and added new methods in Map, Player, Orders" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added part 3 rough implementation and added new methods in Map, Player, Orders" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

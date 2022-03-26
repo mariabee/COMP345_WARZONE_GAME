@@ -42,6 +42,7 @@ class Player {
 		Hand* getHand();
         int getArmies() const;
         int getTerritoryCount() const;
+        string *getName() const;
         vector<Territory *> * getTerritories();
         vector<Continent *> * getContinents();
         vector<Territory *> * getToMove();

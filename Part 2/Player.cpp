@@ -95,19 +95,21 @@ void Player::setArmies(int armies) {
 vector<Territory *> *Player::toDefend()
 {
     auto *out = new vector<Territory *>;
-    toMove->clear();
+    toMove->clear(); //reset the toMove
+    //Go through all territories bordering the player's
     for (Territory *t : *territories) {
         bool threat = false;
         for (int i = 0; i < t->getEdgeCount(); i++) {
             Territory *border = t->getEdges()[i];
+            //If the player doesn't own the bordering territory, and if it has armies on it...
             if (border->getOwner() != this && border->getNumberOfArmies() > 0) {
-                out->push_back(t);
+                out->push_back(t); //add the player's territory to the toDefend list
                 threat = true;
                 break;
             }
         }
         if (!threat) {
-            toMove->push_back(t);
+            toMove->push_back(t); //Otherwise, if the territory is not in danger, add it to the toMove list
         }
     }
     return out;
@@ -117,15 +119,20 @@ vector<Territory *> *Player::toDefend()
 vector<Territory *> *Player::toAttack()
 {
     auto *out = new vector<Territory *>;
+    //Go through all the territories bordering the player's territories
     for (Territory *t : *territories) {
         for (int i = 0; i < t->getEdgeCount(); i++) {
             Territory *target = t->getEdges()[i];
+            //If the player doesn't own a bordering territory,
             if (target->getOwner() != this) {
+                    //add the player-owned territory
                     out->push_back(t);
+                    //add the enemy or neutral-owned bordering territory
                     out->push_back(target);
             }
         }
     }
+    //return the list of attacks
     return out;
 }
 
@@ -214,34 +221,46 @@ void Player::addTerritory(Territory *t) {
 }
 
 bool Player::removeTerritory(Territory *toRemove) {
+    //Find the territory in the vector
     for (int i = 0; i < territories->size(); i++) {
         Territory *t = territories->at(i);
         if (t->getId() == toRemove->getId()) {
+            //change the owner in Territory
             t->changeOwner(nullptr);
+            //erase the territory in Player
             territories->erase(territories->begin() + i);
+            //Check if the continent of the territory was owned by Player
             Continent *c = t->getContinent();
+            //if so, remove continent
             if (c->getOwner() == this) {
                 removeContinent(c);
             }
+            //decrement territory count
             territoryCount--;
             return true;
         }
     }
+    //if player does not have territory, return false
     return false;
 
 }
 void Player::addContinent(Continent *c) {
+    //add continent to player, and player to continent
     continents->push_back(c);
     c->setOwner(this);
 }
 bool Player::removeContinent(Continent *c) {
+    //find the continent in the player's vector
     for (int i = 0; i < continents->size(); i++) {
         if (continents->at(i)->getId() == c->getId()) {
+            //remove player from continent
             c->setOwner(nullptr);
+            //remove continent from player
             continents->erase(continents->begin() + i);
             return true;
         }
     }
+    //return false if player did not own continent
     return false;
 }
 

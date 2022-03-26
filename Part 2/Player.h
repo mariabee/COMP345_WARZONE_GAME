@@ -25,29 +25,34 @@ class Player {
 		Player(Player &p);
 		friend std::ostream& operator<< (std::ostream &out, const Player &p);
 		~Player();
-		void setTerritories(vector<Territory *> *t, int count);
-        void addTerritory(Territory *t);
-        bool removeTerritory(Territory *t);
-        void addContinent(Continent *c);
-        bool removeContinent(Continent *c);
+
         void issueOrder(Deploy *d);
         void issueOrder(Advance *a);
         void issueOrder(Bomb *b);
         void issueOrder(Blockade *b);
         void issueOrder(Airlift *b);
         void issueOrder(Negotiate *b);
+        void issueOrder(std::string);
         vector<Territory *> * toDefend();
         vector<Territory*> * toAttack();
-		void issueOrder(std::string);
-		Hand* getHand();
-        int getArmies() const;
-        int getTerritoryCount() const;
-        string *getName() const;
+
+        //Accessors
         vector<Territory *> * getTerritories();
         vector<Continent *> * getContinents();
         vector<Territory *> * getToMove();
         OrdersList *getOrdersList();
+        Hand* getHand();
+        int getArmies() const;
+        int getTerritoryCount() const;
+        string *getName() const;
+
+        //Mutators
+        void addTerritory(Territory *t);
+        bool removeTerritory(Territory *t);
+        void addContinent(Continent *c);
+        bool removeContinent(Continent *c);
         void setArmies(int armies);
+        void setTerritories(vector<Territory *> *t, int count);
 
 
 };

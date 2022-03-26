@@ -295,10 +295,33 @@ bool GameEngine::issueOrdersPhase(int firstUp) {
     int current = firstUp;
     while (true) {
         Player *current_p = players.at(current);
-        Hand *player_hand = current_p->getHand();
-        if (player_hand) {
-            current_p->issueOrder("TBA");
+        current_p->issueOrder("TBA");
+        int num = 5;
+        Territory ** toAttack = current_p->toAttack(num);
+        Territory ** toDefend = current_p->toDefend(num);
+        int i;
+        int armies = current_p->getArmies();
+        while (armies > 0) {
+            current_p->issueOrder("Deploy");
+            //at toDefend[i]
+            i++;
+            armies--;
         }
+        current_p->setArmies(0);
+        for (Territory *t : *current_p->getToMove()) {
+            bool moved;
+            for (int i = 0; i < num; i++) { //get Num of to Attack
+                if (order::isBeside(t, toAttack[i])) {
+                    current_p->issueOrder("Advance"); //src : t, target : toAttack[i]
+                }
+            }
+            for (int i = 0; i < num; i++) { // get num of toDefend
+                if (order::isBeside(t, toAttack[i])) {
+                    current_p->issueOrder("Advance"); // src : t, target : toDefend[i] //
+                }
+            }
+        }
+        //current player issue order from hand
         current++;
         if (current == players.size()) {
             current = 0;
@@ -313,7 +336,7 @@ bool GameEngine::reinforcementPhase() {
     for (Player *p : players) {
         if (p->getTerritoryCount() == map->getNumOfTers()) {
             gameOver = true;
-            return true;
+            return false;
         }
         n = p->getTerritoryCount()/3;
         for (Continent *c : *p->getContinents()) {

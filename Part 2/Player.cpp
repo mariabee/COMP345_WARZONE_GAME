@@ -124,7 +124,7 @@ void Player::setTerritories(vector<Territory *> *t, int count)
 }
 
 // Function that creates an order based on the type passed as a string
-void Player::issueOrder(std::string type)
+bool Player::issueOrder(std::string type)
 {
 	std::string typeMap[6] {"deploy", "advance", "bomb", "blockade", "airlift", "negotiate"};
 
@@ -157,7 +157,7 @@ void Player::issueOrder(std::string type)
 		break;
 	default:
 		std::cout << "Error::Player - Unknown Type: " << type << std::endl;
-		return;
+		return true;
 	}
 
 	std::cout << "Player - Successfully issued order: " << type << std::endl;
@@ -213,6 +213,10 @@ vector<Continent *> * Player::getContinents() {
 
 OrdersList *Player::getOrdersList() {
     return orderList;
+}
+
+vector<Territory *> *Player::getToMove() {
+    return toMove;
 }
 
 

@@ -39,18 +39,19 @@ Player &Player::operator=(const Player &p)
 }
 
 // Copy constructor for Player
-Player::Player(Player &p)
-{
-	name = new string(*p.name);
-	hand = new Hand(*p.hand);
-	territoryCount = p.territoryCount;
-	territories = new vector<Territory *>();
-	for (int i = 0; i < territoryCount; i++)
-	{
-		territories[i] = p.territories[i];
-	}
-	orderList = new OrdersList(*p.orderList);
-    armies = p.armies;
+Player::Player(Player &p) {
+    name = new string(*p.name);
+    hand = new Hand(*p.hand);
+    territoryCount = p.territoryCount;
+    territories = new vector<Territory *>();
+    continents = new vector<Continent *>();
+    toMove = new vector<Territory *>();
+    for (Territory *t: *p.getTerritories()) {
+        territories->push_back(t);
+    }
+    for (Territory *t: *p.getToMove()) {
+        territories->push_back(t);
+    }
 }
 
 // Stream insertion operator overload for Player
@@ -69,6 +70,8 @@ Player::~Player()
 
 	// Delete only the array of pointers since the territories should be deleted from the map not the player
 	delete[] territories;
+    delete[] continents;
+    delete[] toMove;
 }
 
 // Function that returns a pointer to the players hand
@@ -84,36 +87,49 @@ void Player::setArmies(int armies) {
     Player::armies = armies;
 }
 // Function that returns a list of territories corresponding to the Territories the player would like to defend
-Territory **Player::toDefend(int &defendCount)
+vector<Territory *> *Player::toDefend()
 {
-	Territory **out;
-
-	defendCount = (territoryCount / 2);
-
-	out = new Territory *[defendCount];
-
-	int index = 0;
-	for (int i = 0; i < territoryCount; i++)
-		if (i % 2 == 1)
-			out[index++] = territories->at(i);
-	return out;
+    auto *out = new vector<Territory *>;
+    toMove->clear();
+    for (Territory *t : *territories) {
+        bool threat = false;
+        for (int i = 0; i < t->getEdgeCount(); i++) {
+            Territory *border = t->getEdges()[i];
+            if (border->getOwner() != this && border->getNumberOfArmies() > 0) {
+                out->push_back(t);
+                threat = true;
+                break;
+            }
+        }
+        if (!threat) {
+            toMove->push_back(t);
+        }
+    }
+    return out;
 }
 
 // Function that returns a list of territories corresponding to the Territories the player would like to attack
-Territory **Player::toAttack(int &attackCount)
+vector<Territory *> *Player::toAttack()
 {
-	Territory **out;
-
-	attackCount = (territoryCount / 2) + 1;
-
-	out = new Territory *[attackCount];
-
-	int index = 0;
-	for (int i = 0; i < territoryCount; i++)
-		if (i % 2 == 0)
-			out[index++] = territories->at(i);
-
-	return out;
+    auto *out = new vector<Territory *>;
+    for (Territory *t : *territories) {
+        for (int i = 0; i < t->getEdgeCount(); i++) {
+            Territory *target = t->getEdges()[i];
+            if (target->getOwner() != this) {
+                bool alreadyIn = false;
+                for (Territory *toAttack : *out) {
+                    if (toAttack == target) {
+                        alreadyIn = true;
+                        break;
+                    }
+                }
+                if (!alreadyIn) {
+                    out->push_back(target);
+                }
+            }
+        }
+    }
+    return out;
 }
 
 // Function that sets the Player's territories to a given list and count
@@ -214,6 +230,7 @@ bool Player::removeTerritory(Territory *toRemove) {
 }
 void Player::addContinent(Continent *c) {
     continents->push_back(c);
+    c->setOwner(this);
 }
 bool Player::removeContinent(Continent *c) {
     for (int i = 0; i < continents->size(); i++) {

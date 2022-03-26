@@ -15,13 +15,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="fb62c439-f59a-4880-90da-ca031f99db12" name="Changes" comment="Added part 3 rough implementation and added new methods in Map, Player, Orders">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Part 5/GameEngine.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Part 5/GameEngine.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/.ninja_deps" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/.ninja_deps" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/.ninja_log" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/.ninja_log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/COMP345_WARZONE_GAME.exe" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/COMP345_WARZONE_GAME.exe" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Part 2/Player.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Part 2/Player.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Part 2/Player.h" beforeDir="false" afterPath="$PROJECT_DIR$/Part 2/Player.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cmake-build-debug/Testing/Temporary/LastTest.log" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/Testing/Temporary/LastTest.log" afterDir="false" />
-
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -147,7 +143,7 @@
       <workItem from="1648088501137" duration="5707000" />
       <workItem from="1648160002997" duration="1081000" />
       <workItem from="1648163287344" duration="2590000" />
-
+      <workItem from="1648320727881" duration="312000" />
     </task>
     <task id="LOCAL-00001" summary="Moved OrdersList into Orders files, and created seperated Driver file to run testing.">
       <created>1643149106708</created>

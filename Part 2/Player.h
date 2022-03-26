@@ -16,8 +16,6 @@ class Player {
         vector<Continent *> *continents;
         vector<Territory *> *toMove;
 		int territoryCount = 0;
-        int attackNum = 0;
-        int defendNum = 0;
 		Hand* hand;
         int armies;
 
@@ -38,8 +36,8 @@ class Player {
         void issueOrder(Blockade *b);
         void issueOrder(Airlift *b);
         void issueOrder(Negotiate *b);
-        Territory** toDefend(int& c);
-		Territory** toAttack(int& c);
+        vector<Territory *> * toDefend();
+        vector<Territory*> * toAttack();
 		bool issueOrder(std::string);
 		Hand* getHand();
         int getArmies() const;

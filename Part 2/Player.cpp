@@ -133,6 +133,9 @@ vector<Territory *> *Player::toAttack()
 void Player::setTerritories(vector<Territory *> *t, int count)
 {
 	territories = t;
+    for (Territory *territory : *t) {
+        territory->changeOwner(this);
+    }
 	territoryCount = count;
 }
 
@@ -206,6 +209,7 @@ int Player::getTerritoryCount() const {
 
 void Player::addTerritory(Territory *t) {
     territories->push_back(t);
+    t->changeOwner(this);
     territoryCount++;
 }
 
@@ -213,6 +217,7 @@ bool Player::removeTerritory(Territory *toRemove) {
     for (int i = 0; i < territories->size(); i++) {
         Territory *t = territories->at(i);
         if (t->getId() == toRemove->getId()) {
+            t->changeOwner(nullptr);
             territories->erase(territories->begin() + i);
             Continent *c = t->getContinent();
             if (c->getOwner() == this) {
@@ -254,6 +259,10 @@ OrdersList *Player::getOrdersList() {
 
 vector<Territory *> *Player::getToMove() {
     return toMove;
+}
+
+string *Player::getName() const {
+    return name;
 }
 
 

@@ -373,7 +373,6 @@ void GameEngine::mainGameLoop() {
     std::cout << "Main Game Loop starting..." << std::endl;
     gameOver = false;
     while (currentState != states[7]) {
-        cout << *currentState << endl;
         reinforcementPhase();
         issueOrdersPhase();
         executeOrdersPhase();
@@ -391,13 +390,11 @@ void GameEngine::reinforcementPhase() {
     //currentState->setState("assign_reinforcement");
     map->checkContinentOwners();
     int n;
-    cout << n << endl;
     //Go through every player
     for (Player *p: players) {
         //Reset flags in player
         p->setCardWon(false);
         p->clearCannotAttack();
-
         //Calculate reinforcement pool and give it to the player.
         n = p->getArmies();
         n += p->getTerritories()->size() / 3;
@@ -407,8 +404,8 @@ void GameEngine::reinforcementPhase() {
         if (n < 3) {
             n = 3;
         }
-        p->setArmies(n + p->getArmies());
-        cout << *p << " has been assigned " << n << " armies. " << endl;
+        p->setArmies(n);
+        cout << *p << " has currently " << n << " armies available to deploy. " << endl;
     }
 
 }
@@ -440,6 +437,7 @@ void GameEngine::issueOrdersPhase() {
                 }
             }
         }
+
         while (!toAttack->empty()) {
             Territory *enemy_t = toAttack->back(); //pop the enemy's territory
             toAttack->pop_back();
@@ -486,6 +484,8 @@ void GameEngine::executeOrdersPhase() {
     cout <<"ENTERING EXECUTE ORDERS PHASE" << endl;
     int skipped;
     int current = 0;
+    bool deployRound = true;
+    int deployComplete = 0;
     //Until there are no more orders to be executed...
     while (true) {
         //Players execute orders round robin.
@@ -494,23 +494,22 @@ void GameEngine::executeOrdersPhase() {
         }
         Player *current_p = players.at(current);
         OrdersList *orders = current_p->getOrdersList();
-        auto *waiting = new queue<order *>();
-        int stillDeploying = players.size();
         if (!orders->getList()->empty()) {
             //If a player's order's list is not empty, pop it off the top and execute it.
-            order *o = orders->popTop();
-            if (stillDeploying > 0 && o->get_order_type()->compare("Deploy") != 0) {
-                waiting->push(o);
-                stillDeploying--;
-            }
-            else if (!waiting->empty()) {
-                while(!waiting->empty()) {
-                    waiting->front()->execute();
-                    waiting->pop();
+            if (deployRound) {
+                cout << endl << "Deploying " << *current_p << "'s troops...." << endl;
+                order *o = orders->getList()->back();
+                while (o->get_order_type()->compare("Deploy") == 0) {
+                    o->execute();
+                    o = orders->popTop();
+                }
+                deployComplete++;
+                if (deployComplete == players.size()) {
+                    deployRound = false;
                 }
             }
             else {
-                o->execute();
+                    orders->popTop()->execute();
             }
         } else {
             skipped++;

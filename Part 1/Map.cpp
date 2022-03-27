@@ -11,7 +11,7 @@
 Territory::Territory() {
     name = new string("UNKNOWN");
     ID = -1;
-    number_of_armies = -1;
+    number_of_armies = 0;
     edges = nullptr;
     edge_count = 0;
     player = nullptr;
@@ -70,7 +70,7 @@ Territory::~Territory() {
 //OVERLOADED << OPERATOR
 ostream &operator<<(ostream &os, const Territory &territory) {
     os << "ID: " << territory.getId() << "\tName: " << *territory.getName() << "\tContinent: " << *territory.getContinent()->getName();
-    if (territory.getOwner()) {os << "Owner : " << *territory.getOwner();}
+    if (territory.getOwner()) {os << "\tCurrently occupied by : " << *territory.getOwner();}
     return os;
 }
 //METHOD TO ADD EDGES/BORDERS TO AN ARRAY OF TERRITORIES
@@ -354,23 +354,16 @@ void Map::checkContinentOwners() {
     for (int i = 0; i < NUM_OF_CNTS; i++) {
         bool owned = true;
         Player *past_p = continents[i].getTerritories()[0]->getOwner();
-        if (past_p) {
-            cout << *past_p << endl;
-            for (int i = 1; i < continents[i].getNumOfTers(); i++) {
-                if (continents[i].getTerritories()[i]->getOwner() != past_p) {
-                    owned = false;
-                    break;
-                }
-            }
-            if (owned) {
-                cout << *past_p << " currently owns all of " << *continents[i].getName();
-                cout << ", and will receive " << continents[i].getBonus() << " extra armies!" << endl;
-                past_p->addContinent(&continents[i]);
+        for (int i = 1; i < continents[i].getNumOfTers(); i++){
+            if (continents[i].getTerritories()[i]->getOwner() != past_p) {
+                owned = false;
+                break;
             }
         }
-
+        if (owned) {
+            past_p->addContinent(&continents[i]);
+        }
     }
-    cout << "Continent owner check complete" << endl;
 }
 
 //STATIC MAPLOADER METHOD

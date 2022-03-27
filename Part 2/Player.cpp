@@ -118,13 +118,21 @@ vector<Territory *> *Player::toDefend()
             Territory *border = t->getEdges()[i];
             //If the player doesn't own the bordering territory, and if it has armies on it...
             if (border->getOwner() != this && border->getNumberOfArmies() > 0) {
-                out->push_back(t); //add the player's territory to the toDefend list
+                if (border->getNumberOfArmies() > armies) {
+                    out->push_back(t); //add the player's territory to the toDefend list
+                }
                 threat = true;
                 break;
             }
         }
         if (!threat) {
             toMove->push_back(t); //Otherwise, if the territory is not in danger, add it to the toMove list
+        }
+        cout << "Current list of territories to defend (automatic priority) : " << endl;
+        for (Territory *t : *out) {
+            int i;
+            cout << i << ": " <<  *t->getName() << endl;
+            i++;
         }
     }
     return out;
@@ -147,6 +155,15 @@ vector<Territory *> *Player::toAttack()
             }
         }
     }
+    cout << "Current list of territories to attack (automatic priority) : " << endl;
+    int i = 1;
+    for (Territory *t : *out) {
+        if (i%2 ==0) {
+            cout << i << " : " << *t << endl;
+        }
+        i++;
+    }
+
     //return the list of attacks
     return out;
 }

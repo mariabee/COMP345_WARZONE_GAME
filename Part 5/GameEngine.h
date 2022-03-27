@@ -51,6 +51,7 @@ public:
 	State(const State &s);
 	State(std::string n);
 	friend std::ostream& operator<< (std::ostream &out, const State &s);
+    void setState(std::string s);
 	~State();
 	bool isEnd();
 	int getCommandIndex(std::string s);
@@ -61,7 +62,6 @@ private:
 	std::string* name;
 	int index = 0;
 	Transition **transitions = new Transition *[2];
-	Command *acceptedCommands;
 };
 
 class GameEngine
@@ -77,9 +77,9 @@ private:
     Deck* new_deck;
 	int stateCount;
     bool gameOver;
-    bool reinforcementPhase();
-    bool issueOrdersPhase();
-    bool executeOrdersPhase();
+    void reinforcementPhase();
+    void issueOrdersPhase();
+    void executeOrdersPhase();
 public:
 	GameEngine& operator=(const GameEngine &ge);
 	GameEngine(const GameEngine &ge);
@@ -87,6 +87,7 @@ public:
 	friend std::ostream& operator<< (std::ostream &out, const GameEngine &ge);
 	~GameEngine();
 	void build();
+    void start();
 	void startupPhase();
     void distributeTerritories();
     void mainGameLoop();

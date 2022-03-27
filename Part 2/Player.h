@@ -20,6 +20,7 @@ class Player {
         int armies;
 
 	public:
+        Player();
 		Player(std::string);
 		Player &operator=(const Player &p);
 		Player(Player &p);

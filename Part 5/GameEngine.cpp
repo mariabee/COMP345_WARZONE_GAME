@@ -1,5 +1,6 @@
 #include <random>
 #include <algorithm>
+#include <queue>
 #include "GameEngine.h"
 
 
@@ -493,11 +494,24 @@ void GameEngine::executeOrdersPhase() {
         }
         Player *current_p = players.at(current);
         OrdersList *orders = current_p->getOrdersList();
+        auto *waiting = new queue<order *>();
+        int stillDeploying = players.size();
         if (!orders->getList()->empty()) {
             //If a player's order's list is not empty, pop it off the top and execute it.
             order *o = orders->popTop();
-            cout << *o;
-            o->execute();
+            if (stillDeploying > 0 && o->get_order_type()->compare("Deploy") != 0) {
+                waiting->push(o);
+                stillDeploying--;
+            }
+            else if (!waiting->empty()) {
+                while(!waiting->empty()) {
+                    waiting->front()->execute();
+                    waiting->pop();
+                }
+            }
+            else {
+                o->execute();
+            }
         } else {
             skipped++;
         }

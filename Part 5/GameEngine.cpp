@@ -360,29 +360,30 @@ void GameEngine::startupPhase() {
             currentState = states[5];
         }
     } while (!(currentState->getCommandIndex("gamestart")));
+    mainGameLoop();
 }
 
 void GameEngine::mainGameLoop() {
     std::cout << "Main Game Loop starting..." << std::endl;
     gameOver = false;
     map->checkContinentOwners();
-    while (!gameOver) {
-        reinforcementPhase(); //go to states[4]
-        issueOrdersPhase(); //go to states[5]
-        executeOrdersPhase(); //go to states[6]
+    while (currentState != states[7]) {
+        reinforcementPhase();
+        issueOrdersPhase();
+        executeOrdersPhase();
     }
-    bool playAgain = false;
-    if (playAgain) {
-        //go to states[1]
-    }
-    else {
-        //exit() go to win state
+    string playOrEnd;
+    std::cout << "Play or end game?" << std::endl;
+    State *previousState = currentState;
+    while (currentState == previousState) {
+        std::cin >> playOrEnd;
+        currentState->setState(playOrEnd);
     }
 }
 
 
-bool GameEngine::issueOrdersPhase() {
-    currentState->setState("issueorder");
+void GameEngine::issueOrdersPhase() {
+    currentState->setState("issue_order");
     std::cout << "Entering the issue orders phase. " << std::endl;
     //Go through each player
     for (int current = 0; current < players.size(); current++) {
@@ -430,16 +431,11 @@ bool GameEngine::issueOrdersPhase() {
     }
 }
 
-bool GameEngine::reinforcementPhase() {
+void GameEngine::reinforcementPhase() {
+    currentState->setState("assign_reinforcement");
     int n;
     //Go through every player
     for (Player *p: players) {
-        //If player owns all the Territories, the game over.
-        if (p->getTerritoryCount() == map->getNumOfTers()) {
-            cout << *p->getName() << " has won the game!" << endl;
-            gameOver = true;
-            return false;
-        }
         //Otherwise, calculate reinforcement pool and give it to the player.
         n = p->getTerritoryCount() / 3;
         for (Continent *c: *p->getContinents()) {
@@ -450,10 +446,10 @@ bool GameEngine::reinforcementPhase() {
         }
         p->setArmies(n);
     }
-    return true;
 }
 
-bool GameEngine::executeOrdersPhase() {
+void GameEngine::executeOrdersPhase() {
+    currentState->setState("execute_order");
     int skipped;
     int current = 0;
     //Until there are no more orders to be executed...
@@ -473,11 +469,18 @@ bool GameEngine::executeOrdersPhase() {
 
         if (skipped == players.size()) {
             //If all the players have skipped, phase is over and return true
-            return true;
+            break;
         }
         current++;
         if (current == players.size()) {
             current = 0;
+        }
+    }
+    //If player owns all the Territories, the game over.
+    for (Player *p : players) {
+        if (p->getTerritoryCount() == map->getNumOfTers()) {
+            cout << *p->getName() << " has won the game!" << endl;
+            currentState->setState("win");
         }
     }
 }

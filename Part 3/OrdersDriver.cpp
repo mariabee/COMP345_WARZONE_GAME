@@ -1,4 +1,4 @@
-//MAIN METHOD FOR TESTING
+/*//MAIN METHOD FOR TESTING
 #include "Orders.h"
 #include "../Part 2/Player.h"
 
@@ -105,4 +105,4 @@ int main(){
 
 }
 
-
+*/

@@ -437,13 +437,13 @@ void GameEngine::issueOrdersPhase() {
             int n = t->getNumberOfArmies();
             for (Territory *D: *toDefend) { //if that territory borders a toDefend territory, advance troops there
                 if (order::isBeside(t, D)) {
-                    current_p->issueOrder(new Advance(current_p, t, D, n)); //src : t, target : toDefend[i]
+                    current_p->issueOrder(new Advance(current_p, t, D, n, new_deck)); //src : t, target : toDefend[i]
                     moved = true;
                     break;
                 }
             }
             if (!moved) { //otherwise spread the troops out between a bordering territory
-                current_p->issueOrder(new Advance(current_p, t, t->getEdges()[0], n / 2));
+                current_p->issueOrder(new Advance(current_p, t, t->getEdges()[0], n / 2, new_deck));
             }
         }
         while (!toAttack->empty()) {
@@ -452,7 +452,7 @@ void GameEngine::issueOrdersPhase() {
             toAttack->pop_back();
             Territory *enemy_t = toAttack->back(); //pop the enemy's territory
             toAttack->pop_back();
-            current_p->issueOrder(new Advance(current_p, player_t, enemy_t, n)); //Attack it
+            current_p->issueOrder(new Advance(current_p, player_t, enemy_t, n, new_deck)); //Attack it
         }
         //current player issues order from hand somehow...
         Hand *h = current_p->getHand();

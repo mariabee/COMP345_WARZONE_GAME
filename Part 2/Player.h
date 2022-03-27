@@ -52,8 +52,6 @@ class Player {
         bool isCardWon() const;
         vector<Player *> *getCannotAttack() const;
 
-
-
     //Mutators
         void addTerritory(Territory *t);
         bool removeTerritory(Territory *t);
@@ -62,6 +60,7 @@ class Player {
         void setArmies(int armies);
         void setTerritories(vector<Territory *> *t, int count);
         void setCannotAttack(vector<Player *> *cannotAttack);
+        void clearCannotAttack();
         void setCardWon(bool cardWon);
 
 

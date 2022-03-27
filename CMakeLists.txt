@@ -12,19 +12,19 @@ include_directories("Part 5")
 add_executable(COMP345_WARZONE_GAME
         "Part 1/Map.cpp"
         "Part 1/Map.h"
-#       "Part 1/MapDriver.cpp"
+ #      "Part 1/MapDriver.cpp"
         "Part 2/Player.cpp"
         "Part 2/Player.h"
-#        "Part 2/PlayerDriver.cpp"
+#       "Part 2/PlayerDriver.cpp"
         "Part 3/Orders.cpp"
         "Part 3/Orders.h"
-        "Part 3/OrdersDriver.cpp"
+#        "Part 3/OrdersDriver.cpp"
         "Part 4/Cards.cpp"
         "Part 4/Cards.h"
 #        "Part 4/CardsDriver.cpp"
-#        "Part 5/GameEngine.cpp"
-#        "Part 5/GameEngine.h"
-#        "Part 5/GameEngineDriver.cpp"
+        "Part 5/GameEngine.cpp"
+        "Part 5/GameEngine.h"
+        "Part 5/GameEngineDriver.cpp"
         )
      
 

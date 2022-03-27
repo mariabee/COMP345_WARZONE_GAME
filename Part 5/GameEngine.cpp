@@ -394,6 +394,10 @@ void GameEngine::reinforcementPhase() {
     cout << n << endl;
     //Go through every player
     for (Player *p: players) {
+        //Reset flags in player
+        p->setCardWon(false);
+        p->clearCannotAttack();
+
         //Calculate reinforcement pool and give it to the player.
         n = p->getTerritories()->size() / 3;
         for (Continent *c: *p->getContinents()) {
@@ -419,18 +423,27 @@ void GameEngine::issueOrdersPhase() {
         vector<Territory *> *toAttack = current_p->toAttack(); //get list of territories toAttack
         vector<Territory *> *toDefend = current_p->toDefend(); //get list of territories toDefend
         vector<Territory *> *toMove = current_p->getToMove(); //get list of territories to move troops from
-        cout << "FINISHED GENERATING ALL VECTORS" << endl;
         int armies = current_p->getArmies();
+        int split = armies/ (toDefend->size());
         int i = 0;
+        if (split == 0) {
+            split = 1;
+        }
+        else {
+            int remain = armies % (toDefend->size());
+            current_p->issueOrder(new Deploy(current_p, toDefend->at(0), remain));
+            i = 1;
+        }
         while (armies > 0) { //Deploy armies evenly across all the toDefend territories
-            current_p->issueOrder(new Deploy(current_p, toDefend->at(i), 1)); //at toDefend[i]
+            current_p->issueOrder(new Deploy(current_p, toDefend->at(i), split)); //at toDefend[i]
             i++;
             if (i == toDefend->size()) {
                 i = 0;
             }
-            armies--;
+            armies -= split;
+            cout << armies << endl;
         }
-        cout << *current_p << "'S ARMIES HAVE BEEN DEPLOYED TO ALL TERRITORIES TO DEFEND" << endl;
+        cout << *current_p << "'S ARMIES HAVE BEEN DEPLOYED THEIR TERRITORIES TO DEFEND." << endl;
         current_p->setArmies(0); //reset player armies
         for (Territory *t: *toMove) { //for every territory NOT bordering an enemy territory with armies
             bool moved = false;
@@ -474,8 +487,10 @@ void GameEngine::executeOrdersPhase() {
             skipped = 0;
         }
         Player *current_p = players.at(current);
+        cout << *current_p << endl;
         OrdersList *orders = current_p->getOrdersList();
         if (!orders->getList()->empty()) {
+            cout << "LIST IS STILL FULL" << endl;
             //If a player's order's list is not empty, pop it off the top and execute it.
             orders->popTop()->execute();
         } else {

@@ -322,6 +322,10 @@ void Player::setCannotAttack(vector<Player *> *cannotAttack) {
     Player::cannotAttack = cannotAttack;
 }
 
+void Player::clearCannotAttack() {
+    cannotAttack->clear();
+}
+
 
 
 

@@ -1,6 +1,6 @@
 #include "Player.h"
 #include <map>
-
+Player::Player() {}
 // Constructor for Player
 Player::Player(std::string n)
 {
@@ -113,14 +113,14 @@ vector<Territory *> *Player::toDefend()
     toMove->clear(); //reset the toMove
     //Go through all territories bordering the player's
     for (Territory *t : *territories) {
+        cout << *t << endl;
         bool threat = false;
         for (int i = 0; i < t->getEdgeCount(); i++) {
             Territory *border = t->getEdges()[i];
-            //If the player doesn't own the bordering territory, and if it has armies on it...
-            if (border->getOwner() != this && border->getNumberOfArmies() > 0) {
-                if (border->getNumberOfArmies() > armies) {
-                    out->push_back(t); //add the player's territory to the toDefend list
-                }
+            Player *owner = border->getOwner();
+            //If the player doesn't own the bordering territory, and if player has less armies than it...
+            if (owner != nullptr && owner != this && (border->getNumberOfArmies() > armies)) {
+                out->push_back(t); //add the player's territory to the toDefend list
                 threat = true;
                 break;
             }
@@ -128,12 +128,10 @@ vector<Territory *> *Player::toDefend()
         if (!threat) {
             toMove->push_back(t); //Otherwise, if the territory is not in danger, add it to the toMove list
         }
-        cout << "Current list of territories to defend (automatic priority) : " << endl;
-        for (Territory *t : *out) {
-            int i;
-            cout << i << ": " <<  *t->getName() << endl;
-            i++;
-        }
+    }
+    cout << "FINISHED GENERATING TO DEFEND TERRITORIES FOR " << *this << endl;
+    if (out->empty()) {
+        return territories;
     }
     return out;
 }
@@ -155,15 +153,7 @@ vector<Territory *> *Player::toAttack()
             }
         }
     }
-    cout << "Current list of territories to attack (automatic priority) : " << endl;
-    int i = 1;
-    for (Territory *t : *out) {
-        if (i%2 ==0) {
-            cout << i << " : " << *t << endl;
-        }
-        i++;
-    }
-
+    cout << "TERRITORIES TO ATTACK HAVE BEEN GENERATED FOR " << *this << endl;
     //return the list of attacks
     return out;
 }

@@ -307,6 +307,7 @@ void GameEngine::startupPhase() {
             std::cin >> input;
             map = new Map(MapLoader::loadMap(dir + input));
             std::cout << "Map " << input << " loaded successfully" << std::endl;
+            currentState = states[2];
             //               std::cout << map->getTerritories()[2] << std::endl;
         }
 
@@ -314,6 +315,9 @@ void GameEngine::startupPhase() {
             if (!map->validate()) {
                 std::cout << "Map not valid, please reenter a valid map file" << std::endl;
                 currentState = states[0];
+            }
+            else {
+                currentState = states[3];
             }
         }
 
@@ -331,6 +335,7 @@ void GameEngine::startupPhase() {
                 players.push_back(temp_player);
             }
             std::cout << "Players added successfully" << std::endl;
+            currentState = states[4];
         }
 
         if (currentState == states[4]) {
@@ -359,15 +364,16 @@ void GameEngine::startupPhase() {
             }
             currentState = states[5];
         }
-    } while (!(currentState->getCommandIndex("gamestart")));
-    mainGameLoop();
+        mainGameLoop();
+    } while (currentState->getCommandIndex("gamestart") == -1);
+
 }
 
 void GameEngine::mainGameLoop() {
     std::cout << "Main Game Loop starting..." << std::endl;
     gameOver = false;
-    map->checkContinentOwners();
     while (currentState != states[7]) {
+        cout << *currentState << endl;
         reinforcementPhase();
         issueOrdersPhase();
         executeOrdersPhase();
@@ -380,10 +386,32 @@ void GameEngine::mainGameLoop() {
         currentState->setState(playOrEnd);
     }
 }
+void GameEngine::reinforcementPhase() {
+    cout << "Entering reinforcement phase" << endl;
+    //currentState->setState("assign_reinforcement");
+    map->checkContinentOwners();
+    int n;
+    cout << n << endl;
+    //Go through every player
+    for (Player *p: players) {
+        //Calculate reinforcement pool and give it to the player.
+        n = p->getTerritories()->size() / 3;
+        for (Continent *c: *p->getContinents()) {
+            n += c->getBonus();
+        }
+        if (n < 3) {
+            n = 3;
+        }
+        p->setArmies(n);
+        cout << *p << " has been assigned " << n << " armies. " << endl;
+    }
+
+}
+
 
 
 void GameEngine::issueOrdersPhase() {
-    currentState->setState("issue_order");
+    //currentState->setState("issue_order");
     std::cout << "Entering the issue orders phase. " << std::endl;
     //Go through each player
     for (int current = 0; current < players.size(); current++) {
@@ -391,8 +419,9 @@ void GameEngine::issueOrdersPhase() {
         vector<Territory *> *toAttack = current_p->toAttack(); //get list of territories toAttack
         vector<Territory *> *toDefend = current_p->toDefend(); //get list of territories toDefend
         vector<Territory *> *toMove = current_p->getToMove(); //get list of territories to move troops from
+        cout << "FINISHED GENERATING ALL VECTORS" << endl;
         int armies = current_p->getArmies();
-        int i;
+        int i = 0;
         while (armies > 0) { //Deploy armies evenly across all the toDefend territories
             current_p->issueOrder(new Deploy(current_p, toDefend->at(i), 1)); //at toDefend[i]
             i++;
@@ -401,6 +430,7 @@ void GameEngine::issueOrdersPhase() {
             }
             armies--;
         }
+        cout << *current_p << "'S ARMIES HAVE BEEN DEPLOYED TO ALL TERRITORIES TO DEFEND" << endl;
         current_p->setArmies(0); //reset player armies
         for (Territory *t: *toMove) { //for every territory NOT bordering an enemy territory with armies
             bool moved = false;
@@ -431,25 +461,10 @@ void GameEngine::issueOrdersPhase() {
     }
 }
 
-void GameEngine::reinforcementPhase() {
-    currentState->setState("assign_reinforcement");
-    int n;
-    //Go through every player
-    for (Player *p: players) {
-        //Otherwise, calculate reinforcement pool and give it to the player.
-        n = p->getTerritoryCount() / 3;
-        for (Continent *c: *p->getContinents()) {
-            n += c->getBonus();
-        }
-        if (n < 3) {
-            n = 3;
-        }
-        p->setArmies(n);
-    }
-}
 
 void GameEngine::executeOrdersPhase() {
-    currentState->setState("execute_order");
+    //currentState->setState("execute_order");
+    cout <<"ENTERING EXECUTE ORDERS PHASE" << endl;
     int skipped;
     int current = 0;
     //Until there are no more orders to be executed...

@@ -23,6 +23,7 @@ class Player {
         vector<Player *> *cannotAttack;
 
 	public:
+        Player();
 		Player(std::string);
 		Player &operator=(const Player &p);
 		Player(Player &p);

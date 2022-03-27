@@ -93,6 +93,10 @@ public:
     void mainGameLoop();
     void randomizePlayOrder();
     void initializeDeck();
+
+    void initial_start();
+
+    void play();
 };
 
 #endif

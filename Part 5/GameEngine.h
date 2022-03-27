@@ -51,7 +51,6 @@ public:
 	State(const State &s);
 	State(std::string n);
 	friend std::ostream& operator<< (std::ostream &out, const State &s);
-    void setState(std::string s);
 	~State();
 	bool isEnd();
 	int getCommandIndex(std::string s);
@@ -93,7 +92,7 @@ public:
     void mainGameLoop();
     void randomizePlayOrder();
     void initializeDeck();
-
+    void setState(std::string s);
     void initial_start();
 
     void play();

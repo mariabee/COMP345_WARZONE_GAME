@@ -145,8 +145,16 @@ int State::getCommandIndex(std::string s) {
     return -1;
 }
 
-void State::setState(std::string s) {
-    this->getTransition(this->getCommandIndex(std::move(s)))->getState();
+void GameEngine::setState(std::string s) {
+    int index = currentState->getCommandIndex(s);
+    if (index == -1) {
+        std::cout << "No command: \"" << s << "\" usable from current state! Currently at state "
+                  << (*currentState) << std::endl;
+    }
+    else {
+        currentState = currentState->getTransition(currentState->getCommandIndex(std::move(s)))->getState();
+        std::cout << "Transition to state: \"" << (*currentState) << "\"" << std::endl;
+    }
 }
 
 // Function that returns a transition at a certain stored index
@@ -368,7 +376,6 @@ void GameEngine::play() {
 
 void GameEngine::mainGameLoop() {
     std::cout << "Main Game Loop starting..." << std::endl;
-    gameOver = false;
     while (currentState != states[7]) {
         reinforcementPhase();
         issueOrdersPhase();
@@ -379,13 +386,12 @@ void GameEngine::mainGameLoop() {
     State *previousState = currentState;
     while (currentState == previousState) {
         std::cin >> playOrEnd;
-        currentState->setState(playOrEnd);
+        setState(playOrEnd);
     }
 }
 
 void GameEngine::reinforcementPhase() {
     cout << "Entering reinforcement phase" << endl;
-    //currentState->setState("assign_reinforcement");
     map->checkContinentOwners();
     int n;
     //Go through every player
@@ -409,7 +415,7 @@ void GameEngine::reinforcementPhase() {
 }
 
 void GameEngine::issueOrdersPhase() {
-    //currentState->setState("issue_order");
+    setState("issueorder");
     std::cout << "Entering the issue orders phase. " << std::endl;
     //Go through each player
     for (int current = 0; current < players.size(); current++) {
@@ -473,11 +479,12 @@ void GameEngine::issueOrdersPhase() {
             armies -= split;
         }
     }
+    setState("endissueorders");
 }
 
 
 void GameEngine::executeOrdersPhase() {
-    //currentState->setState("execute_order");
+    setState("execorder");
     cout << "ENTERING EXECUTE ORDERS PHASE" << endl;
     int skipped;
     int current = 0;
@@ -523,9 +530,13 @@ void GameEngine::executeOrdersPhase() {
     }
     //If player owns all the Territories, the game over.
     for (Player *p: players) {
-        if (p->getTerritoryCount() == map->getNumOfTers()) {
+        if (p->getTerritories()->size() == map->getNumOfTers()) {
             cout << *p->getName() << " has won the game!" << endl;
-            //currentState->setState("win");
+            setState("win");
         }
     }
+    if (currentState == states[7]) {
+        setState("endexecorders");
+    }
+
 }

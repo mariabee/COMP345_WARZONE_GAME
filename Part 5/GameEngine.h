@@ -77,9 +77,9 @@ private:
     Deck* new_deck;
 	int stateCount;
     bool gameOver;
-    bool reinforcementPhase();
-    bool issueOrdersPhase();
-    bool executeOrdersPhase();
+    void reinforcementPhase();
+    void issueOrdersPhase();
+    void executeOrdersPhase();
 public:
 	GameEngine& operator=(const GameEngine &ge);
 	GameEngine(const GameEngine &ge);

@@ -412,8 +412,6 @@ void GameEngine::reinforcementPhase() {
 
 }
 
-
-
 void GameEngine::issueOrdersPhase() {
     //currentState->setState("issue_order");
     std::cout << "Entering the issue orders phase. " << std::endl;
@@ -470,6 +468,9 @@ void GameEngine::issueOrdersPhase() {
         //current player issues order from hand somehow...
         Hand *h = current_p->getHand();
         int next = current + 1;
+        if (next == players.size()) {
+            next = 0;
+        }
         h->playRound(new_deck, current_p, players[next]);
     }
 }
@@ -490,9 +491,10 @@ void GameEngine::executeOrdersPhase() {
         cout << *current_p << endl;
         OrdersList *orders = current_p->getOrdersList();
         if (!orders->getList()->empty()) {
-            cout << "LIST IS STILL FULL" << endl;
             //If a player's order's list is not empty, pop it off the top and execute it.
-            orders->popTop()->execute();
+            order *o = orders->popTop();
+            cout << "CALLING ORDER : " << *o << endl;
+            o->execute();
         } else {
             skipped++;
         }

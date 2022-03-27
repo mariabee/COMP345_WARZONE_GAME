@@ -208,8 +208,11 @@ void Advance::execute() {
                     start->setNumberOfArmies(start->getNumberOfArmies()-1);
                 }
             }
+            cout << "WORKING " << endl;
             if(target->getNumberOfArmies()==0){
-                (target->getOwner())->removeTerritory(target);
+                if (target->getOwner()) {
+                    (target->getOwner())->removeTerritory(target);
+                }
                 get_player()->addTerritory(target);
                 set_order_effect("New territory has been conquered.");
                 if(!get_player()->isCardWon()){
@@ -226,22 +229,24 @@ void Advance::execute() {
 }
 //VALIDATE
 bool Advance::validate() {
+    cout << "VALIDATING..." << endl;
     if (!start || !target) {
         set_order_effect("Order was missing information and will not be executed.");
         return false;
     }
     if (get_player()->getCannotAttack()->size() > 0) {
+        Player *owner = target->getOwner();
         for (int i = 0; i < get_player()->getCannotAttack()->size(); i++) {
-            if (target->getOwner() == (get_player()->getCannotAttack()->at(i))) {
+            if (owner && owner == (get_player()->getCannotAttack()->at(i))) {
                 set_order_effect("A NEGOTIATION IS IN ORDER. THE ORDER WILL NOT BE EXECUTED");
                 return false;
             }
         }
     }
-    if(start->getOwner() != get_player() || !isBeside(start,target) || start->getNumberOfArmies() < armies){
+    if(!start->getOwner() || start->getOwner() != get_player() || !isBeside(start,target) || start->getNumberOfArmies() < armies){
         set_order_effect("Order was not valid and will not be executed.");
         return false;
-    }else
+    } else
         return true;
 }
 //SETTERS
@@ -377,8 +382,10 @@ Blockade &Blockade::operator=(const Blockade &o) {
 void Blockade::execute() {
     if (validate()) {
         territory->setNumberOfArmies(territory->getNumberOfArmies()*2);
-        territory->getOwner()->removeTerritory(territory);
-        neutral->addTerritory(territory);
+        Player *owner = territory->getOwner();
+        if (owner) {
+            territory->getOwner()->removeTerritory(territory);
+        }
         set_order_effect("Troops have DOUBLED. The territory is now NEUTRAL. ");
     }
     cout << *get_order_effect() << endl;
@@ -528,15 +535,16 @@ Negotiate &Negotiate::operator=(const Negotiate &o) {
 //EXECUTE
 void Negotiate::execute() {
     if (validate()) {
-        (get_player()->getCannotAttack())->push_back(player2);
-        (player2->getCannotAttack())->push_back(get_player());
+        get_player()->getCannotAttack()->push_back(player2);
+        player2->getCannotAttack()->push_back(get_player());
         set_order_effect("Attacks have been prevented until the end of turn.");
     }
     cout << *get_order_effect() << endl;
 }
 //VALIDATE
 bool Negotiate::validate() {
-    if (!player2) {
+
+    if (!player2 || !get_player()) {
         set_order_effect("Order was missing information and will not be executed.");
         return false;
     }

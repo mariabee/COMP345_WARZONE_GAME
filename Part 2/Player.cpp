@@ -113,7 +113,6 @@ vector<Territory *> *Player::toDefend()
     toMove->clear(); //reset the toMove
     //Go through all territories bordering the player's
     for (Territory *t : *territories) {
-        cout << *t << endl;
         bool threat = false;
         for (int i = 0; i < t->getEdgeCount(); i++) {
             Territory *border = t->getEdges()[i];
@@ -129,7 +128,7 @@ vector<Territory *> *Player::toDefend()
             toMove->push_back(t); //Otherwise, if the territory is not in danger, add it to the toMove list
         }
     }
-    cout << "FINISHED GENERATING TO DEFEND TERRITORIES FOR " << *this << endl;
+    cout << "TERRITORIES TO DEFEND HAVE BEEN GENERATED FOR " << *this << endl;
     if (out->empty()) {
         return territories;
     }
@@ -154,7 +153,6 @@ vector<Territory *> *Player::toAttack()
         }
     }
     cout << "TERRITORIES TO ATTACK HAVE BEEN GENERATED FOR " << *this << endl;
-    //return the list of attacks
     return out;
 }
 
@@ -238,6 +236,10 @@ int Player::getTerritoryCount() const {
 
 void Player::addTerritory(Territory *t) {
     territories->push_back(t);
+    Player *owner = t->getOwner();
+    if (owner) {
+        t->getOwner()->removeTerritory(t);
+    }
     t->changeOwner(this);
     territoryCount++;
 }
@@ -268,6 +270,10 @@ bool Player::removeTerritory(Territory *toRemove) {
 }
 void Player::addContinent(Continent *c) {
     //add continent to player, and player to continent
+    Player *owner = c->getOwner();
+    if (owner) {
+        owner->removeContinent(c);
+    }
     continents->push_back(c);
     c->setOwner(this);
 }

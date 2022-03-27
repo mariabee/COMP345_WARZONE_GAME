@@ -418,6 +418,7 @@ void GameEngine::issueOrdersPhase() {
     //Go through each player
     for (int current = 0; current < players.size(); current++) {
         Player *current_p = players.at(current); //get current player
+        cout << "CURRENT PLAYER : " << *current_p << endl;
         vector<Territory *> *toAttack = current_p->toAttack(); //get list of territories toAttack
         vector<Territory *> *toDefend = current_p->toDefend(); //get list of territories toDefend
         vector<Territory *> *toMove = current_p->getToMove(); //get list of territories to move troops from
@@ -429,8 +430,10 @@ void GameEngine::issueOrdersPhase() {
         }
         else {
             int remain = armies % (toDefend->size());
-            current_p->issueOrder(new Deploy(current_p, toDefend->at(0), remain));
-            i = 1;
+            if (remain > 0) {
+                current_p->issueOrder(new Deploy(current_p, toDefend->at(0), remain));
+                i = 1;
+            }
         }
         while (armies > 0) { //Deploy armies evenly across all the toDefend territories
             current_p->issueOrder(new Deploy(current_p, toDefend->at(i), split)); //at toDefend[i]
@@ -439,10 +442,10 @@ void GameEngine::issueOrdersPhase() {
                 i = 0;
             }
             armies -= split;
-            cout << armies << endl;
         }
         cout << *current_p << "'S ARMIES HAVE BEEN DEPLOYED THEIR TERRITORIES TO DEFEND." << endl;
         current_p->setArmies(0); //reset player armies
+
         for (Territory *t: *toMove) { //for every territory NOT bordering an enemy territory with armies
             bool moved = false;
             int n = t->getNumberOfArmies();
@@ -454,15 +457,18 @@ void GameEngine::issueOrdersPhase() {
                 }
             }
             if (!moved) { //otherwise spread the troops out between a bordering territory
-                current_p->issueOrder(new Advance(current_p, t, t->getEdges()[0], n / 2, new_deck));
+                if (t->getEdgeCount() > 0) {
+                    cout << *t->getEdges()[0] << endl;
+                    current_p->issueOrder(new Advance(current_p, t, t->getEdges()[0], n / 2, new_deck));
+                }
             }
         }
         while (!toAttack->empty()) {
-            Territory *player_t = toAttack->back(); //pop the player territory bordering an enemy's
-            int n = player_t->getNumberOfArmies();
-            toAttack->pop_back();
             Territory *enemy_t = toAttack->back(); //pop the enemy's territory
             toAttack->pop_back();
+            Territory *player_t = toAttack->back(); //pop the player territory bordering an enemy's
+            toAttack->pop_back();
+            int n = player_t->getNumberOfArmies();
             current_p->issueOrder(new Advance(current_p, player_t, enemy_t, n, new_deck)); //Attack it
         }
         //current player issues order from hand somehow...
@@ -512,7 +518,7 @@ void GameEngine::executeOrdersPhase() {
     for (Player *p : players) {
         if (p->getTerritoryCount() == map->getNumOfTers()) {
             cout << *p->getName() << " has won the game!" << endl;
-            currentState->setState("win");
+            //currentState->setState("win");
         }
     }
 }

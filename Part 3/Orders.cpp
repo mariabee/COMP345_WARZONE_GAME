@@ -208,7 +208,6 @@ void Advance::execute() {
                     start->setNumberOfArmies(start->getNumberOfArmies()-1);
                 }
             }
-            cout << "WORKING " << endl;
             if(target->getNumberOfArmies()==0){
                 if (target->getOwner()) {
                     (target->getOwner())->removeTerritory(target);
@@ -229,12 +228,12 @@ void Advance::execute() {
 }
 //VALIDATE
 bool Advance::validate() {
-    cout << "VALIDATING..." << endl;
     if (!start || !target) {
         set_order_effect("Order was missing information and will not be executed.");
         return false;
     }
     if (get_player()->getCannotAttack()->size() > 0) {
+        cout << *target << endl;
         Player *owner = target->getOwner();
         for (int i = 0; i < get_player()->getCannotAttack()->size(); i++) {
             if (owner && owner == (get_player()->getCannotAttack()->at(i))) {

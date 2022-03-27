@@ -14,14 +14,11 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="fb62c439-f59a-4880-90da-ca031f99db12" name="Changes" comment="maria edits">
+    <list default="true" id="fb62c439-f59a-4880-90da-ca031f99db12" name="Changes" comment="added comments for clarification">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Part 2/Player.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Part 2/Player.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Part 5/GameEngine.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Part 5/GameEngine.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Part 5/GameEngine.h" beforeDir="false" afterPath="$PROJECT_DIR$/Part 5/GameEngine.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/COMP345_WARZONE_GAME.dir/Part_1/Map.cpp.obj" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/COMP345_WARZONE_GAME.dir/Part_1/Map.cpp.obj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/COMP345_WARZONE_GAME.dir/Part_2/Player.cpp.obj" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/COMP345_WARZONE_GAME.dir/Part_2/Player.cpp.obj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/COMP345_WARZONE_GAME.dir/Part_3/Orders.cpp.obj" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/COMP345_WARZONE_GAME.dir/Part_3/Orders.cpp.obj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/COMP345_WARZONE_GAME.dir/Part_4/Cards.cpp.obj" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/COMP345_WARZONE_GAME.dir/Part_4/Cards.cpp.obj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Part 5/GameEngineDriver.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Part 5/GameEngineDriver.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -153,7 +150,7 @@
       <workItem from="1648160002997" duration="1081000" />
       <workItem from="1648163287344" duration="2590000" />
       <workItem from="1648320727881" duration="6892000" />
-      <workItem from="1648328725904" duration="4719000" />
+      <workItem from="1648328725904" duration="8417000" />
     </task>
     <task id="LOCAL-00001" summary="Moved OrdersList into Orders files, and created seperated Driver file to run testing.">
       <created>1643149106708</created>
@@ -358,7 +355,14 @@
       <option name="project" value="LOCAL" />
       <updated>1648332524364</updated>
     </task>
-    <option name="localTasksCounter" value="31" />
+    <task id="LOCAL-00031" summary="added comments for clarification">
+      <created>1648333497875</created>
+      <option name="number" value="00031" />
+      <option name="presentableId" value="LOCAL-00031" />
+      <option name="project" value="LOCAL" />
+      <updated>1648333497875</updated>
+    </task>
+    <option name="localTasksCounter" value="32" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -390,7 +394,7 @@
                   <entry key="branch">
                     <value>
                       <list>
-                        <option value="Maria" />
+                        <option value="Maria_Edits" />
                       </list>
                     </value>
                   </entry>
@@ -433,7 +437,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Added method to see if map is connected, and added method for adding territories to the map (hopefully to make it easier for harry)" />
     <MESSAGE value="git making me do this" />
     <MESSAGE value="Created continent sub graph" />
     <MESSAGE value="Added mapLoader to Map.cpp, made all strings pointers, and added continent subgraph" />
@@ -458,7 +461,8 @@
     <MESSAGE value="player owner-territory relationship implemented" />
     <MESSAGE value="Added comments to clarify" />
     <MESSAGE value="maria edits" />
-    <option name="LAST_COMMIT_MESSAGE" value="maria edits" />
+    <MESSAGE value="added comments for clarification" />
+    <option name="LAST_COMMIT_MESSAGE" value="added comments for clarification" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

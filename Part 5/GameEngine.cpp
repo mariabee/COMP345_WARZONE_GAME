@@ -379,16 +379,16 @@ void GameEngine::mainGameLoop() {
     gameOver = false;
     map->checkContinentOwners();
     while (!gameOver) {
-        reinforcementPhase();
-        issueOrdersPhase();
-        executeOrdersPhase();
+        reinforcementPhase(); //go to states[4]
+        issueOrdersPhase(); //go to states[5]
+        executeOrdersPhase(); //go to states[6]
     }
     bool playAgain = false;
     if (playAgain) {
-        startupPhase();
+        //go to states[1]
     }
     else {
-        //exit() ?
+        //exit() go to win state
     }
 }
 

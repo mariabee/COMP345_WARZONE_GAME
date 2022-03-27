@@ -5,6 +5,7 @@
 #include "../Part 1/Map.h"
 using namespace std;
 
+class Deck;
 //BASE CLASS 
 class order {
 public:
@@ -63,11 +64,12 @@ private:
     Territory* start;
     Territory* target;
     int armies;
+    Deck *deck;
     bool validate() override;
 public:
     //Constructors
     Advance();
-    Advance(Player*,Territory*, Territory*, int);
+    Advance(Player*,Territory*, Territory*, int,Deck*);
     Advance(const Advance& other);
     Advance& operator=(const Advance& other);
     void execute() override;

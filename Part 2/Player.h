@@ -7,6 +7,7 @@
 #include <string>
 
 class Hand;
+class Deck;
 
 class Player {
 	private:
@@ -18,6 +19,8 @@ class Player {
 		int territoryCount = 0;
 		Hand* hand;
         int armies;
+        bool cardWon;
+        vector<Player *> *cannotAttack;
 
 	public:
 		Player(std::string);
@@ -45,14 +48,20 @@ class Player {
         int getArmies() const;
         int getTerritoryCount() const;
         string *getName() const;
+        bool isCardWon() const;
+        vector<Player *> *getCannotAttack() const;
 
-        //Mutators
+
+
+    //Mutators
         void addTerritory(Territory *t);
         bool removeTerritory(Territory *t);
         void addContinent(Continent *c);
         bool removeContinent(Continent *c);
         void setArmies(int armies);
         void setTerritories(vector<Territory *> *t, int count);
+        void setCannotAttack(vector<Player *> *cannotAttack);
+        void setCardWon(bool cardWon);
 
 
 };

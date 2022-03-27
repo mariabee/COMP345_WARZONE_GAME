@@ -11,7 +11,7 @@
 Territory::Territory() {
     name = new string("UNKNOWN");
     ID = -1;
-    number_of_armies = -1;
+    number_of_armies = 0;
     edges = nullptr;
     edge_count = 0;
     player = nullptr;
@@ -70,7 +70,7 @@ Territory::~Territory() {
 //OVERLOADED << OPERATOR
 ostream &operator<<(ostream &os, const Territory &territory) {
     os << "ID: " << territory.getId() << "\tName: " << *territory.getName() << "\tContinent: " << *territory.getContinent()->getName();
-    if (territory.getOwner()) {os << "Currently occupied by : " << *territory.getOwner();}
+    if (territory.getOwner()) {os << "\tCurrently occupied by : " << *territory.getOwner();}
     return os;
 }
 //METHOD TO ADD EDGES/BORDERS TO AN ARRAY OF TERRITORIES

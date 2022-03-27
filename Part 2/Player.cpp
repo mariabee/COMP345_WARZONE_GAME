@@ -11,6 +11,8 @@ Player::Player(std::string n)
     continents = new vector<Continent *>();
     toMove = new vector<Territory *>();
     armies = 3;
+    cardWon= false;
+    cannotAttack = new vector<Player *>();
 }
 
 // Assignment operator overload for Player
@@ -38,6 +40,11 @@ Player &Player::operator=(const Player &p)
         continents->push_back(c);
     }
 	orderList = new OrdersList(*p.orderList);
+    cannotAttack = new vector<Player *>();
+    for (Player* p: *p.cannotAttack)
+    {
+        cannotAttack->push_back(p);
+    }
 	return *this;
 }
 
@@ -57,6 +64,12 @@ Player::Player(Player &p) {
         territories->push_back(t);
     }
     orderList = new OrdersList(*p.getOrdersList());
+    cardWon = p.cardWon;
+    cannotAttack = new vector<Player *>();
+    for (Player* p: *p.cannotAttack)
+    {
+        cannotAttack->push_back(p);
+    }
 }
 
 // Stream insertion operator overload for Player
@@ -77,6 +90,8 @@ Player::~Player()
 	delete[] territories;
     delete[] continents;
     delete[] toMove;
+    delete cannotAttack;
+
 }
 
 // Function that returns a pointer to the players hand
@@ -283,6 +298,26 @@ vector<Territory *> *Player::getToMove() {
 string *Player::getName() const {
     return name;
 }
+
+bool Player::isCardWon() const {
+    return cardWon;
+}
+
+void Player::setCardWon(bool cardWon) {
+    Player::cardWon = cardWon;
+}
+
+vector<Player *> *Player::getCannotAttack() const {
+    return cannotAttack;
+}
+
+void Player::setCannotAttack(vector<Player *> *cannotAttack) {
+    Player::cannotAttack = cannotAttack;
+}
+
+
+
+
 
 
 

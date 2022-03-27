@@ -58,7 +58,7 @@ class Player {
         void addContinent(Continent *c);
         bool removeContinent(Continent *c);
         void setArmies(int armies);
-        void setTerritories(vector<Territory *> *t, int count);
+        void setTerritories(vector<Territory *> *t);
         void setCannotAttack(vector<Player *> *cannotAttack);
         void clearCannotAttack();
         void setCardWon(bool cardWon);

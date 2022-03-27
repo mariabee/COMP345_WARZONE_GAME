@@ -157,39 +157,39 @@ vector<Territory *> *Player::toAttack()
 }
 
 // Function that sets the Player's territories to a given list and count
-void Player::setTerritories(vector<Territory *> *t, int count)
+void Player::setTerritories(vector<Territory *> *t)
 {
 	territories = t;
     for (Territory *territory : *t) {
         territory->changeOwner(this);
     }
-	territoryCount = count;
+	territoryCount = t->size();
 }
 
 //ISSUE ORDERS
 void Player::issueOrder(Deploy* d) {
     orderList->add(d);
-    std::cout << "Player - Successfully issued order: DEPLOY \n ";
+    std::cout << *d;
 }
 void Player::issueOrder(Advance* a) {
     orderList->add(a);
-    std::cout << "Player - Successfully issued order: ADVANCE \n";
+    std::cout << *a;
 }
 void Player::issueOrder(Bomb* b) {
     orderList->add(b);
-    std::cout << "Player - Successfully issued order: BOMB \n";
+    std::cout << *b;
 }
 void Player::issueOrder(Blockade* b) {
     orderList->add(b);
-    std::cout << "Player - Successfully issued order: BLOCKADE \n";
+    std::cout << *b;
 }
 void Player::issueOrder(Airlift* b) {
     orderList->add(b);
-    std::cout << "Player - Successfully issued order: AIRLIFT \n";
+    std::cout << *b;
 }
 void Player::issueOrder(Negotiate* b) {
     orderList->add(b);
-    std::cout << "Player - Successfully issued order: DIPLOMACY \n";
+    std::cout << *b;
 }
 
 // Function that creates an order based on the type passed as a string
@@ -235,12 +235,17 @@ int Player::getTerritoryCount() const {
 }
 
 void Player::addTerritory(Territory *t) {
-    territories->push_back(t);
     Player *owner = t->getOwner();
     if (owner) {
-        t->getOwner()->removeTerritory(t);
+        if (owner != this) {
+            t->getOwner()->removeTerritory(t);
+            territories->push_back(t);
+        }
     }
-    t->changeOwner(this);
+    else {
+        t->changeOwner(this);
+        territories->push_back(t);
+    }
     territoryCount++;
 }
 
@@ -271,9 +276,6 @@ bool Player::removeTerritory(Territory *toRemove) {
 void Player::addContinent(Continent *c) {
     //add continent to player, and player to continent
     Player *owner = c->getOwner();
-    if (owner) {
-        owner->removeContinent(c);
-    }
     continents->push_back(c);
     c->setOwner(this);
 }

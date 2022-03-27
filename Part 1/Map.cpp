@@ -356,7 +356,6 @@ void Map::checkContinentOwners() {
         bool owned = true;
         Player *past_p = continents[i].getTerritories()[0]->getOwner();
         if (past_p) {
-            cout << *past_p << endl;
             for (int i = 1; i < continents[i].getNumOfTers(); i++) {
                 if (continents[i].getTerritories()[i]->getOwner() != past_p) {
                     owned = false;

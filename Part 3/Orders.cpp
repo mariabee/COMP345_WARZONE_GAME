@@ -108,13 +108,12 @@ Deploy &Deploy::operator=(const Deploy &o)  {
 //EXECUTE
 void Deploy::execute() {
     if (validate()) {
-        territory->setNumberOfArmies(territory->getNumberOfArmies()+numberOfArmies);
-        territory->setNumberOfArmies(territory->getNumberOfArmies()+numberOfArmies);
+        int n = territory->getNumberOfArmies() + numberOfArmies;
+        territory->setNumberOfArmies(n);
         get_player()->setArmies(get_player()->getArmies()-numberOfArmies);
-        cout<<*territory->getName()<<" has now "<<territory->getNumberOfArmies()<<" armies.\n";
+        cout<<*territory->getName()<<" has now "<< n <<" armies.\n";
         set_order_effect("Armies have been deployed.");
     }
-    cout << *get_order_effect() << endl;
 }
 //VALIDATE
 bool Deploy::validate() {
@@ -126,7 +125,7 @@ bool Deploy::validate() {
         return false;
     }
     if (numberOfArmies > get_player()->getArmies()){
-        set_order_effect("Order was not valid and will not be executed.");
+        set_order_effect("Player does not have enough armies.");
         return false;
     }else
         return true;

@@ -87,12 +87,13 @@ public:
 	friend std::ostream& operator<< (std::ostream &out, const GameEngine &ge);
 	~GameEngine();
 	void build();
-    void start();
+    void initial_start();
 	void startupPhase();
     void distributeTerritories();
     void mainGameLoop();
     void randomizePlayOrder();
     void initializeDeck();
+    void play();
 };
 
 #endif

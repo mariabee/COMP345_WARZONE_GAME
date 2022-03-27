@@ -14,7 +14,19 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="fb62c439-f59a-4880-90da-ca031f99db12" name="Changes" comment="Finished PART4 (working on the driver but like classes are done)" />
+    <list default="true" id="fb62c439-f59a-4880-90da-ca031f99db12" name="Changes" comment="Finished PART4 (working on the driver but like classes are done)">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Part 5/GameEngine.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Part 5/GameEngine.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Part 5/GameEngine.h" beforeDir="false" afterPath="$PROJECT_DIR$/Part 5/GameEngine.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Part 5/GameEngineDriver.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Part 5/GameEngineDriver.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/.ninja_deps" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/.ninja_deps" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/.ninja_log" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/.ninja_log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeCache.txt" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeCache.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/COMP345_WARZONE_GAME.exe" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/COMP345_WARZONE_GAME.exe" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/Testing/Temporary/LastTest.log" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/Testing/Temporary/LastTest.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/build.ninja" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/build.ninja" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/cmake_install.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/cmake_install.cmake" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -105,12 +117,12 @@
     </key>
   </component>
   <component name="RunManager">
-    <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
+    <configuration name="COMP345_WARZONE_GAME" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="COMP345_WARZONE_GAME" TARGET_NAME="COMP345_WARZONE_GAME" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="COMP345_WARZONE_GAME" RUN_TARGET_NAME="COMP345_WARZONE_GAME">
       <method v="2">
-        <option name="CLION.EXTERNAL.BUILD" enabled="true" />
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration name="COMP345_WARZONE_GAME" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="COMP345_WARZONE_GAME" TARGET_NAME="COMP345_WARZONE_GAME" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="COMP345_WARZONE_GAME" RUN_TARGET_NAME="COMP345_WARZONE_GAME">
+    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
@@ -150,6 +162,7 @@
       <workItem from="1648320727881" duration="6892000" />
       <workItem from="1648328725904" duration="4719000" />
       <workItem from="1648346431163" duration="2830000" />
+      <workItem from="1648409595757" duration="2697000" />
     </task>
     <task id="LOCAL-00001" summary="Moved OrdersList into Orders files, and created seperated Driver file to run testing.">
       <created>1643149106708</created>

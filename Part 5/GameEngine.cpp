@@ -81,7 +81,6 @@ State *Transition::getState() {
 }
 
 
-
 // Function that returns a boolean corresponding to whether the string matches the current transition's command
 bool Transition::matches(std::string s) {
     return on->matches(s);
@@ -238,7 +237,6 @@ void GameEngine::initializeDeck() {
 }
 
 
-
 // Function that builds the transition graph corresponding to the game engine, game state and commands.
 void GameEngine::build() {
 
@@ -276,11 +274,11 @@ void GameEngine::build() {
 }
 
 // Function that starts the game engine, which waits for player input.
-void GameEngine::start() {
+void GameEngine::initial_start() {
     std::string input;
     int index;
-
-    while (!currentState->isEnd()) {
+    std::cout << *currentState << std::endl;
+    while (currentState != states[5]) {
         std::cin >> input;
         if ((index = currentState->getCommandIndex(input)) == -1)
             std::cout << "No command: \"" << input << "\" usable from current state! Currently at state "
@@ -300,34 +298,28 @@ void GameEngine::startupPhase() {
     Player *temp_player;
     int num_of_players;
 
-    do {
 
-        if (currentState == states[1]) {
-            std::cout << "Enter the map you want to load in the game: " << std::endl;
-            std::cin >> input;
-            map = new Map(MapLoader::loadMap(dir + input));
-            std::cout << "Map " << input << " loaded successfully" << std::endl;
-            currentState = states[2];
-            //               std::cout << map->getTerritories()[2] << std::endl;
+    if (currentState == states[1]) {
+        std::cout << "Enter the map you want to load in the game: " << std::endl;
+        std::cin >> input;
+        map = new Map(MapLoader::loadMap(dir + input));
+        std::cout << "Map " << input << " loaded successfully" << std::endl;
+        //               std::cout << map->getTerritories()[2] << std::endl;
+    }
+
+    if (currentState == states[2]) {
+        if (!map->validate()) {
+            std::cout << "Map not valid, please reenter a valid map file" << std::endl;
+            currentState = states[0];
         }
+    }
 
-        if (currentState == states[2]) {
-            if (!map->validate()) {
-                std::cout << "Map not valid, please reenter a valid map file" << std::endl;
-                currentState = states[0];
-            }
-            else {
-                currentState = states[3];
-            }
-        }
-
-        if (currentState == states[3]) {
-            std::cout << "Enter the number of players joining the game (2-6): " << std::endl;
-            std::cin >> num_of_players;
-            if (num_of_players + players.size() > MAX_NUM_PLAYERS) {
-                std::cout << "Max number of players reached, failed to add these players!" << std::endl;
-                continue;
-            }
+    if (currentState == states[3]) {
+        std::cout << "Enter the number of players joining the game (2-6): " << std::endl;
+        std::cin >> num_of_players;
+        if (num_of_players + players.size() > MAX_NUM_PLAYERS) {
+            std::cout << "Max number of players reached, failed to add these players!" << std::endl;
+        } else {
             for (int i{0}; i < num_of_players; i++) {
                 std::cout << "Enter the player's name: " << std::endl;
                 std::cin >> input;
@@ -335,39 +327,43 @@ void GameEngine::startupPhase() {
                 players.push_back(temp_player);
             }
             std::cout << "Players added successfully" << std::endl;
-            currentState = states[4];
         }
+    }
 
-        if (currentState == states[4]) {
-            if (players.size() < MIN_NUM_PLAYERS) {
-                std::cout << "Not enough players! Waiting for more players to join!" << std::endl;
-                currentState = states[3];
-            } else {
-                distributeTerritories();
+    if (currentState == states[4]) {
+        if (players.size() < MIN_NUM_PLAYERS) {
+            std::cout << "Not enough players! Waiting for more players to join!" << std::endl;
+            currentState = states[3];
+        } else {
+            distributeTerritories();
 //                    std::cout << *(players.at(0)->getTerritories()->at(2)->getName()) << std::endl;
-                randomizePlayOrder();
-                std::cout << "The order of turn is as follow: ";
-                for (int i{0}; i < players.size() - 1; i++)
-                    std::cout << " || Player " << *(players.at(i)) << " ";
-                std::cout << " || Player " << *(players.at(players.size() - 1)) << " || ";
-                std::cout << std::endl;
+            randomizePlayOrder();
+            std::cout << "The order of turn is as follow: ";
+            for (int i{0}; i < players.size() - 1; i++)
+                std::cout << " || Player " << *(players.at(i)) << " ";
+            std::cout << " || Player " << *(players.at(players.size() - 1)) << " || ";
+            std::cout << std::endl;
 //                    std::cout << *(players.at(0)->getTerritories()->at(2)->getName()) << std::endl;
-                initializeDeck();
-                for (int i{0}; i < players.size(); i++) {
-                    players.at(i)->setArmies(50);
-                    std::cout << "Player " << *(players.at(i)) << " currently has " << players.at(i)->getArmies()
-                              << " reserved troops in their inventory." << std::endl;
-                    std::cout << "Player " << *(players.at(i)) << " will now pick 2 cards from the deck!" << std::endl;
-                    players.at(i)->getHand()->drawFromDeck(new_deck);
-                    players.at(i)->getHand()->drawFromDeck(new_deck);
-                }
+            initializeDeck();
+            for (int i{0}; i < players.size(); i++) {
+                players.at(i)->setArmies(50);
+                std::cout << "Player " << *(players.at(i)) << " currently has " << players.at(i)->getArmies()
+                          << " reserved troops in their inventory." << std::endl;
+                std::cout << "Player " << *(players.at(i)) << " will now pick 2 cards from the deck!" << std::endl;
+                players.at(i)->getHand()->drawFromDeck(new_deck);
+                players.at(i)->getHand()->drawFromDeck(new_deck);
             }
-            currentState = states[5];
         }
-        mainGameLoop();
-    } while (currentState->getCommandIndex("gamestart") == -1);
+        currentState = states[5];
+    }
 
 }
+
+void GameEngine::play() {
+    initial_start();
+    mainGameLoop();
+}
+
 
 void GameEngine::mainGameLoop() {
     std::cout << "Main Game Loop starting..." << std::endl;
@@ -386,9 +382,12 @@ void GameEngine::mainGameLoop() {
         currentState->setState(playOrEnd);
     }
 }
+
 void GameEngine::reinforcementPhase() {
     cout << "Entering reinforcement phase" << endl;
+    std::cout << *currentState << std::endl;
     //currentState->setState("assign_reinforcement");
+
     map->checkContinentOwners();
     int n;
     cout << n << endl;
@@ -423,12 +422,11 @@ void GameEngine::issueOrdersPhase() {
         vector<Territory *> *toDefend = current_p->toDefend(); //get list of territories toDefend
         vector<Territory *> *toMove = current_p->getToMove(); //get list of territories to move troops from
         int armies = current_p->getArmies();
-        int split = armies/ (toDefend->size());
+        int split = armies / (toDefend->size());
         int i = 0;
         if (split == 0) {
             split = 1;
-        }
-        else {
+        } else {
             int remain = armies % (toDefend->size());
             if (remain > 0) {
                 current_p->issueOrder(new Deploy(current_p, toDefend->at(0), remain));
@@ -484,7 +482,7 @@ void GameEngine::issueOrdersPhase() {
 
 void GameEngine::executeOrdersPhase() {
     //currentState->setState("execute_order");
-    cout <<"ENTERING EXECUTE ORDERS PHASE" << endl;
+    cout << "ENTERING EXECUTE ORDERS PHASE" << endl;
     int skipped;
     int current = 0;
     //Until there are no more orders to be executed...
@@ -515,10 +513,10 @@ void GameEngine::executeOrdersPhase() {
         }
     }
     //If player owns all the Territories, the game over.
-    for (Player *p : players) {
+    for (Player *p: players) {
         if (p->getTerritoryCount() == map->getNumOfTers()) {
             cout << *p->getName() << " has won the game!" << endl;
-            //currentState->setState("win");
+           // currentState->setState("win");
         }
     }
 }

@@ -311,6 +311,14 @@ bool Bomb::validate() {
         set_order_effect("Order was missing information and will not be executed.");
         return false;
     }
+    if (get_player()->getCannotAttack()->size() > 0) {
+        for (int i = 0; i < get_player()->getCannotAttack()->size(); i++) {
+            if (target->getOwner() == (get_player()->getCannotAttack()->at(i))) {
+                set_order_effect("A NEGOTIATION IS IN ORDER. THE ORDER WILL NOT BE EXECUTED");
+                return false;
+            }
+        }
+    }
     if(start->getOwner() != get_player() || target->getOwner() == get_player() || !isBeside(start,target)){
         set_order_effect("Order was not valid and will not be executed.");
         return false;
@@ -523,8 +531,8 @@ void Negotiate::execute() {
         (get_player()->getCannotAttack())->push_back(player2);
         (player2->getCannotAttack())->push_back(get_player());
         set_order_effect("Attacks have been prevented until the end of turn.");
-        cout << *get_order_effect() << endl;
     }
+    cout << *get_order_effect() << endl;
 }
 //VALIDATE
 bool Negotiate::validate() {

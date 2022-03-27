@@ -92,6 +92,16 @@ int main(){
     cout<<*(map->getTerritories()+3);
 
     //NEGOTIATE ORDER
+    cout<<"\nOWEN(P2) NEGOTIATES WITH HIMSELF\n";
+    Negotiate *negotiate = new Negotiate(p2,p2);
+    negotiate->execute();
+    cout<<"\nOWEN(P2) NEGOTIATES WITH CRISTINA(P1)\n";
+    Negotiate *negotiate1 = new Negotiate(p2,p1);
+    negotiate1->execute();
+    cout<<"\nCRISTINA(P1) BOMBS OWEN\n";
+    p2->addTerritory(map->getTerritories()+3);
+    Bomb *bomb3 = new Bomb(p1,map->getTerritories()+1,map->getTerritories()+3);
+    bomb3->execute();
 
 }
 

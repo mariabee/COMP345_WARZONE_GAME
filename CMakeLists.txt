@@ -18,14 +18,13 @@ add_executable(COMP345_WARZONE_GAME
 #        "Part 2/PlayerDriver.cpp"
         "Part 3/Orders.cpp"
         "Part 3/Orders.h"
-#        "Part 3/OrdersDriver.cpp"
+        "Part 3/OrdersDriver.cpp"
         "Part 4/Cards.cpp"
         "Part 4/Cards.h"
 #        "Part 4/CardsDriver.cpp"
-        "Part 5/GameEngine.cpp"
-        "Part 5/GameEngine.h"
-        "Part 5/GameEngineDriver.cpp"
-#        "Part 3/OrdersDriver.cpp"
+#        "Part 5/GameEngine.cpp"
+#        "Part 5/GameEngine.h"
+#        "Part 5/GameEngineDriver.cpp"
         )
      
 

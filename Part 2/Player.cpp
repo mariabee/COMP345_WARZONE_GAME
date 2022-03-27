@@ -169,27 +169,21 @@ void Player::setTerritories(vector<Territory *> *t)
 //ISSUE ORDERS
 void Player::issueOrder(Deploy* d) {
     orderList->add(d);
-    std::cout << *d;
 }
 void Player::issueOrder(Advance* a) {
     orderList->add(a);
-    std::cout << *a;
 }
 void Player::issueOrder(Bomb* b) {
     orderList->add(b);
-    std::cout << *b;
 }
 void Player::issueOrder(Blockade* b) {
     orderList->add(b);
-    std::cout << *b;
 }
 void Player::issueOrder(Airlift* b) {
     orderList->add(b);
-    std::cout << *b;
 }
 void Player::issueOrder(Negotiate* b) {
     orderList->add(b);
-    std::cout << *b;
 }
 
 // Function that creates an order based on the type passed as a string

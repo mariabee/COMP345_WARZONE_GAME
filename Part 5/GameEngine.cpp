@@ -3,6 +3,7 @@
 #include "GameEngine.h"
 
 
+
 // Assignment operator overload for Command
 Command &Command::operator=(const Command &c) {
     delete command;
@@ -35,6 +36,11 @@ Command::Command(std::string c) {
 // Function that returns a boolean corresponding to whether a given string matches the command
 bool Command::matches(std::string s) {
     return *command == s;
+}
+
+//Function to store the effect of a command 
+void Command::saveEffect(Command &c){
+    std::cout << "saveEffect called()"; 
 }
 
 // Assignment operator overload for Transition
@@ -279,9 +285,9 @@ void GameEngine::build() {
 void GameEngine::start() {
     std::string input;
     int index;
-
+    CommandProcessor cp = CommandProcessor();
     while (!currentState->isEnd()) {
-        std::cin >> input;
+        cp.getCommand();
         if ((index = currentState->getCommandIndex(input)) == -1)
             std::cout << "No command: \"" << input << "\" usable from current state! Currently at state "
                       << (*currentState) << std::endl;
@@ -290,7 +296,6 @@ void GameEngine::start() {
             std::cout << "Transition to state: \"" << (*currentState) << "\"" << std::endl;
             startupPhase();
         }
-
     }
 }
 

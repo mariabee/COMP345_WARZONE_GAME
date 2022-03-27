@@ -4,11 +4,14 @@
 #include <string>
 #include <vector>
 #include <iostream>
-#include "Player.h"
-#include "Map.h"
+#include "../Part2/Player.h"
+#include "../Part1/Map.h"
+
 
 #define START_STATE "start"
 #define END_STATE "end"
+
+extern class CommandProcessor cp; 
 
 class State;
 
@@ -19,12 +22,15 @@ public:
 	Command& operator=(const Command &c);
 	Command(const Command &c);
 	Command(std::string c);
+	Command();
 	friend std::ostream& operator<<(std::ostream &out, const Command &c);
 	bool matches(std::string s);
 	~Command();
+	std::string* command;
+	void saveEffect(Command &c, string effect);
 
 private:
-	std::string* command;
+	
 };
 
 class Transition
@@ -57,9 +63,10 @@ public:
 	int getCommandIndex(std::string s);
 	Transition *getTransition(int i);
 	void setTransitions(Transition *t);
+	std::string* name;
 
 private:
-	std::string* name;
+
 	int index = 0;
 	Transition **transitions = new Transition *[2];
 };
@@ -72,7 +79,6 @@ private:
     const int MIN_NUM_PLAYERS {2};
     vector<Player *> players;
     Map *map;
-	State *currentState;
 	State **states;
     Deck* new_deck;
 	int stateCount;
@@ -93,6 +99,7 @@ public:
     void mainGameLoop();
     void randomizePlayOrder();
     void initializeDeck();
+    State *currentState;
 };
 
 #endif

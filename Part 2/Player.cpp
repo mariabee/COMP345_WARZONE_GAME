@@ -148,7 +148,7 @@ vector<Territory *> *Player::toAttack()
             Territory *target = t->getEdges()[i];
             Player *owner = target->getOwner();
             //If the player doesn't own a bordering territory,
-            if ((!owner || (owner && target->getOwner() != this)) && t->getNumberOfArmies() > 0) {
+            if (!owner || owner != this) {
                     //add the player-owned territory
                     out->push_back(t);
                     //add the enemy or neutral-owned bordering territory
@@ -157,6 +157,7 @@ vector<Territory *> *Player::toAttack()
         }
     }
     cout << "TERRITORIES TO ATTACK HAVE BEEN GENERATED FOR " << *this << endl;
+    cout << out->size() << endl;
     return out;
 }
 

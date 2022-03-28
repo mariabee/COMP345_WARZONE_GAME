@@ -282,17 +282,20 @@ void Hand::playRound(Deck* deck, Player* player, Player *other)
         cout << "\n\nEnter the position of the card you would like to play (1 for the first card printed). " <<
                 "Enter 0 if would like to play your turn with no card: \n";
         int cardChoice;
+        /*
         cin >> cardChoice;
 
         //Invalid input results in no cards being played
         if (cardChoice > 0 && cardChoice <= nbCardsInHand) {
 
             cardsInHand[cardChoice-1]->play(deck, player, other);
+
             for(int i = cardChoice-1; i < maxCard; i++){
                 cardsInHand[i] = cardsInHand[i+1];
             }
             nbCardsInHand--;
         }
+        */
     }
 }
 

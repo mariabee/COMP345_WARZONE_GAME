@@ -314,6 +314,7 @@ void GameEngine::startupPhase() {
         map = new Map(MapLoader::loadMap(dir + input));
         std::cout << "Map " << input << " loaded successfully" << std::endl;
         //               std::cout << map->getTerritories()[2] << std::endl;
+        //currentState = states[2];
     }
 
     if (currentState == states[2]) {
@@ -321,6 +322,7 @@ void GameEngine::startupPhase() {
             std::cout << "Map not valid, please reenter a valid map file" << std::endl;
             currentState = states[0];
         }
+        //currentState = states[3];
     }
 
     if (currentState == states[3]) {
@@ -337,6 +339,7 @@ void GameEngine::startupPhase() {
             }
             std::cout << "Players added successfully" << std::endl;
         }
+        //currentState = states[4];
     }
 
     if (currentState == states[4]) {
@@ -430,7 +433,6 @@ void GameEngine::issueOrdersPhase() {
         while (!toMove->empty()) { //for every territory NOT bordering an enemy territory with armies
             bool moved = false;
             Territory *t = toMove->back();
-            toMove->pop_back();
             int n = t->getNumberOfArmies();
             for (Territory *D: *toDefend) { //if that territory borders a toDefend territory, advance troops there
                 if (order::isBeside(t, D)) {
@@ -444,6 +446,7 @@ void GameEngine::issueOrdersPhase() {
                     current_p->issueOrder(new Advance(current_p, t, t->getEdges()[0], n / 2, new_deck));
                 }
             }
+            toMove->pop_back();
         }
 
         while (!toAttack->empty()) {

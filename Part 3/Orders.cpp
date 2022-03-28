@@ -196,7 +196,7 @@ void Advance::execute() {
             cout << *get_player() << " has moved " << armies << " troops from " << *start->getName() << " to " << *target->getName() << endl;
             set_order_effect("Player has moved troops");
         }else{
-            cout<<"An attack has been initiated\n";
+            cout << "An attack has been initiated." << endl;
             float random;
             srand(time(NULL));
             while(target->getNumberOfArmies() != 0 && start->getNumberOfArmies() != 0){

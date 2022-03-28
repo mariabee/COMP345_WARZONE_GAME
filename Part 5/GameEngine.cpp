@@ -544,10 +544,13 @@ void GameEngine::executeOrdersPhase() {
     }
     //If player owns all the Territories, the game over.
     for (Player *p: players) {
-        if (p->getTerritories()->size() == map->getNumOfTers() || roundCount == 5) {
+        if (p->getTerritories()->size() == map->getNumOfTers()) {
             cout << *p->getName() << " has won the game!" << endl;
             setState("win");
         }
+    }
+    if (roundCount == 5) {
+        setState("win");
     }
     if (currentState != states[8]) {
         setState("endexecorders");

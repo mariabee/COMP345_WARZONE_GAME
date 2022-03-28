@@ -1,3 +1,5 @@
+
+
 #include "CommandProcessor.h" 
 #include<iostream>
 #include<fstream>
@@ -59,12 +61,12 @@ void CommandProcessor::getCommand(){
     std::cin >> input;
     if (input.compare("-console") == 0){
         std::cout << "Will read input from console.";
-        readCommand();
+        readCommand(input);
     }
     else {
         input = input.substr(5, -1);
         std::cout << "Will read input from file named " << input;
-        readCommand(); 
+        fileLineReader(input); 
     }
 }
     
@@ -105,7 +107,7 @@ void FileCommandProcessorAdapter::readCommand(string cmd = ""){
     commandProcessor->readCommand(cmd);
 }
 
-void FileLineReader(string fileName = ""){
+void FileCommandProcessorAdapter::fileLineReader(string fileName = ""){
     fileLineReader->fileReadCommand(fileName);
 }
     
@@ -141,5 +143,6 @@ FileLineReader::fileReadCommand(string fileName = ""){
             }
         }
         file.close(); 
-   }
+    }
 }
+

@@ -18,7 +18,7 @@ class Command
 public:
 	Command& operator=(const Command &c);
 	Command(const Command &c);
-	Command(std::string c);
+	explicit Command(std::string c);
 	friend std::ostream& operator<<(std::ostream &out, const Command &c);
 	bool matches(std::string s);
 	~Command();
@@ -49,7 +49,7 @@ class State
 public:
 	State& operator=(const State &s);
 	State(const State &s);
-	State(std::string n);
+	explicit State(std::string n);
 	friend std::ostream& operator<< (std::ostream &out, const State &s);
 	~State();
 	bool isEnd();
@@ -87,7 +87,6 @@ public:
 	friend std::ostream& operator<< (std::ostream &out, const GameEngine &ge);
 	~GameEngine();
 	void build();
-    void start();
 	void startupPhase();
     void distributeTerritories();
     void mainGameLoop();

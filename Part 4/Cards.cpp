@@ -71,32 +71,37 @@ std::ostream &operator << ( std::ostream &out, const Card &card ){
 //Different effects of the cards based on their type
 void Card::play(Deck* deck, Player* player, Player *other)
 {
-    Territory *source = player->toAttack()->at(0);
-    Territory *target = player->toAttack()->at(1);
-    Territory *toMove = player->getToMove()->at(0);
-    switch ( type ) {
-        case BOMB:
-            cout << "You PLAYED your BOMB card\n";
-            player->issueOrder(new Bomb(player, source, target));
-            break;
-        case REINFORCEMENT:
-            cout << "You PLAYED your REINFORCEMENT card\n";
-            player->issueOrder(new Deploy(player, source, 3));
-            break;
-        case BLOCKADE:
-            cout << "You PLAYED your BLOCKADE card\n";
-            player->issueOrder(new Blockade(player, source, nullptr));
-            break;
-        case AIRLIFT:
-            cout << "You PLAYED your AIRLIFT card\n";
-            player->issueOrder(new Airlift(player, toMove, source, toMove->getNumberOfArmies()));
-            break;
-        case DIPLOMACY:
-            cout << "You PLAYED your DIPLOMACY card\n";
-            player->issueOrder(new Negotiate(player, other));
-            break;
+    try {
+        Territory *source = player->toAttack()->at(0);
+        Territory *target = player->toAttack()->at(1);
+        Territory *toMove = player->getToMove()->at(0);
+
+        switch (type) {
+            case BOMB:
+                cout << "You PLAYED your BOMB card\n";
+                player->issueOrder(new Bomb(player, source, target));
+                break;
+            case REINFORCEMENT:
+                cout << "You PLAYED your REINFORCEMENT card\n";
+                player->issueOrder(new Deploy(player, source, 3));
+                break;
+            case BLOCKADE:
+                cout << "You PLAYED your BLOCKADE card\n";
+                player->issueOrder(new Blockade(player, source, nullptr));
+                break;
+            case AIRLIFT:
+                cout << "You PLAYED your AIRLIFT card\n";
+                player->issueOrder(new Airlift(player, toMove, source, toMove->getNumberOfArmies()));
+                break;
+            case DIPLOMACY:
+                cout << "You PLAYED your DIPLOMACY card\n";
+                player->issueOrder(new Negotiate(player, other));
+                break;
+        }
+        deck->addCardBackToDeck(this);
+    }catch (exception e) {
+        cout << *player << " has not designated any territories to attack." << endl;
     }
-    deck->addCardBackToDeck(this);
 }
 
 
@@ -282,7 +287,7 @@ void Hand::playRound(Deck* deck, Player* player, Player *other)
         cout << "\n\nEnter the position of the card you would like to play (1 for the first card printed). " <<
                 "Enter 0 if would like to play your turn with no card: \n";
         int cardChoice;
-        /*
+
         cin >> cardChoice;
 
         //Invalid input results in no cards being played
@@ -295,7 +300,7 @@ void Hand::playRound(Deck* deck, Player* player, Player *other)
             }
             nbCardsInHand--;
         }
-        */
+
     }
 }
 

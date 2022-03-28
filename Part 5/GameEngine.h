@@ -69,6 +69,7 @@ private:
     const std::string dir {"../Debug/MapFiles/"};
     const int MAX_NUM_PLAYERS {6};
     const int MIN_NUM_PLAYERS {2};
+    int roundCount {5};
     vector<Player *> players;
     Map *map;
 	State *currentState;

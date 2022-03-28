@@ -111,7 +111,7 @@ void Deploy::execute() {
         int n = territory->getNumberOfArmies() + numberOfArmies;
         territory->setNumberOfArmies(n);
         get_player()->setArmies(get_player()->getArmies()-numberOfArmies);
-        cout<<*territory->getName()<<" has now "<< n <<" armies.\n";
+        cout<<*territory->getName()<<" now has "<< n <<" armies.\n";
         set_order_effect("Armies have been deployed.");
     }
 }
@@ -193,7 +193,8 @@ void Advance::execute() {
         if(start->getOwner() == target->getOwner()){
             target->setNumberOfArmies(target->getNumberOfArmies()+armies);
             start->setNumberOfArmies(start->getNumberOfArmies()-armies);
-            set_order_effect("Troops have advanced.");
+            cout << *get_player() << " has moved " << armies << " troops from " << *start->getName() << " to " << *target->getName() << endl;
+            set_order_effect("Player has moved troops");
         }else{
             cout<<"An attack has been initiated\n";
             float random;
@@ -208,10 +209,8 @@ void Advance::execute() {
                 }
             }
             if(target->getNumberOfArmies()==0){
-                if (target->getOwner()) {
-                    (target->getOwner())->removeTerritory(target);
-                }
                 get_player()->addTerritory(target);
+                cout << *target->getName() << " has been conquered " << " by " << *get_player();
                 set_order_effect("New territory has been conquered.");
                 if(!get_player()->isCardWon()){
                     get_player()->getHand()->drawFromDeck(deck);
@@ -219,14 +218,17 @@ void Advance::execute() {
                 }
             }
             else{
+                cout << *get_player() << " has lost the battle for " << *target->getName() << "." << endl;
                 set_order_effect("Battle lost.");
             }
         }
     }
-    cout << *get_order_effect() << endl;
 }
 //VALIDATE
 bool Advance::validate() {
+    if (armies <= 0) {
+        return false;
+    }
     if (!start || !target) {
         set_order_effect("Order was missing information and will not be executed.");
         return false;

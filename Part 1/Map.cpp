@@ -66,6 +66,7 @@ Territory::~Territory() {
     edges = nullptr;
     player = nullptr;
     continent = nullptr;
+    cout << "Successfully deleted territory object" << endl;
 }
 //OVERLOADED << OPERATOR
 ostream &operator<<(ostream &os, const Territory &territory) {
@@ -166,7 +167,7 @@ Continent::~Continent() {
     name = nullptr;
     color = nullptr;
     subTerritories = nullptr;
-
+    cout << "Successfully deleted continent object " << endl;
 }
 //OVERLOADED << OPERATOR
 ostream &operator<<(ostream &os, const Continent &continent) {

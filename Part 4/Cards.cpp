@@ -235,14 +235,14 @@ Hand::Hand(const Hand &obj){
     *cardsInHand = *obj.cardsInHand;
     maxCard = obj.maxCard;
     nbCardsInHand = obj.nbCardsInHand;
-    cout << "Hand object were successfully CREATED\n";
+    cout << "Hand object was successfully CREATED\n";
 }
 
 //destructor
 Hand::~Hand(){
     delete[] cardsInHand;
     cardsInHand = nullptr;
-    cout << "Hand object were successfully DELETED\n";
+    cout << "Hand object was successfully DELETED\n";
 }
 
 //assignment operator overloading
@@ -286,13 +286,13 @@ void Hand::playRound(Deck* deck, Player* player, Player *other)
 
         //Invalid input results in no cards being played
         if (cardChoice > 0 && cardChoice <= nbCardsInHand) {
+
             cardsInHand[cardChoice-1]->play(deck, player, other);
             for(int i = cardChoice-1; i < maxCard; i++){
                 cardsInHand[i] = cardsInHand[i+1];
             }
             nbCardsInHand--;
         }
-        cout << "\n\n";
     }
 }
 

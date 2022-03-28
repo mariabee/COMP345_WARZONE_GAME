@@ -16,7 +16,6 @@ class Player {
 		vector<Territory *> *territories;
         vector<Continent *> *continents;
         vector<Territory *> *toMove;
-		int territoryCount = 0;
 		Hand* hand;
         int armies;
         bool cardWon;
@@ -47,7 +46,6 @@ class Player {
         OrdersList *getOrdersList();
         Hand* getHand();
         int getArmies() const;
-        int getTerritoryCount() const;
         string *getName() const;
         bool isCardWon() const;
         vector<Player *> *getCannotAttack() const;

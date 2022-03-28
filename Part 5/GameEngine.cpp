@@ -228,7 +228,7 @@ void GameEngine::distributeTerritories() {
             remain--;
         }
         for (size_t j = start_index; j < end_index; j++) {
-            auto *ter = new Territory(map->getTerritories()[j]);
+            Territory *ter = &map->getTerritories()[j];
             t->push_back(ter);
         }
         players.at(i)->setTerritories(t);
@@ -396,6 +396,8 @@ void GameEngine::reinforcementPhase() {
     int n;
     //Go through every player
     for (Player *p: players) {
+        cout << endl << *p << " currently holds : " << p->getTerritories()->size() << " out of ";
+        cout << map->getNumOfTers() << " territories." << endl;
         //Reset flags in player
         p->setCardWon(false);
         p->clearCannotAttack();
@@ -421,12 +423,14 @@ void GameEngine::issueOrdersPhase() {
     for (int current = 0; current < players.size(); current++) {
         Player *current_p = players.at(current); //get current player
         cout << "CURRENT PLAYER : " << *current_p << endl;
+
         vector<Territory *> *toAttack = current_p->toAttack(); //get list of territories toAttack
         vector<Territory *> *toDefend = current_p->toDefend(); //get list of territories toDefend
         vector<Territory *> *toMove = current_p->getToMove(); //get list of territories to move troops from
-
-        for (Territory *t: *toMove) { //for every territory NOT bordering an enemy territory with armies
+        while (!toMove->empty()) { //for every territory NOT bordering an enemy territory with armies
             bool moved = false;
+            Territory *t = toMove->back();
+            toMove->pop_back();
             int n = t->getNumberOfArmies();
             for (Territory *D: *toDefend) { //if that territory borders a toDefend territory, advance troops there
                 if (order::isBeside(t, D)) {
@@ -456,27 +460,29 @@ void GameEngine::issueOrdersPhase() {
         if (next == players.size()) {
             next = 0;
         }
-        h->playRound(new_deck, current_p, players[next]);
+        h->playRound(new_deck, current_p, players.at(next));
 
         int armies = current_p->getArmies();
-        int split = armies / (toDefend->size());
-        int i = 0;
-        if (split == 0) {
-            split = 1;
-        } else {
-            int remain = armies % (toDefend->size());
-            if (remain > 0) {
-                current_p->issueOrder(new Deploy(current_p, toDefend->at(0), remain));
-                i = 1;
+        if (!toDefend->empty()) {
+            int split = armies / (toDefend->size());
+            int i = 0;
+            if (split == 0) {
+                split = 1;
+            } else {
+                int remain = armies % (toDefend->size());
+                if (remain > 0) {
+                    current_p->issueOrder(new Deploy(current_p, toDefend->at(0), remain));
+                    i = 1;
+                }
             }
-        }
-        while (armies > 0) { //Deploy armies evenly across all the toDefend territories
-            current_p->issueOrder(new Deploy(current_p, toDefend->at(i), split)); //at toDefend[i]
-            i++;
-            if (i == toDefend->size()) {
-                i = 0;
+            while (armies > 0) { //Deploy armies evenly across all the toDefend territories
+                current_p->issueOrder(new Deploy(current_p, toDefend->at(i), split)); //at toDefend[i]
+                i++;
+                if (i == toDefend->size()) {
+                    i = 0;
+                }
+                armies -= split;
             }
-            armies -= split;
         }
     }
     setState("endissueorders");

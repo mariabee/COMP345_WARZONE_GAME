@@ -1,6 +1,9 @@
 #include "Player.h"
 #include <map>
-Player::Player() {}
+//Default constructor
+Player::Player() {
+
+}
 // Constructor for Player
 Player::Player(std::string n)
 {
@@ -29,7 +32,6 @@ Player &Player::operator=(const Player &p)
 
 	name = new string(*p.name);
 	hand = new Hand(*p.hand);
-	territoryCount = p.territoryCount;
 	territories = new vector<Territory *>();
     continents = new vector<Continent *>();
 	for (Territory *t : *p.territories )
@@ -52,7 +54,6 @@ Player &Player::operator=(const Player &p)
 Player::Player(Player &p) {
     name = new string(*p.name);
     hand = new Hand(*p.hand);
-    territoryCount = p.territoryCount;
     armies = p.getArmies();
     territories = new vector<Territory *>();
     continents = new vector<Continent *>();
@@ -112,6 +113,7 @@ vector<Territory *> *Player::toDefend()
     auto *out = new vector<Territory *>;
     toMove->clear(); //reset the toMove
     //Go through all territories bordering the player's
+    cout << territories->size();
     for (Territory *t : *territories) {
         bool threat = false;
         for (int i = 0; i < t->getEdgeCount(); i++) {
@@ -123,8 +125,9 @@ vector<Territory *> *Player::toDefend()
                 threat = true;
                 break;
             }
+
         }
-        if (!threat) {
+        if (!threat && (t->getNumberOfArmies() > 0)) {
             toMove->push_back(t); //Otherwise, if the territory is not in danger, add it to the toMove list
         }
     }
@@ -143,8 +146,9 @@ vector<Territory *> *Player::toAttack()
     for (Territory *t : *territories) {
         for (int i = 0; i < t->getEdgeCount(); i++) {
             Territory *target = t->getEdges()[i];
+            Player *owner = target->getOwner();
             //If the player doesn't own a bordering territory,
-            if (target->getOwner() != this) {
+            if ((!owner || (owner && target->getOwner() != this)) && t->getNumberOfArmies() > 0) {
                     //add the player-owned territory
                     out->push_back(t);
                     //add the enemy or neutral-owned bordering territory
@@ -163,7 +167,6 @@ void Player::setTerritories(vector<Territory *> *t)
     for (Territory *territory : *t) {
         territory->changeOwner(this);
     }
-	territoryCount = t->size();
 }
 
 //ISSUE ORDERS
@@ -224,30 +227,27 @@ void Player::issueOrder(std::string type)
 	}
 }
 
-int Player::getTerritoryCount() const {
-    return territoryCount;
-}
 
 void Player::addTerritory(Territory *t) {
-    Player *owner = t->getOwner();
-    if (owner) {
-        if (owner != this) {
-            t->getOwner()->removeTerritory(t);
-            territories->push_back(t);
+    Player *owner = t->getOwner(); //get the territory owner
+    if (owner) { //if the territory has an owner...
+        if (owner != this) { //if the owner isn't the player,
+            t->getOwner()->removeTerritory(t); //remove the territory from its current owner
+            territories->push_back(t); //add the territory to player
+            t->changeOwner(this); //add the player to territory
         }
     }
     else {
         t->changeOwner(this);
         territories->push_back(t);
     }
-    territoryCount++;
 }
 
 bool Player::removeTerritory(Territory *toRemove) {
     //Find the territory in the vector
     for (int i = 0; i < territories->size(); i++) {
         Territory *t = territories->at(i);
-        if (t->getId() == toRemove->getId()) {
+        if (t == toRemove) {
             //change the owner in Territory
             t->changeOwner(nullptr);
             //erase the territory in Player
@@ -258,8 +258,6 @@ bool Player::removeTerritory(Territory *toRemove) {
             if (c->getOwner() == this) {
                 removeContinent(c);
             }
-            //decrement territory count
-            territoryCount--;
             return true;
         }
     }
@@ -269,7 +267,6 @@ bool Player::removeTerritory(Territory *toRemove) {
 }
 void Player::addContinent(Continent *c) {
     //add continent to player, and player to continent
-    Player *owner = c->getOwner();
     continents->push_back(c);
     c->setOwner(this);
 }

@@ -91,7 +91,7 @@ Player::~Player()
 	delete[] territories;
     delete[] continents;
     delete[] toMove;
-    delete cannotAttack;
+    delete[] cannotAttack;
 
 }
 

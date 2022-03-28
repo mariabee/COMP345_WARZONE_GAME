@@ -205,15 +205,16 @@ std::ostream &operator<<(std::ostream &out, const GameEngine &ge) {
 
 // Destructor for GameEngine
 GameEngine::~GameEngine() {
-    for (int i = 0; i < stateCount; i++)
+    for (int i = 0; i < stateCount; i++) {
         delete states[i];
-    delete states;
-    delete map;
-    delete new_deck;
-    for (Player *p : players){
-        delete p;
     }
+    cout << "DELETED STATES " << endl;
+    delete states;
+    cout << "DELETED STATES POINTER " << endl;
+    delete new_deck;
+    cout << "DELETED DECK " << endl;
     players.clear();
+    delete map;
 }
 
 void GameEngine::distributeTerritories() {

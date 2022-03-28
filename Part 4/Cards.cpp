@@ -216,7 +216,7 @@ Card* Deck::draw()
         if (pickedCard != nullptr) {
             cardsInDeck[temp] = nullptr;
             this->nbCardInDeck--;
-            cout << "You've just received this NEW CARD: \n" << *pickedCard;
+            cout << "You've just received this NEW CARD: " << *pickedCard << endl;
             return pickedCard;
         }
     }

@@ -320,7 +320,6 @@ void GameEngine::startupPhase() {
         map = new Map(MapLoader::loadMap(dir + input));
         std::cout << "Map " << input << " loaded successfully" << std::endl;
         //               std::cout << map->getTerritories()[2] << std::endl;
-        //currentState = states[2];
     }
 
     if (currentState == states[2]) {
@@ -328,7 +327,6 @@ void GameEngine::startupPhase() {
             std::cout << "Map not valid, please reenter a valid map file" << std::endl;
             currentState = states[0];
         }
-        //currentState = states[3];
     }
 
     if (currentState == states[3]) {
@@ -345,7 +343,6 @@ void GameEngine::startupPhase() {
             }
             std::cout << "Players added successfully" << std::endl;
         }
-        //currentState = states[4];
     }
 
     if (currentState == states[4]) {

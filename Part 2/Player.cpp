@@ -113,7 +113,6 @@ vector<Territory *> *Player::toDefend()
     auto *out = new vector<Territory *>;
     toMove->clear(); //reset the toMove
     //Go through all territories bordering the player's
-    cout << territories->size();
     for (Territory *t : *territories) {
         bool threat = false;
         for (int i = 0; i < t->getEdgeCount(); i++) {
@@ -157,7 +156,6 @@ vector<Territory *> *Player::toAttack()
         }
     }
     cout << "TERRITORIES TO ATTACK HAVE BEEN GENERATED FOR " << *this << endl;
-    cout << out->size() << endl;
     return out;
 }
 
@@ -259,6 +257,7 @@ bool Player::removeTerritory(Territory *toRemove) {
             if (c->getOwner() == this) {
                 removeContinent(c);
             }
+            cout << *t->getName() << " removed from " << *this << endl;
             return true;
         }
     }

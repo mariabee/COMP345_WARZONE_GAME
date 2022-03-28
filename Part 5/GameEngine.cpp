@@ -208,6 +208,12 @@ GameEngine::~GameEngine() {
     for (int i = 0; i < stateCount; i++)
         delete states[i];
     delete states;
+    delete map;
+    delete new_deck;
+    for (Player *p : players){
+        delete p;
+    }
+    players.clear();
 }
 
 void GameEngine::distributeTerritories() {
@@ -314,7 +320,7 @@ void GameEngine::startupPhase() {
         map = new Map(MapLoader::loadMap(dir + input));
         std::cout << "Map " << input << " loaded successfully" << std::endl;
         //               std::cout << map->getTerritories()[2] << std::endl;
-        //currentState = states[2];
+        currentState = states[2];
     }
 
     if (currentState == states[2]) {
@@ -322,7 +328,7 @@ void GameEngine::startupPhase() {
             std::cout << "Map not valid, please reenter a valid map file" << std::endl;
             currentState = states[0];
         }
-        //currentState = states[3];
+        currentState = states[3];
     }
 
     if (currentState == states[3]) {
@@ -339,7 +345,7 @@ void GameEngine::startupPhase() {
             }
             std::cout << "Players added successfully" << std::endl;
         }
-        //currentState = states[4];
+        currentState = states[4];
     }
 
     if (currentState == states[4]) {
@@ -379,11 +385,13 @@ void GameEngine::play() {
 
 void GameEngine::mainGameLoop() {
     std::cout << "Main Game Loop starting..." << std::endl;
-    while (currentState != states[7]) {
+    roundCount = 0;
+    do {
         reinforcementPhase();
         issueOrdersPhase();
         executeOrdersPhase();
-    }
+        roundCount++;
+    } while (currentState != states[8]);
     string playOrEnd;
     std::cout << "Play or end game?" << std::endl;
     State *previousState = currentState;
@@ -451,11 +459,11 @@ void GameEngine::issueOrdersPhase() {
 
         while (!toAttack->empty()) {
             Territory *enemy_t = toAttack->back(); //pop the enemy's territory
-            toAttack->pop_back();
-            Territory *player_t = toAttack->back(); //pop the player territory bordering an enemy's
-            toAttack->pop_back();
+            Territory *player_t = toAttack->at(toAttack->size()-2); //pop the player territory bordering an enemy's
             int n = player_t->getNumberOfArmies();
             current_p->issueOrder(new Advance(current_p, player_t, enemy_t, n, new_deck)); //Attack it
+            toAttack->pop_back();
+            toAttack->pop_back();
         }
         //current player issues order from hand somehow...
         Hand *h = current_p->getHand();
@@ -493,8 +501,6 @@ void GameEngine::issueOrdersPhase() {
 
 
 void GameEngine::executeOrdersPhase() {
-    setState("execorder");
-    cout << "ENTERING EXECUTE ORDERS PHASE" << endl;
     int skipped;
     int current = 0;
     bool deployRound = true;
@@ -518,6 +524,7 @@ void GameEngine::executeOrdersPhase() {
                 }
                 deployComplete++;
                 if (deployComplete == players.size()) {
+                    cout << "ALL TROOPS DEPLOYED. MOVING TO OTHER ORDERS." << endl;
                     deployRound = false;
                 }
             }
@@ -539,12 +546,12 @@ void GameEngine::executeOrdersPhase() {
     }
     //If player owns all the Territories, the game over.
     for (Player *p: players) {
-        if (p->getTerritories()->size() == map->getNumOfTers()) {
+        if (p->getTerritories()->size() == map->getNumOfTers() || roundCount == 5) {
             cout << *p->getName() << " has won the game!" << endl;
             setState("win");
         }
     }
-    if (currentState == states[7]) {
+    if (currentState != states[8]) {
         setState("endexecorders");
     }
 

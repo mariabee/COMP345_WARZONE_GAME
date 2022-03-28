@@ -218,7 +218,7 @@ void Advance::execute() {
                 }
             }
             else{
-                cout << *get_player() << " has lost the battle for " << *target->getName() << " ." << endl;
+                cout << *get_player() << " has lost the battle for " << *target->getName() << "." << endl;
                 set_order_effect("Battle lost.");
             }
         }

@@ -407,6 +407,12 @@ void GameEngine::mainGameLoop() {
         std::cin >> playOrEnd;
         setState(playOrEnd);
     }
+    if (currentState == states[0]) {
+        play();
+    }
+    if (currentState == states[9]) {
+        cout << "Thank you for playing! Game is over." << endl;
+    }
 }
 
 void GameEngine::reinforcementPhase() {

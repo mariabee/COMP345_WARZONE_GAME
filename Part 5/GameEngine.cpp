@@ -122,6 +122,10 @@ std::ostream &operator<<(std::ostream &out, const State &s) {
     return out;
 }
 
+std::string& State::toString() {
+    return *name;
+}
+
 // Destructor for State
 State::~State() {
     //std::cout << "Deleting state: \"" << *this << "\"" << std::endl;
@@ -155,6 +159,7 @@ void GameEngine::setState(std::string s) {
         currentState = currentState->getTransition(currentState->getCommandIndex(std::move(s)))->getState();
         std::cout << "Transition to state: \"" << (*currentState) << "\"" << std::endl;
     }
+    notify();
 }
 
 // Function that returns a transition at a certain stored index
@@ -214,6 +219,10 @@ GameEngine::~GameEngine() {
         delete p;
     }
     players.clear();
+}
+
+std::string GameEngine::stringToLog() {
+    return "GameEngine::Transitioning to state: " + currentState->toString() + "\n";
 }
 
 void GameEngine::distributeTerritories() {
@@ -303,6 +312,7 @@ void GameEngine::initial_start() {
             std::cout << "Transition to state: \"" << (*currentState) << "\"" << std::endl;
             startupPhase();
         }
+        notify();
 
     }
 }

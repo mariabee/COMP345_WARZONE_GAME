@@ -1,6 +1,8 @@
 #ifndef GAME_ENGINE_H
 #define GAME_ENGINE_H
 
+#include "LoggingObserver.h"
+
 #include <string>
 #include <vector>
 #include <iostream>
@@ -52,6 +54,7 @@ public:
 	explicit State(std::string n);
 	friend std::ostream& operator<< (std::ostream &out, const State &s);
 	~State();
+	std::string& toString();
 	bool isEnd();
 	int getCommandIndex(std::string s);
 	Transition *getTransition(int i);
@@ -63,7 +66,7 @@ private:
 	Transition **transitions = new Transition *[2];
 };
 
-class GameEngine
+class GameEngine: public Subject, public ILoggable
 {
 private:
     const std::string dir {"../Debug/MapFiles/"};
@@ -81,6 +84,7 @@ private:
     void issueOrdersPhase();
     void executeOrdersPhase();
 public:
+	std::string stringToLog();
 	GameEngine& operator=(const GameEngine &ge);
 	GameEngine(const GameEngine &ge);
 	GameEngine();

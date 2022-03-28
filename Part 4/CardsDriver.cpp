@@ -1,6 +1,6 @@
 #include<iostream>
 #include "Cards.h"
-#include "../Part 2/Player.h"
+#include "Player.h"
 
 using namespace std;
 
@@ -19,11 +19,12 @@ int main()
     cout << "There are currently " << gameDeck->getCurrentSize() << " cards in the deck. \n";
 
     Player *p1 = new Player("Jane Doe");
+    Player *p2 = new Player("Jane Doe");
     //Create a hand object that will try and pick 6 cards
     Hand* playerHand = p1->getHand();
 
     cout << "\n\n*** Trying to play a card when none have been given yet\n";
-    playerHand->playRound(gameDeck,p1); // Throws Empty Deck Message
+    playerHand->playRound(gameDeck, p1, p2); // Throws Empty Deck Message
 
     cout << "\n\n*** Drawing 6 cards from the deck \n";
     playerHand->drawFromDeck(gameDeck);
@@ -35,9 +36,9 @@ int main()
 
     //Hand plays a card
     cout << "\n\n*** Playing 3 cards\n";
-    playerHand->playRound(gameDeck,p1);
-    playerHand->playRound(gameDeck,p1);
-    playerHand->playRound(gameDeck,p1);
+    playerHand->playRound(gameDeck, p1, p2);
+    playerHand->playRound(gameDeck, p1, p2);
+    playerHand->playRound(gameDeck, p1, p2);
 
     //Test method to get the size of the deck
     cout << "There are now " << gameDeck->getCurrentSize() << " cards in the deck. \n";

@@ -11,11 +11,17 @@ using namespace std;
  //__________________________________
 
 //CONSTRUCTOR
-CommandProcessor::CommandProcessor(){
+CommandProcessor::CommandProcessor(GameEngine* ge){
+
+}
+
+CommandProcessor::CommandProcessor(GameEngine* ge){
+    this->gameEng = ge; 
     lastCmd = Command(""); 
 }
 
-CommandProcessor::CommandProcessor(const vector<Command> & lst){
+CommandProcessor::CommandProcessor(GameEngine* ge, const vector<Command> & lst){
+    this->gameEng = ge; 
     commandList = lst;
     lastCmd = Command(""); 
 }
@@ -23,6 +29,7 @@ CommandProcessor::CommandProcessor(const vector<Command> & lst){
 //DESTRUCTOR
 CommandProcessor::~CommandProcessor(){
     commandList.clear();
+    this->gameEng = nullptr; 
 }
     
 bool CommandProcessor::validate(Command cmd, GameEngine ge){
@@ -66,7 +73,8 @@ void CommandProcessor::getCommand(){
     else {
         input = input.substr(5, -1);
         std::cout << "Will read input from file named " << input;
-        fileLineReader(input); 
+        FileCommandProcessorAdapter fcpa = FileCommandProcessorAdapter(this);
+        fcpa.fileLineReader(input); 
     }
 }
     
@@ -96,11 +104,12 @@ FileCommandProcessorAdapter::FileCommandProcessorAdapter(FileLineReader *flr){
     this->fileLineReader = flr;
 } 
 
-
 //DESTRUCTOR
 FileCommandProcessorAdapter::~FileCommandProcessorAdapter(){
-    ~CommandProcessor();
-    ~FileLineReader(); 
+    delete commandProcessor;
+    delete fileLineReader; 
+    this->commandProcessor = nullptr; 
+    this->fileLineReader = nullptr; 
 }
 
 void FileCommandProcessorAdapter::readCommand(string cmd = ""){
@@ -123,10 +132,10 @@ FileLineReader::FileLineReader(){
     
 //DESTRUCTOR
 FileLineReader::~FileLineReader(){
-    
+    this->textfile = nullptr;
 }
 
-FileLineReader::fileReadCommand(string fileName = ""){
+FileLineReader::readLinefromFile(string fileName = ""){
     fstream file;
     file.open(fileName,ios::out);
     

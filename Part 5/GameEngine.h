@@ -27,7 +27,7 @@ public:
 	bool matches(std::string s);
 	~Command();
 	std::string* command;
-	void saveEffect(Command &c, string effect);
+	void saveEffect(Command &c);
 
 private:
 	

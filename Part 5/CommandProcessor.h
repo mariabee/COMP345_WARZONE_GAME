@@ -8,6 +8,7 @@
 class CommandProcessor{
     
 private: 
+    GameEngine* gameEng; 
     vector<Command> commandList; 
     Command lastCmd; 
     void saveCommand(); 
@@ -15,8 +16,9 @@ private:
     
 public: 
     //CONSTRUCTOR
-    CommandProcessor(); 
-    CommandProcessor(const std::vector<Command> & lst); 
+    CommandProcessor();
+    CommandProcessor(GameEngine* ge); 
+    CommandProcessor(GameEngine* ge, const std::vector<Command> & lst); 
     
     //DESTRUCTOR
     virtual ~CommandProcessor();
@@ -38,7 +40,7 @@ public:
     //DESTRUCTOR
     virtual ~FileLineReader();
     
-    virtual void fileLineReader(string fileName);
+    void readLinefromFile(string fileName);
 };
 
 class FileCommandProcessorAdapter: public CommandProcessor, public FileLineReader{

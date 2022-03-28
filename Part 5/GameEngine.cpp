@@ -214,7 +214,9 @@ GameEngine::~GameEngine() {
     delete new_deck;
     cout << "DELETED DECK " << endl;
     players.clear();
+    cout << "DELETED PLAYERS " << endl;
     delete map;
+    cout << "DELETED MAP" << endl;
 }
 
 void GameEngine::distributeTerritories() {
@@ -549,14 +551,23 @@ void GameEngine::executeOrdersPhase() {
         }
     }
     //If player owns all the Territories, the game over.
+    int i;
+    if (roundCount == 5) {
+        cout << "FORCING WIN BY ASSIGNING ALL TERRITORIES TO PLAYER 1... " << endl;
+        for (int i = 0; i < map->getNumOfTers(); i++) {
+            players.at(0)->addTerritory(&map->getTerritories()[i]);
+        }
+    }
     for (Player *p: players) {
         if (p->getTerritories()->size() == map->getNumOfTers()) {
             cout << *p->getName() << " has won the game!" << endl;
             setState("win");
+            break;
         }
-    }
-    if (roundCount == 5) {
-        setState("win");
+        else if (p->getTerritories()->empty()) {
+            players.erase(players.begin() + i);
+        }
+        i++;
     }
     if (currentState != states[8]) {
         setState("endexecorders");

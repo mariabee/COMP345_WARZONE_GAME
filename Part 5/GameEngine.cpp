@@ -368,8 +368,9 @@ void GameEngine::startupPhase() {
                 players.at(i)->getHand()->drawFromDeck(new_deck);
                 players.at(i)->getHand()->drawFromDeck(new_deck);
             }
+            currentState = states[5];
         }
-        currentState = states[5];
+
     }
 
 }

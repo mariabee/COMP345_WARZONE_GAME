@@ -63,25 +63,22 @@ bool CommandProcessor::validate(Command cmd, GameEngine* ge){
 } 
 
 void CommandProcessor::getCommand(){
-    std::cout << "Enter -console if you want to enter commands on the console and -file <filename> for commands from a console.";
+    std::cout << "Enter -console if you want to enter commands on the console and -file for commands from a file.\n";
     string input; 
     std::cin >> input;
     if (input.compare("-console") == 0){
-        std::cout << "Will read input from console.";
-        readCommand(input);
+        std::cout << "Will read input from console.\n";
     }
     else {
-        input = input.substr(5, -1);
-        std::cout << "Will read input from file named " << input;
-        FileCommandProcessorAdapter fcpa = FileCommandProcessorAdapter(this);
+        std::cout << "Please enter your file name: \n";
+        cin >> input;
+        FileCommandProcessorAdapter fcpa = FileCommandProcessorAdapter(new FileLineReader(input));
         fcpa.readFileLine(input); 
     }
 }
     
-void CommandProcessor::readCommand(string cmd = ""){
-    string usr_input; 
-    std::cin >> usr_input; 
-    this->lastCmd = new Command(usr_input);
+void CommandProcessor::readCommand(string cmd){
+    this->lastCmd = new Command(cmd);
     saveCommand(); 
 }
     
@@ -99,28 +96,28 @@ void CommandProcessor::setLastCommand(Command* c) {
 
 //CONSTRUCTOR
 FileCommandProcessorAdapter::FileCommandProcessorAdapter(CommandProcessor *cp){
-    this->commandProcessor = cp; 
+    this->commandProcessor = cp;
     this->fileLineReader = NULL;
-} 
+}
 
 FileCommandProcessorAdapter::FileCommandProcessorAdapter(FileLineReader *flr){
-    this->commandProcessor = NULL; 
+    this->commandProcessor = NULL;
     this->fileLineReader = flr;
 } 
 
 //DESTRUCTOR
 FileCommandProcessorAdapter::~FileCommandProcessorAdapter(){
     delete commandProcessor;
-    delete fileLineReader; 
-    this->commandProcessor = nullptr; 
+    delete fileLineReader;
+    this->commandProcessor = nullptr;
     this->fileLineReader = nullptr; 
 }
 
-void FileCommandProcessorAdapter::readCommand(string cmd = ""){
+void FileCommandProcessorAdapter::readCommand(string cmd){
     commandProcessor->readCommand(cmd);
 }
 
-void FileCommandProcessorAdapter::readFileLine(string fileName = ""){
+void FileCommandProcessorAdapter::readFileLine(string fileName){
     readFileLine(fileName);
 }
     
@@ -132,7 +129,7 @@ void FileCommandProcessorAdapter::readFileLine(string fileName = ""){
 //CONSTRUCTOR
 FileLineReader::FileLineReader(){
     this->textfile = "";
-} 
+}
     
 //DESTRUCTOR
 FileLineReader::~FileLineReader(){
@@ -157,5 +154,9 @@ void FileLineReader::readLineFromFile(string fileName,GameEngine* ge){
         }
         file.close(); 
     }
+}
+
+FileLineReader::FileLineReader(string name) {
+    this->textfile = name;
 }
 

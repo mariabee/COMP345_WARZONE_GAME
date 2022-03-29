@@ -35,12 +35,13 @@ public:
 
 class FileLineReader: public CommandProcessor{
 private:
-    string textfile; 
+
+    string textfile;
     
 public: 
     //CONSTRUCTOR
-    FileLineReader(); 
-    
+    FileLineReader();
+    FileLineReader(string);
     //DESTRUCTOR
     virtual ~FileLineReader();
     
@@ -55,7 +56,7 @@ private:
 
 public: 
     //CONSTRUCTOR
-    FileCommandProcessorAdapter(CommandProcessor *cp); 
+    FileCommandProcessorAdapter(CommandProcessor *cp);
     FileCommandProcessorAdapter(FileLineReader *flr);
 
     //DESTRUCTOR

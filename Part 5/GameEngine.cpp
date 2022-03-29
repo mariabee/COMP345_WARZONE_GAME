@@ -285,6 +285,7 @@ void GameEngine::build() {
 void GameEngine::start() {
     std::string input;
     int index;
+    cin>>input;
     while (!currentState->isEnd()) {
         if ((index = currentState->getCommandIndex(input)) == -1)
             std::cout << "No command: \"" << input << "\" usable from current state! Currently at state "

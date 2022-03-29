@@ -72,6 +72,12 @@ bool order::isBeside(Territory *src, Territory *target) {
     }
     return false;
 }
+
+
+std::string order::stringToLog() { 
+    return "ORDER::" + *order_type_ + " had been executed!";
+}
+
 #pragma endregion Order
 
 //SUBCLASS IMPLEMENTATION
@@ -114,6 +120,8 @@ void Deploy::execute() {
         cout<<*territory->getName()<<" now has "<< n <<" armies.\n";
         set_order_effect("Armies have been deployed.");
     }
+
+    notify();
 }
 //VALIDATE
 bool Deploy::validate() {
@@ -223,6 +231,8 @@ void Advance::execute() {
             }
         }
     }
+
+    notify();
 }
 //VALIDATE
 bool Advance::validate() {
@@ -310,6 +320,8 @@ void Bomb::execute() {
         set_order_effect("Territory has been bombed.");
     }
     cout << *get_order_effect() << endl;
+
+    notify();
 }
 bool Bomb::validate() {
     if (start == nullptr || target == nullptr) {
@@ -366,6 +378,7 @@ Blockade::Blockade(Player* player, Territory* territory, Player* neutral) {
     set_player(player);
     this->neutral = neutral;
 }
+
 //COPY CONSTRUCTOR
 Blockade::Blockade(const Blockade &other) : order(other) {
     this->territory=other.getTerritory();
@@ -389,6 +402,7 @@ void Blockade::execute() {
         set_order_effect("Troops have DOUBLED. The territory is now NEUTRAL. ");
     }
     cout << *get_order_effect() << endl;
+    notify();
 }
 //VALIDATE
 bool Blockade::validate() {
@@ -467,6 +481,8 @@ void Airlift::execute() {
         set_order_effect("Troops have moved.");
     }
     cout << *get_order_effect() << endl;
+
+    notify();
 }
 //VALIDATE
 bool Airlift::validate() {
@@ -540,6 +556,8 @@ void Negotiate::execute() {
         set_order_effect("Attacks have been prevented until the end of turn.");
     }
     cout << *get_order_effect() << endl;
+
+    notify();
 }
 //VALIDATE
 bool Negotiate::validate() {
@@ -575,6 +593,7 @@ Negotiate::~Negotiate() {
 #pragma region OrderList
 void OrdersList::add(order* o) {
     list->push_back(o);
+    notify();
 }
 bool OrdersList::move(order* o, int position) {
     if (position >= list->size() || position < 0) {
@@ -645,6 +664,14 @@ OrdersList &OrdersList:: operator=(const OrdersList& o) {
         add(o);
     }
     return *this;
+}
+
+std::string OrdersList::stringToLog() { 
+    return "ORDER_LIST::" + (*list->back()).toString() + " had been added to list!";
+}
+
+std::string& order::toString() {
+    return *order_type_;
 }
 
 OrdersList::~OrdersList() {

@@ -223,7 +223,7 @@ GameEngine::~GameEngine() {
 }
 
 std::string GameEngine::stringToLog() {
-    return "GameEngine::Transitioning to state: " + currentState->toString() + "\n";
+    return "GameEngine::Transitioning to state: " + currentState->toString();
 }
 
 void GameEngine::distributeTerritories() {

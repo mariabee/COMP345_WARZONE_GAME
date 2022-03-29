@@ -58,7 +58,7 @@ public:
     virtual ~FileCommandProcessorAdapter();
     
     virtual void readCommand(string fileName); 
-    virtual void fileLineReader(string fileName);
+    virtual void readFileLine(string fileName);
 };
 
 

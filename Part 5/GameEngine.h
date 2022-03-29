@@ -4,8 +4,8 @@
 #include <string>
 #include <vector>
 #include <iostream>
-#include "../Part2/Player.h"
-#include "../Part1/Map.h"
+#include "../Part 2/Player.h"
+#include "../Part 1/Map.h"
 
 
 #define START_STATE "start"

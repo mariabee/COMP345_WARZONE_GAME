@@ -74,7 +74,7 @@ void CommandProcessor::getCommand(){
         input = input.substr(5, -1);
         std::cout << "Will read input from file named " << input;
         FileCommandProcessorAdapter fcpa = FileCommandProcessorAdapter(this);
-        fcpa.fileLineReader(input); 
+        fcpa.readFileLine(input); 
     }
 }
     
@@ -116,8 +116,8 @@ void FileCommandProcessorAdapter::readCommand(string cmd = ""){
     commandProcessor->readCommand(cmd);
 }
 
-void FileCommandProcessorAdapter::fileLineReader(string fileName = ""){
-    fileLineReader->fileReadCommand(fileName);
+void FileCommandProcessorAdapter::readFileLine(string fileName = ""){
+    readFileLine(fileName);
 }
     
  //__________________________________
@@ -142,7 +142,7 @@ FileLineReader::readLinefromFile(string fileName = ""){
     if (file.is_open()){  
         string cmd;
         while(getline(file, cmd)){ 
-            if validate(cmd){
+            if (validate(cmd)){
                 this->lastCmd = cmd; 
                 saveCommand();
             }

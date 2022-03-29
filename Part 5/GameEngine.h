@@ -11,7 +11,7 @@
 #define START_STATE "start"
 #define END_STATE "end"
 
-extern class CommandProcessor cp; 
+extern class CommandProcessor cp;
 
 class State;
 

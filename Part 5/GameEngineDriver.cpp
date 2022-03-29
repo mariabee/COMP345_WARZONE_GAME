@@ -1,6 +1,6 @@
 
-#include "./GameEngine.h"
-#include "./CommandProcessor.h"
+#include "GameEngine.h"
+#include "CommandProcessor.h"
 #include <iostream>
 
 using namespace std;

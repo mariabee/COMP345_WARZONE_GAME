@@ -5,31 +5,35 @@
 #include <iostream>
 #include <vector>
 
+
+
 class CommandProcessor{
     
 private: 
     GameEngine* gameEng; 
-    vector<Command> commandList; 
-    Command lastCmd; 
-    void saveCommand(); 
+    vector<Command *> commandList;
+    Command* lastCmd;
+
 
     
 public: 
     //CONSTRUCTOR
     CommandProcessor();
     CommandProcessor(GameEngine* ge); 
-    CommandProcessor(GameEngine* ge, const std::vector<Command> & lst); 
-    
+    CommandProcessor(GameEngine* ge, const std::vector<Command* > & lst);
+    void saveCommand();
+
     //DESTRUCTOR
     virtual ~CommandProcessor();
     
-    bool validate(Command cmd, GameEngine ge); 
+    bool validate(Command cmd, GameEngine* ge);
     void getCommand(); 
-    virtual void readCommand(string cmd); 
+    virtual void readCommand(string cmd);
+    void setLastCommand(Command*);
     
 };
 
-class FileLineReader{
+class FileLineReader: public CommandProcessor{
 private:
     string textfile; 
     
@@ -40,10 +44,10 @@ public:
     //DESTRUCTOR
     virtual ~FileLineReader();
     
-    void readLinefromFile(string fileName);
+    void readLineFromFile(string fileName,GameEngine* ge);
 };
 
-class FileCommandProcessorAdapter: public CommandProcessor, public FileLineReader{
+class FileCommandProcessorAdapter: public FileLineReader{
     
 private:
     FileLineReader* fileLineReader;

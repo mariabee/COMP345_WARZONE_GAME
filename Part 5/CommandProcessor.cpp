@@ -11,19 +11,19 @@ using namespace std;
  //__________________________________
 
 //CONSTRUCTOR
-CommandProcessor::CommandProcessor(GameEngine* ge){
+CommandProcessor::CommandProcessor(){
 
 }
 
 CommandProcessor::CommandProcessor(GameEngine* ge){
     this->gameEng = ge; 
-    lastCmd = Command(""); 
+    lastCmd = new Command("");
 }
 
-CommandProcessor::CommandProcessor(GameEngine* ge, const vector<Command> & lst){
+CommandProcessor::CommandProcessor(GameEngine* ge, const vector<Command *> & lst){
     this->gameEng = ge; 
     commandList = lst;
-    lastCmd = Command(""); 
+    lastCmd = new Command("");
 }
 
 //DESTRUCTOR
@@ -32,31 +32,31 @@ CommandProcessor::~CommandProcessor(){
     this->gameEng = nullptr; 
 }
     
-bool CommandProcessor::validate(Command cmd, GameEngine ge){
-    string state = *ge.currentState->name;
+bool CommandProcessor::validate(Command cmd, GameEngine* ge){
+    string* state = ge->currentState->name;
     string command = *cmd.command;
     if (command.compare("loadmap") == 0) {
-        if (state.compare("start") == 0 || state.compare("maploaded") == 0)
+        if (state->compare("start") == 0 || state->compare("maploaded") == 0)
             return true;
     }
     if (command.compare("validatemap") == 0) {
-        if (state.compare("maploaded") == 0)
+        if (state->compare("maploaded") == 0)
             return true;
     }
     if (command.compare("addplayer") == 0) {
-        if (state.compare("mapvalidated") == 0 || state.compare("playersadded") == 0)
+        if (state->compare("mapvalidated") == 0 || state->compare("playersadded") == 0)
             return true;
     }
     if (command.compare("gamestart") == 0) {
-        if (state.compare("playersadded") == 0)
+        if (state->compare("playersadded") == 0)
             return true;
     }
     if (command.compare("replay") == 0) {
-        if (state.compare("win") == 0)
+        if (state->compare("win") == 0)
             return true;
     }
     if (command.compare("quit") == 0) {
-        if (state.compare("win") == 0)
+        if (state->compare("win") == 0)
             return true;
     }
     return false;
@@ -81,13 +81,17 @@ void CommandProcessor::getCommand(){
 void CommandProcessor::readCommand(string cmd = ""){
     string usr_input; 
     std::cin >> usr_input; 
-    this->lastCmd = Command(usr_input);
+    this->lastCmd = new Command(usr_input);
     saveCommand(); 
 }
     
 void CommandProcessor::saveCommand(){
     commandList.push_back(this->lastCmd);
-} 
+}
+
+void CommandProcessor::setLastCommand(Command* c) {
+    this->lastCmd = c;
+}
  
  //__________________________________
  // FileCommandProcessorAdapter
@@ -135,20 +139,20 @@ FileLineReader::~FileLineReader(){
     this->textfile = nullptr;
 }
 
-FileLineReader::readLinefromFile(string fileName = ""){
+void FileLineReader::readLineFromFile(string fileName,GameEngine* ge){
     fstream file;
     file.open(fileName,ios::out);
     
     if (file.is_open()){  
         string cmd;
         while(getline(file, cmd)){ 
-            if (validate(cmd)){
-                this->lastCmd = cmd; 
-                saveCommand();
+            if (validate(cmd,ge)){
+                this->setLastCommand(new Command(cmd));
+                this->saveCommand();
             }
             else {
-                this->lastCmd = Command("Invalid Command.");
-                saveCommand();
+                this->setLastCommand(new Command("Invalid Command."));
+                this->saveCommand();
             }
         }
         file.close(); 

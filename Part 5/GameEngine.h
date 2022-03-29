@@ -15,7 +15,7 @@
 class State;
 
 // Class that provides functionality to match a Command.
-class Command
+class Command: public Subject, public ILoggable
 {
 public:
 	Command& operator=(const Command &c);
@@ -23,10 +23,15 @@ public:
 	explicit Command(std::string c);
 	friend std::ostream& operator<<(std::ostream &out, const Command &c);
 	bool matches(std::string s);
+	std::string stringToLog();
+	void saveEffect(std::string* e);
 	~Command();
 
-private:
+
 	std::string* command;
+
+private:
+	std::string* effect;
 };
 
 class Transition
@@ -60,8 +65,9 @@ public:
 	Transition *getTransition(int i);
 	void setTransitions(Transition *t);
 
-private:
 	std::string* name;
+
+private:
 	int index = 0;
 	Transition **transitions = new Transition *[2];
 };
@@ -75,7 +81,6 @@ private:
     int roundCount {5};
     vector<Player *> players;
     Map *map;
-	State *currentState;
 	State **states;
     Deck* new_deck;
 	int stateCount;
@@ -84,6 +89,7 @@ private:
     void issueOrdersPhase();
     void executeOrdersPhase();
 public:
+	State *currentState;
 	std::string stringToLog();
 	GameEngine& operator=(const GameEngine &ge);
 	GameEngine(const GameEngine &ge);

@@ -7,14 +7,17 @@
 // Assignment operator overload for Command
 Command &Command::operator=(const Command &c) {
     delete command;
+    delete effect;
 
     command = new std::string(*c.command);
+    effect = new std::string(*c.effect);
     return *this;
 }
 
 // Copy constructor for Command
 Command::Command(const Command &c) {
     command = new std::string(*c.command);
+    effect = new std::string(*c.effect);
 }
 
 // Stream insertion operator overload for Command
@@ -23,14 +26,27 @@ std::ostream &operator<<(std::ostream &out, const Command &c) {
     return out;
 }
 
+void Command::saveEffect(std::string* e) {
+    effect = e;
+    notify();
+}
+
+std::string Command::stringToLog() {
+    return "COMMAND::\"" + *effect + "\"";
+}
+
 // Destructor for Command
 Command::~Command() {
-    //std::cout << "Deleting command: \"" << *this << "\"" << std::endl;
+    std::cout << "Deleting command: \"" << *this << "\"" << std::endl;
+
+    delete effect;
+    delete command;
 }
 
 // Constructor for Command that takes a string
 Command::Command(std::string c) {
     command = new std::string(c);
+    effect = new std::string("");
 }
 
 // Function that returns a boolean corresponding to whether a given string matches the command

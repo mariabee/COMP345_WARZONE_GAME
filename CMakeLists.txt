@@ -25,6 +25,10 @@ add_executable(COMP345_WARZONE_GAME
         "Part 5/GameEngine.cpp"
         "Part 5/GameEngine.h"
         "Part 5/GameEngineDriver.cpp"
+        "Part 5/CommandProcessor.cpp"
+        "Part 5/CommandProcessor.h"
+        "Part 5/CommandProcessorDriver.cpp"
+        "Part 5/LoggingObserver.h"
         "Part 5/LoggingObserver.cpp"
         "Part 5/LoggingObserver.h"
         )

@@ -218,7 +218,7 @@ void Advance::execute() {
             }
             if(target->getNumberOfArmies()==0){
                 get_player()->addTerritory(target);
-                cout << *target->getName() << " has been conquered " << " by " << *get_player();
+                cout << *target->getName() << " has been conquered " << " by " << *get_player()->getName()<<endl;
                 set_order_effect("New territory has been conquered.");
                 if(!get_player()->isCardWon()){
                     get_player()->getHand()->drawFromDeck(deck);

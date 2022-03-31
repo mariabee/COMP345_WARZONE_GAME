@@ -209,9 +209,8 @@ vector<Territory *> *HumanPlayerStrategy::toAttack(Player *p) {
     }
     if (!validID)  {
         cout << "Invalid ID." << endl;
-        return nullptr;
     }
-
+    return nullptr;
     }
 
 AggressivePlayerStrategy::AggressivePlayerStrategy() {
@@ -273,5 +272,6 @@ vector<Territory *> *AggressivePlayerStrategy::toAttack(Player *p) {
             }
         }
     }
+    return out;
 }
 

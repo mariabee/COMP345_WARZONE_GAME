@@ -175,7 +175,7 @@ Advance::Advance(Player* player,Territory* start, Territory* target, int armies,
     this->target=target;
     this->armies=armies;
     set_player(player);
-    this->deck=deck;
+    this->deck= deck;
     set_order_type("Advance");
 }
 //COPY CONSTRUCTOR

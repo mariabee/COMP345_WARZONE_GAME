@@ -34,7 +34,7 @@ public:
     friend std::ostream &operator << ( std::ostream &out, const Card &card );
 
     //play a card (will be more useful when we use it with the player part)
-    void play(Deck* deck, Player* player, Player *other_Player);
+    void play(Deck* deck, Player* player);
 
 };
 
@@ -46,6 +46,7 @@ private:
     int initialDeckSize; // Number of cards in the game
     Card** cardsInDeck; // Array of the cards in the deck
     Card* initialDeck; // Array of all the card of the game
+    vector<Player> *players;
 
 
 public:
@@ -70,11 +71,14 @@ public:
     int getCurrentSize();
 
     //put cards back in the deck when it's played
-    void addCardBackToDeck(Card* card);
+    void addCardBackToDeck(Card *card);
 
     //draw card from the deck
     Card* draw();
 
+    //Add pointer to players
+    void addPlayers(vector <Player> *players);
+    vector<Player> * getPlayers();
 };
 
 
@@ -100,7 +104,8 @@ public:
     void drawFromDeck(Deck* deck);
 
     //play a card in the hand and return it in the deck
-    void playRound(Deck* deck, Player* player, Player *other);
+    void playRound(Deck* deck, Player* player);
+    void playCard(Deck *deck, Player* player);
 
     //stream insertion operator overloading(print list of cards in hand)
     friend std::ostream &operator << ( std::ostream &out, const Hand &hand );

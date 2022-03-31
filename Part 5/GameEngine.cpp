@@ -2,6 +2,7 @@
 #include <algorithm>
 #include <queue>
 #include "GameEngine.h"
+#include "PlayerStrategy.h"
 
 
 // Assignment operator overload for Command
@@ -368,6 +369,7 @@ void GameEngine::startupPhase() {
                 std::cout << "Enter the player's name: " << std::endl;
                 std::cin >> input;
                 temp_player = new Player(input);
+                temp_player->setStrategy(new HumanPlayerStrategy());
                 players.push_back(temp_player);
             }
             std::cout << "Players added successfully" << std::endl;
@@ -467,7 +469,8 @@ void GameEngine::issueOrdersPhase() {
     for (int current = 0; current < players.size(); current++) {
         Player *current_p = players.at(current); //get current player
         cout << "CURRENT PLAYER : " << *current_p << endl;
-
+        current_p->issueOrder();
+        /*
         vector<Territory *> *toAttack = current_p->toAttack(); //get list of territories toAttack
         vector<Territory *> *toDefend = current_p->toDefend(); //get list of territories toDefend
         vector<Territory *> *toMove = current_p->getToMove(); //get list of territories to move troops from
@@ -527,7 +530,7 @@ void GameEngine::issueOrdersPhase() {
                 }
                 armies -= split;
             }
-        }
+        }*/
     }
     setState("endissueorders");
 }

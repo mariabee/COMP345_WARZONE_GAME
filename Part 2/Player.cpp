@@ -1,4 +1,5 @@
 #include "Player.h"
+#include "PlayerStrategy.h"
 #include <map>
 //Default constructor
 Player::Player() {
@@ -16,6 +17,7 @@ Player::Player(std::string n)
     armies = 3;
     cardWon= false;
     cannotAttack = new vector<Player *>();
+    strategy = nullptr;
 }
 
 // Assignment operator overload for Player
@@ -24,6 +26,7 @@ Player &Player::operator=(const Player &p)
 	if (this == &p)
 		return *this;
 	delete name;
+    delete strategy;
 	delete hand;
 	delete[] territories;
     delete[] continents;
@@ -59,9 +62,6 @@ Player::Player(Player &p) {
     continents = new vector<Continent *>();
     toMove = new vector<Territory *>();
     for (Territory *t: *p.getTerritories()) {
-        territories->push_back(t);
-    }
-    for (Territory *t: *p.getToMove()) {
         territories->push_back(t);
     }
     orderList = new OrdersList(*p.getOrdersList());
@@ -110,6 +110,8 @@ void Player::setArmies(int armies) {
 // Function that returns a list of territories corresponding to the Territories the player would like to defend
 vector<Territory *> *Player::toDefend()
 {
+    return strategy->toDefend(this);
+    /*
     auto *out = new vector<Territory *>;
     toMove->clear(); //reset the toMove
     //Go through all territories bordering the player's
@@ -135,11 +137,14 @@ vector<Territory *> *Player::toDefend()
         return territories;
     }
     return out;
+     */
 }
 
 // Function that returns a list of territories corresponding to the Territories the player would like to attack
 vector<Territory *> *Player::toAttack()
 {
+    return strategy->toAttack(this);
+    /*
     auto *out = new vector<Territory *>;
     //Go through all the territories bordering the player's territories
     for (Territory *t : *territories) {
@@ -157,6 +162,7 @@ vector<Territory *> *Player::toAttack()
     }
     cout << "TERRITORIES TO ATTACK HAVE BEEN GENERATED FOR " << *this << endl;
     return out;
+     */
 }
 
 // Function that sets the Player's territories to a given list and count
@@ -168,63 +174,6 @@ void Player::setTerritories(vector<Territory *> *t)
     }
 }
 
-//ISSUE ORDERS
-void Player::issueOrder(Deploy* d) {
-    orderList->add(d);
-}
-void Player::issueOrder(Advance* a) {
-    orderList->add(a);
-}
-void Player::issueOrder(Bomb* b) {
-    orderList->add(b);
-}
-void Player::issueOrder(Blockade* b) {
-    orderList->add(b);
-}
-void Player::issueOrder(Airlift* b) {
-    orderList->add(b);
-}
-void Player::issueOrder(Negotiate* b) {
-    orderList->add(b);
-}
-
-// Function that creates an order based on the type passed as a string
-void Player::issueOrder(std::string type)
-{
-	std::string typeMap[6] {"deploy", "advance", "bomb", "blockade", "airlift", "negotiate"};
-
-	int index = -1;
-
-	for(index = 0; index < 6; index++)
-		if (type == typeMap[index]) break;
-
-	order *o;
-	switch (index)
-	{
-	case 0:
-		o = new Deploy();
-		break;
-	case 1:
-		o = new Advance();
-		break;
-	case 2:
-		o = new Bomb();
-		break;
-	case 3:
-		o = new Blockade();
-		break;
-	case 4:
-		o = new Airlift();
-		break;
-
-	case 5:
-		o = new Negotiate();
-		break;
-	default:
-		std::cout << "Error::Player - Unknown Type: " << type << std::endl;
-		return;
-	}
-}
 
 
 void Player::addTerritory(Territory *t) {
@@ -292,13 +241,17 @@ vector<Territory *> * Player::getTerritories() {
 vector<Continent *> * Player::getContinents() {
     return continents;
 }
+PlayerStrategy *Player::getPlayerStrategy() {
+    return strategy;
+}
 
 OrdersList *Player::getOrdersList() {
     return orderList;
 }
 
-vector<Territory *> *Player::getToMove() {
-    return toMove;
+
+Territory * Player::getToMove() {
+    return strategy->toMove(this);
 }
 
 string *Player::getName() const {
@@ -324,6 +277,20 @@ void Player::setCannotAttack(vector<Player *> *cannotAttack) {
 void Player::clearCannotAttack() {
     cannotAttack->clear();
 }
+
+void Player::setStrategy(PlayerStrategy *ps) {
+    strategy = ps;
+}
+
+void Player::issueOrder(order *o) {
+    strategy->issueOrder(this, o);
+}
+
+void Player::issueOrder() {
+    strategy->issueOrder(this);
+}
+
+
 
 
 

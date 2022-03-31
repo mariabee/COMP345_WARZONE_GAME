@@ -8,47 +8,42 @@
 
 class Hand;
 class Deck;
+class PlayerStrategy;
 
 class Player {
 	private:
+        PlayerStrategy *strategy;
 		std::string *name;
 		OrdersList* orderList;
-		vector<Territory *> *territories;
-        vector<Continent *> *continents;
-        vector<Territory *> *toMove;
 		Hand* hand;
         int armies;
         bool cardWon;
+        vector<Territory *> *territories;
+        vector<Continent *> *continents;
+        vector<Territory *> *toMove;
         vector<Player *> *cannotAttack;
-
 	public:
         Player();
-		Player(std::string);
+        Player(std::string);
 		Player &operator=(const Player &p);
 		Player(Player &p);
 		friend std::ostream& operator<< (std::ostream &out, const Player &p);
 		~Player();
-
-        void issueOrder(Deploy *d);
-        void issueOrder(Advance *a);
-        void issueOrder(Bomb *b);
-        void issueOrder(Blockade *b);
-        void issueOrder(Airlift *b);
-        void issueOrder(Negotiate *b);
-        void issueOrder(std::string);
+        void issueOrder(order *o);
+        void issueOrder();
         vector<Territory *> * toDefend();
         vector<Territory*> * toAttack();
-
         //Accessors
         vector<Territory *> * getTerritories();
         vector<Continent *> * getContinents();
-        vector<Territory *> * getToMove();
+        Territory * getToMove();
         OrdersList *getOrdersList();
         Hand* getHand();
         int getArmies() const;
         string *getName() const;
         bool isCardWon() const;
         vector<Player *> *getCannotAttack() const;
+        PlayerStrategy * getPlayerStrategy();
 
     //Mutators
         void addTerritory(Territory *t);
@@ -60,6 +55,7 @@ class Player {
         void setCannotAttack(vector<Player *> *cannotAttack);
         void clearCannotAttack();
         void setCardWon(bool cardWon);
+        void setStrategy(PlayerStrategy *ps);
 
 
 };

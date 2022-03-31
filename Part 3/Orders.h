@@ -4,8 +4,8 @@
 #include <vector>
 #include "../Part 1/Map.h"
 #include "../Part 5/LoggingObserver.h"
-using namespace std;
 
+using namespace std;
 class Deck;
 //BASE CLASS 
 class order: public Subject, public ILoggable {
@@ -13,7 +13,6 @@ public:
     //Constructors
     order();
     order(const order& other);
-
     std::string& toString();
     std::string stringToLog();
     order& operator=(const order& o);
@@ -73,7 +72,7 @@ private:
 public:
     //Constructors
     Advance();
-    Advance(Player*,Territory*, Territory*, int,Deck*);
+    Advance(Player*,Territory*, Territory*, int, Deck *d);
     Advance(const Advance& other);
     Advance& operator=(const Advance& other);
     void execute() override;

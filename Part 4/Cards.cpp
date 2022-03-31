@@ -69,38 +69,72 @@ std::ostream &operator << ( std::ostream &out, const Card &card ){
 }
 
 //Different effects of the cards based on their type
-void Card::play(Deck* deck, Player* player, Player *other)
+void Card::play(Deck* deck, Player* player)
 {
-    try {
-        Territory *source = player->toAttack()->at(0);
-        Territory *target = player->toAttack()->at(1);
-        Territory *toMove = player->getToMove()->at(0);
+    Territory *source;
+    Territory *target;
+    vector <Territory *> *toAttack;
+    vector <Territory *> *toDefend;
+    bool cardPlayed = true;
 
         switch (type) {
             case BOMB:
-                cout << "You PLAYED your BOMB card\n";
-                player->issueOrder(new Bomb(player, source, target));
+                toAttack = player->toAttack();
+                if (!toAttack->empty()) {
+                    source = toAttack->at(0);
+                    target = toAttack->at(1);
+                    cout << *player->getName() << " has played a BOMB card" << endl;
+                    player->getOrdersList()->add(new Bomb(player, source, target));
+                }
+                else {
+                    cout << *player->getName() << " is unable to play BOMB. They have no territories designated to attack." << endl;
+                    cardPlayed = false;
+                }
                 break;
             case REINFORCEMENT:
-                cout << "You PLAYED your REINFORCEMENT card\n";
-                player->issueOrder(new Deploy(player, source, 3));
+                cout << *player->getName() << " has played a REINFORCEMENT card\n";
+                toDefend = player->toDefend();
+                if (!toDefend->empty()) {
+                    source = player->toDefend()->at(0);
+                    player->getOrdersList()->add(new Deploy(player, source, 3));
+                }
+                else {
+                    cout << *player->getName() << " is unable to play REINFORCEMENT. They have no territories designated to defend." << endl;
+                    cardPlayed = false;
+                }
                 break;
             case BLOCKADE:
-                cout << "You PLAYED your BLOCKADE card\n";
-                player->issueOrder(new Blockade(player, source, nullptr));
+                cout << *player->getName() << " has played a BLOCKADE card\n";
+                toDefend = player->toDefend();
+                if (!toDefend->empty()) {
+                    source = player->toDefend()->at(0);
+                    player->getOrdersList()->add(new Blockade(player, source, nullptr));
+                }
+                else {
+                    cout << *player->getName() << " is unable to play BLOCKADE. They have no territories designated to defend." << endl;
+                    cardPlayed = false;
+                }
                 break;
             case AIRLIFT:
-                cout << "You PLAYED your AIRLIFT card\n";
-                player->issueOrder(new Airlift(player, toMove, source, toMove->getNumberOfArmies()));
+                cout << *player->getName() << " has played a AIRLIFT card\n";
+                toDefend = player->toDefend();
+                if (!toDefend->empty()) {
+                    target = player->toDefend()->at(0);
+                    source = player->getToMove();
+                    player->getOrdersList()->add(new Airlift(player, source, target, target->getNumberOfArmies()));
+                }
+                else {
+                    cout << *player->getName() << " is unable to play BLOCKADE. They have no territories designated to defend." << endl;
+                    cardPlayed = false;
+                }
                 break;
             case DIPLOMACY:
-                cout << "You PLAYED your DIPLOMACY card\n";
-                player->issueOrder(new Negotiate(player, other));
+                cout << *player->getName() << " has played a DIPLOMACY card\n";
+                player->issueOrder(new Negotiate());
                 break;
         }
+    if (cardPlayed) {
         deck->addCardBackToDeck(this);
-    }catch (exception e) {
-        cout << *player << " has not designated any territories to attack." << endl;
     }
 }
 
@@ -114,8 +148,8 @@ Deck::Deck()
 {
     initialDeckSize = 55;
     nbCardInDeck = initialDeckSize;
-    cardsInDeck = new Card*[initialDeckSize];
-    initialDeck = new Card[initialDeckSize];
+    cardsInDeck = new class Card*[initialDeckSize];
+    initialDeck = new class Card[initialDeckSize];
 
     this->initialize();
 
@@ -131,8 +165,8 @@ Deck::Deck(int deckSize)
         initialDeckSize = 55;
     }
     nbCardInDeck = initialDeckSize;
-    cardsInDeck = new Card*[initialDeckSize];
-    initialDeck = new Card[initialDeckSize];
+    cardsInDeck = new class Card*[initialDeckSize];
+    initialDeck = new class Card[initialDeckSize];
 
     this->initialize();
 
@@ -140,8 +174,8 @@ Deck::Deck(int deckSize)
 }
 //copy constructor
 Deck::Deck(const Deck &obj){
-    Card** cardsInDeck = new Card*[initialDeckSize];
-    Card* initialDeck = new Card[initialDeckSize];
+    Card** cardsInDeck = new class Card*[initialDeckSize];
+    Card* initialDeck = new class Card[initialDeckSize];
 
     **cardsInDeck = **obj.cardsInDeck;
     *initialDeck = *obj.initialDeck;
@@ -180,7 +214,7 @@ std::ostream &operator << ( std::ostream &out, const Deck &deck ){
 //Create all the Cards object in the deck
 void Deck::initialize (){
     for (int i = 0 ; i < initialDeckSize ; i ++){
-        Card c1 = Card();
+        class Card c1 = Card();
         initialDeck[i] = c1;
         cardsInDeck[i] = &initialDeck[i];
     }
@@ -192,9 +226,9 @@ int Deck::getCurrentSize()
     return nbCardInDeck;
 }
 
+
 //Put cards back in the deck when it's played
-void Deck::addCardBackToDeck(Card* card)
-{
+void Deck::addCardBackToDeck(class Card *card) {
     for (int i = 0 ; i < nbCardInDeck; i++ ){
         if (cardsInDeck[i] == nullptr){
             cardsInDeck[i] = card;
@@ -206,9 +240,9 @@ void Deck::addCardBackToDeck(Card* card)
 }
 
 //Draw card from the deck
-Card* Deck::draw()
+Card * Deck::draw()
 {
-    Card* pickedCard ;
+    class Card* pickedCard ;
 
     while( nbCardInDeck > 0 ){
         int temp = rand() % initialDeckSize;
@@ -223,6 +257,15 @@ Card* Deck::draw()
     cout << "The deck is empty";
     return nullptr;
 }
+
+void Deck::addPlayers(vector<Player> *game_players) {
+    players = game_players;
+}
+
+vector<Player> *Deck::getPlayers() {
+    return players;
+}
+
 
 //____________________
 // Class Hand methods
@@ -274,7 +317,7 @@ void Hand::drawFromDeck(Deck* deck){
 }
 
 //Play a card in the hand and return it in the deck
-void Hand::playRound(Deck* deck, Player* player, Player *other)
+void Hand::playRound(Deck* deck, Player* player)
 {
     if (nbCardsInHand == 0){
         cout << "You don't have any card in your hand at the moment.\n";
@@ -293,7 +336,7 @@ void Hand::playRound(Deck* deck, Player* player, Player *other)
         //Invalid input results in no cards being played
         if (cardChoice > 0 && cardChoice <= nbCardsInHand) {
 
-            cardsInHand[cardChoice-1]->play(deck, player, other);
+            cardsInHand[cardChoice-1]->play(deck, player);
 
             for(int i = cardChoice-1; i < maxCard; i++){
                 cardsInHand[i] = cardsInHand[i+1];
@@ -303,6 +346,16 @@ void Hand::playRound(Deck* deck, Player* player, Player *other)
 
     }
 }
+void Hand::playCard(Deck *deck, Player *player) {
+    if (nbCardsInHand == 0){
+        cout << *player << " doesn't have any cards in their hand at the moment." << endl;
+    }
+    else {
+        cardsInHand[nbCardsInHand-1]->play(deck, player);
+        nbCardsInHand--;
+    }
+}
+
 
 // Print all the cards in hand
 std::ostream &operator << (std::ostream &out, const Hand &hand ){
@@ -311,3 +364,7 @@ std::ostream &operator << (std::ostream &out, const Hand &hand ){
     }
     return out;
 }
+
+
+
+

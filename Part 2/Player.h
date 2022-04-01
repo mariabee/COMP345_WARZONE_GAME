@@ -1,13 +1,14 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 #include "../Part 1/Map.h"
-#include "../Part 3/Orders.h"
 #include "../Part 4/Cards.h"
+#include "PlayerStrategy.h"
 #include <vector>
 #include <string>
 
 class Hand;
 class Deck;
+class order;
 class PlayerStrategy;
 
 class Player {
@@ -29,14 +30,13 @@ class Player {
 		Player(Player &p);
 		friend std::ostream& operator<< (std::ostream &out, const Player &p);
 		~Player();
-        void issueOrder(order *o);
+        bool issueOrder(order *o);
         void issueOrder();
-        vector<Territory *> * toDefend();
-        vector<Territory*> * toAttack();
+        vector<Territory *> * toDefend(order *type);
+        vector<Territory*> * toAttack(order *type);
         //Accessors
         vector<Territory *> * getTerritories();
         vector<Continent *> * getContinents();
-        Territory * getToMove();
         OrdersList *getOrdersList();
         Hand* getHand();
         int getArmies() const;

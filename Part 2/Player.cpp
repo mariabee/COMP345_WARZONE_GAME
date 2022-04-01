@@ -1,5 +1,4 @@
 #include "Player.h"
-#include "PlayerStrategy.h"
 #include <map>
 //Default constructor
 Player::Player() {
@@ -108,9 +107,9 @@ void Player::setArmies(int armies) {
     Player::armies = armies;
 }
 // Function that returns a list of territories corresponding to the Territories the player would like to defend
-vector<Territory *> *Player::toDefend()
+vector<Territory *> *Player::toDefend(order *type)
 {
-    return strategy->toDefend(this);
+    return strategy->toDefend(this, type);
     /*
     auto *out = new vector<Territory *>;
     toMove->clear(); //reset the toMove
@@ -141,9 +140,9 @@ vector<Territory *> *Player::toDefend()
 }
 
 // Function that returns a list of territories corresponding to the Territories the player would like to attack
-vector<Territory *> *Player::toAttack()
+vector<Territory *> *Player::toAttack(order *type)
 {
-    return strategy->toAttack(this);
+    return strategy->toAttack(this, type);
     /*
     auto *out = new vector<Territory *>;
     //Go through all the territories bordering the player's territories
@@ -250,10 +249,6 @@ OrdersList *Player::getOrdersList() {
 }
 
 
-Territory * Player::getToMove() {
-    return strategy->toMove(this);
-}
-
 string *Player::getName() const {
     return name;
 }
@@ -282,8 +277,8 @@ void Player::setStrategy(PlayerStrategy *ps) {
     strategy = ps;
 }
 
-void Player::issueOrder(order *o) {
-    strategy->issueOrder(this, o);
+bool Player::issueOrder(order *o) {
+    return strategy->issueOrder(this, o);
 }
 
 void Player::issueOrder() {

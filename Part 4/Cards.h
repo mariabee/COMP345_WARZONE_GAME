@@ -8,11 +8,9 @@
 
 #include "../Part 2/Player.h"
 
-
+class Deck;
+class Hand;
 enum cardType {BOMB, REINFORCEMENT, BLOCKADE, AIRLIFT, DIPLOMACY }; // Type possible for a give card
-
-extern class Deck deck;
-extern class Hand hand;
 
 class Card {
 private:
@@ -39,7 +37,7 @@ public:
 };
 
 
-class Deck: public Card {
+class Deck {
 
 private:
     int nbCardInDeck; // Number of cards in the deck
@@ -76,9 +74,6 @@ public:
     //draw card from the deck
     Card* draw();
 
-    //Add pointer to players
-    void addPlayers(vector <Player> *players);
-    vector<Player> * getPlayers();
 };
 
 
@@ -104,7 +99,7 @@ public:
     void drawFromDeck(Deck* deck);
 
     //play a card in the hand and return it in the deck
-    void playRound(Deck* deck, Player* player);
+    bool playRound(Deck* deck, Player* player);
     void playCard(Deck *deck, Player* player);
 
     //stream insertion operator overloading(print list of cards in hand)

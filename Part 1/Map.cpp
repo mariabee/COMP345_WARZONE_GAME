@@ -70,8 +70,10 @@ Territory::~Territory() {
 }
 //OVERLOADED << OPERATOR
 ostream &operator<<(ostream &os, const Territory &territory) {
-    os << "ID: " << territory.getId() << "\tName: " << *territory.getName() << "\tContinent: " << *territory.getContinent()->getName();
-    if (territory.getOwner()) {os << "\tCurrently occupied by : " << *territory.getOwner();}
+    os << "ID: " << territory.getId() << "\tName: " << *territory.getName() << "\tContinent: " << *territory.getContinent()->getName()
+    << "\tArmies: " << territory.getNumberOfArmies();
+    if (territory.getOwner()) {os << "\tOccupied by : " << *territory.getOwner();}
+    else {os << "\tOccupied by : NEUTRAL";}
     return os;
 }
 //METHOD TO ADD EDGES/BORDERS TO AN ARRAY OF TERRITORIES
@@ -99,7 +101,7 @@ Player *Territory::getOwner() const { return player; }
 //MUTATORS
 void Territory::setId(int id) { ID = id; }
 void Territory::setName(string name_) {*this->name = move(name_);}
-void Territory::setContinent(Continent *continent) { this->continent = continent; }
+void Territory::setContinent(Continent *c) { this->continent = c; }
 void Territory::setNumberOfArmies(int numberOfArmies) { this->number_of_armies = numberOfArmies; }
 void Territory::changeOwner(Player *player_) {this->player = player_;}
 //CONTINENT IMPLEMENTATION
@@ -113,6 +115,7 @@ Continent::Continent() {
     NUM_OF_TERS = -1;
     count = 0;
     subTerritories = nullptr;
+    owner = nullptr;
 }
 Continent::Continent(const int ID, string _name, int bonus, string _color) {
     this->name = new string();
@@ -122,6 +125,7 @@ Continent::Continent(const int ID, string _name, int bonus, string _color) {
     this->ID = ID;
     this->bonus = bonus;
     subTerritories = nullptr;
+    owner = nullptr;
     count = 0;
     NUM_OF_TERS = -1;
 }
@@ -131,6 +135,7 @@ Continent::Continent(const Continent &c) {
     ID = c.getId();
     bonus = c.getBonus();
     count = c.count;
+    owner = c.getOwner();
     NUM_OF_TERS = c.getNumOfTers();
     if (NUM_OF_TERS > 0) {
         subTerritories = new Territory *[NUM_OF_TERS]();
@@ -151,6 +156,7 @@ Continent &Continent::operator=(const Continent &c) {
     bonus = c.getBonus();
     NUM_OF_TERS = c.getNumOfTers();
     count = c.count;
+    owner = c.getOwner();
     if (NUM_OF_TERS > 0) {
         subTerritories = new Territory *[NUM_OF_TERS]();
         for (int k = 0; k < NUM_OF_TERS; k++) {
@@ -444,8 +450,6 @@ Map MapLoader::loadMap(const string &filename)  {
         }
         i++;
     }
-    delete continentLine;
-    continentLine = nullptr;
 
     int N = countries->size();
     // initialize Territory array

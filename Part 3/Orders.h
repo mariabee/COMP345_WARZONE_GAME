@@ -14,7 +14,7 @@ public:
     order();
     order(const order& other);
     std::string& toString();
-    std::string stringToLog();
+    std::string stringToLog() override;
     order& operator=(const order& o);
     //Destructor
     virtual ~order();
@@ -113,21 +113,18 @@ class Blockade : public order {
 public:
     //Constructors
     Blockade();
-    Blockade(Player*,Territory*, Player* neutral);
+    Blockade(Player *p,Territory *t);
     Blockade(const Blockade& other);
     Blockade& operator=(const Blockade& o);
     //Destructor
     ~Blockade() override;
     //Getters
     Territory *getTerritory() const;
-    Player *getNeutral() const;
     //Setters
     void setTerritory(Territory *territory);
-    void setNeutral(Player *neutral);
     void execute() override;
 private:
     Territory* territory;
-    Player* neutral;
     bool validate() override;
 };
 class Airlift : public order {
@@ -187,7 +184,7 @@ public:
     bool contain(order *o);
     order *popTop();
     //Destructor
-    ~OrdersList();
+    ~OrdersList() override;
     //Accessors
     vector<order *> *getList() const;
 

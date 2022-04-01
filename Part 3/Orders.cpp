@@ -372,11 +372,10 @@ Blockade::Blockade() {
     territory = nullptr;
     set_order_type("Blockade"); }
 //CONSTRUCTOR
-Blockade::Blockade(Player* player, Territory* territory, Player* neutral) {
+Blockade::Blockade(Player* player, Territory* territory) {
     this->territory=territory;
     set_order_type("Blockade");
     set_player(player);
-    this->neutral = neutral;
 }
 
 //COPY CONSTRUCTOR
@@ -388,7 +387,6 @@ Blockade &Blockade::operator=(const Blockade &o) {
     if (this == &o) return *this;
     order::operator = (o);
     this->territory=o.getTerritory();
-    this->neutral=o.getNeutral();
     return *this;
 }
 //EXECUTE
@@ -432,13 +430,6 @@ Blockade::~Blockade() {
     territory = nullptr;
 }
 
-Player *Blockade::getNeutral() const {
-    return neutral;
-}
-
-void Blockade::setNeutral(Player *neutral) {
-    Blockade::neutral = neutral;
-}
 
 #pragma endregion Blockade
 
@@ -592,7 +583,14 @@ Negotiate::~Negotiate() {
 //ORDERS LIST IMPLEMENTATION
 #pragma region OrderList
 void OrdersList::add(order* o) {
-    list->push_back(o);
+    if (dynamic_cast<Deploy *> (o)) {
+        list->push_back(o);
+    }
+    else {
+        list->push_back(o);
+        std::rotate(list->rbegin(), list->rbegin() + 1, list->rend());
+    }
+
     notify();
 }
 bool OrdersList::move(order* o, int position) {
@@ -627,7 +625,6 @@ bool OrdersList::contain(order *o) {
     *ptr = find(list->begin(), list->end(), o);
     if (*ptr != list->end())
     {
-        cout << *o->get_order_type() + " found  at position : " ;
         cout << *ptr - list->begin() <<endl;
         *ptr = list->begin();
         return true;

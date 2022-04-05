@@ -289,6 +289,7 @@ void GameEngine::initializeDeck() {
 void GameEngine::initializeStrategies() {
     strategies = new PlayerStrategy*[5];
     strategies[0] = new HumanPlayerStrategy();
+    strategies[1] = new AggressivePlayerStrategy();
     PlayerStrategy::addDeck(new_deck);
     PlayerStrategy::addPlayers(&players);
 }
@@ -557,7 +558,7 @@ void GameEngine::executeOrdersPhase() {
     }
     cout << endl;
     //If player owns all the Territories, the game over.
-    if (roundCount == 5) {
+    if (roundCount == 10) {
         cout << "FORCING WIN BY ASSIGNING ALL TERRITORIES TO PLAYER 1... " << endl;
         for (int i = 0; i < map->getNumOfTers(); i++) {
             players.at(0)->addTerritory(&map->getTerritories()[i]);
@@ -588,7 +589,7 @@ void GameEngine::testPhase() {
     initializeStrategies();
     for (int i{0}; i < 5; i++) {
         auto *temp_player = new Player("TEST" + to_string(i));
-        temp_player->setStrategy(strategies[0]);
+        temp_player->setStrategy(strategies[1]);
         players.push_back(temp_player);
     }
     distributeTerritories();

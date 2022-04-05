@@ -21,6 +21,7 @@ public :
     virtual vector<Territory *> * toAttack(Player *p, order *type) = 0;
     static void addDeck(Deck *d);
     static void addPlayers(vector<Player *> *p);
+    static Player * generateNegotiate(Player *p);
 };
 
 class HumanPlayerStrategy : public PlayerStrategy {
@@ -31,7 +32,7 @@ public :
     static Territory * toMove(Player *p);
     vector<Territory *> * toDefend(Player *, order *type) override;
     vector<Territory *> * toAttack(Player *p, order *type) override;
-    static Player * generateNegotiate();
+    static Player * generateNegotiate(Player *p);
     static void displayToAdvance(Player *p);
     static void displayToAttack(Player *p);
     static void displayEnemyBorders(Territory *t, Player *p);

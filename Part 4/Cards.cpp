@@ -79,7 +79,7 @@ void Card::play(Deck* deck, Player* player)
         switch (type) {
             case BOMB:
                 toAttack = player->toAttack(new Bomb());
-                if (toAttack) {
+                if (toAttack && !toAttack->empty()) {
                     source = toAttack->at(0);
                     target = toAttack->at(1);
                     cout << *player->getName() << " has played a BOMB card" << endl;
@@ -97,6 +97,7 @@ void Card::play(Deck* deck, Player* player)
                 if (toDefend) {
                     source = toDefend->back();
                     auto *d = new Deploy(player, source, 3);
+                    player->setArmies(player->getArmies() + 3);
                     player->getOrdersList()->add(d);
                 }
                 else {
@@ -108,7 +109,7 @@ void Card::play(Deck* deck, Player* player)
                 cout << *player->getName() << " has played a BLOCKADE card\n";
                 toDefend = player->toDefend(new Blockade());
                 if (toDefend) {
-                    source = toDefend->back();
+                    source = toDefend->front();
                     auto *b = new Blockade(player, source);
                     player->getOrdersList()->add(b);
                 }
@@ -129,24 +130,25 @@ void Card::play(Deck* deck, Player* player)
                         cin >> armies;
                     }
                     else {
-                        armies = (target->getNumberOfArmies() + 1) /2;
+                        armies = (source->getNumberOfArmies() + 1) /2;
                     }
                     auto *a = new Airlift(player, source, target, armies);
                     player->getOrdersList()->add(a);
                 }
                 else {
-                    cout << *player->getName() << " is unable to play BLOCKADE. They have no territories designated to defend." << endl;
+                    cout << *player->getName() << " is unable to play AIRLIFT. They have no territories to airlift from." << endl;
                     cardPlayed = false;
                 }
                 break;
             case DIPLOMACY:
                 cout << *player->getName() << " has played a DIPLOMACY card\n";
-                if (player->issueOrder(new Negotiate())){
-                    cardPlayed = true;
+                if (!player->issueOrder(new Negotiate())){
+                    cardPlayed = false;
                 };
                 break;
         }
     if (cardPlayed) {
+        cout << "Order was successfully issued." << endl;
         deck->addCardBackToDeck(this);
     }
 }
@@ -247,7 +249,7 @@ void Deck::addCardBackToDeck(Card *card) {
         if (!cardsInDeck[i]){
             cardsInDeck[i] = card;
             this->nbCardInDeck ++;
-            cout << "Card was successfully placed back in the deck. ";
+            cout << "Card was successfully placed back in the deck. " << endl;
             break;
         }
     }
@@ -264,7 +266,7 @@ Card * Deck::draw()
         if (pickedCard != nullptr) {
             cardsInDeck[temp] = nullptr;
             this->nbCardInDeck--;
-            cout << "You've just received this NEW CARD: " << *pickedCard << endl;
+            cout << "Player just received this NEW CARD: " << *pickedCard;
             return pickedCard;
         }
     }

@@ -4,8 +4,8 @@
 #include <vector>
 #include "../Part 1/Map.h"
 #include "../Part 5/LoggingObserver.h"
-using namespace std;
 
+using namespace std;
 class Deck;
 //BASE CLASS 
 class order: public Subject, public ILoggable {
@@ -13,9 +13,8 @@ public:
     //Constructors
     order();
     order(const order& other);
-
     std::string& toString();
-    std::string stringToLog();
+    std::string stringToLog() override;
     order& operator=(const order& o);
     //Destructor
     virtual ~order();
@@ -73,7 +72,7 @@ private:
 public:
     //Constructors
     Advance();
-    Advance(Player*,Territory*, Territory*, int,Deck*);
+    Advance(Player*,Territory*, Territory*, int, Deck *d);
     Advance(const Advance& other);
     Advance& operator=(const Advance& other);
     void execute() override;
@@ -114,21 +113,18 @@ class Blockade : public order {
 public:
     //Constructors
     Blockade();
-    Blockade(Player*,Territory*, Player* neutral);
+    Blockade(Player *p,Territory *t);
     Blockade(const Blockade& other);
     Blockade& operator=(const Blockade& o);
     //Destructor
     ~Blockade() override;
     //Getters
     Territory *getTerritory() const;
-    Player *getNeutral() const;
     //Setters
     void setTerritory(Territory *territory);
-    void setNeutral(Player *neutral);
     void execute() override;
 private:
     Territory* territory;
-    Player* neutral;
     bool validate() override;
 };
 class Airlift : public order {
@@ -188,7 +184,7 @@ public:
     bool contain(order *o);
     order *popTop();
     //Destructor
-    ~OrdersList();
+    ~OrdersList() override;
     //Accessors
     vector<order *> *getList() const;
 

@@ -22,10 +22,10 @@ public:
 	Command(const Command &c);
 	explicit Command(std::string c);
 	friend std::ostream& operator<<(std::ostream &out, const Command &c);
-	bool matches(std::string s);
-	std::string stringToLog();
+	bool matches(const std::string& s) const;
+	std::string stringToLog() override;
 	void saveEffect(std::string* e);
-	~Command();
+	~Command() override;
 
 
 	std::string* command;
@@ -48,7 +48,7 @@ public:
 	~Transition();
 	Transition(State *f, State *t, std::string o);
 	State *getState();
-	bool matches(std::string s);
+	bool matches(const std::string& s);
 };
 
 class State
@@ -59,9 +59,9 @@ public:
 	explicit State(std::string n);
 	friend std::ostream& operator<< (std::ostream &out, const State &s);
 	~State();
-	std::string& toString();
-	bool isEnd();
-	int getCommandIndex(std::string s);
+	std::string& toString() const;
+	bool isEnd() const;
+	int getCommandIndex(const std::string& s);
 	Transition *getTransition(int i);
 	void setTransitions(Transition *t);
 
@@ -82,6 +82,7 @@ private:
     vector<Player *> players;
     Map *map;
 	State **states;
+    PlayerStrategy **strategies;
     Deck* new_deck;
 	int stateCount;
     bool gameOver;
@@ -90,22 +91,25 @@ private:
     void executeOrdersPhase();
 public:
 	State *currentState;
-	std::string stringToLog();
+	std::string stringToLog() override;
 	GameEngine& operator=(const GameEngine &ge);
 	GameEngine(const GameEngine &ge);
 	GameEngine();
 	friend std::ostream& operator<< (std::ostream &out, const GameEngine &ge);
-	~GameEngine();
+	~GameEngine() override;
 	void build();
 	void startupPhase();
     void distributeTerritories();
     void mainGameLoop();
     void randomizePlayOrder();
     void initializeDeck();
-    void setState(std::string s);
+    void initializeStrategies();
+    void setState(const std::string& s);
     void initial_start();
+    void testPhase();
 
     void play();
+
 };
 
 #endif

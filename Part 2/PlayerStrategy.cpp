@@ -311,6 +311,7 @@ void HumanPlayerStrategy::displayEnemyBorders(Territory *t, Player *p) {
         }
     }
 }
+///////////////////////////////AGGRESSIVE PLAYER/////////////////////////
 
 //Returns vector with back being territory to attack, and next being territory to attack from.
 vector<Territory *> *AggressivePlayerStrategy::toAttack(Player *p, order *type) {
@@ -412,5 +413,95 @@ bool AggressivePlayerStrategy::issueOrder(Player *p, order *o) {
 
 AggressivePlayerStrategy::AggressivePlayerStrategy() = default;
 
+///////////////////////////////BENEVOLENT PLAYER/////////////////////////
+
+vector<Territory *> *BenevolentPlayerStrategy::toAttack(Player *p, order *type) {
+    return nullptr;
+}
+vector<Territory *> *BenevolentPlayerStrategy::toDefend(Player *p, order *type) {
+    auto *out = new vector<Territory *>();
+    Territory *weakest = nullptr;
+    Territory *past_weak = nullptr;
+    int min_armies = 0;
+    for (Territory *t : *p->getTerritories()) {
+        if(weakest == nullptr){
+            weakest=t;
+        }
+        else if(t->getNumberOfArmies() == min_armies){
+            past_weak = weakest;
+            weakest = t;
+        }
+        else if(t->getNumberOfArmies()< weakest->getNumberOfArmies()){
+            past_weak = weakest;
+            weakest = t;
+        }
+    }
+    out->push_back(weakest);
+    if (dynamic_cast<Airlift *>(type)) {
+        if (past_weak) {
+            out->push_back(past_weak);
+        }
+        else {
+            return nullptr;
+        }
+    }
+    return out;
+
+}
+
+bool BenevolentPlayerStrategy::issueOrder(Player *p, order *o) {
+    if (auto *negotiate  = dynamic_cast<Negotiate *>(o)) {
+        Player *other = generateNegotiate(p);
+        if (!other) return false;
+        negotiate->setPlayer2(other);
+        negotiate->set_player(p);
+        p->getOrdersList()->add(negotiate);
+    }else if(auto *bomb  = dynamic_cast<Bomb *>(o)){
+        return false;
+    }
+    else{
+        p->getOrdersList()->add(o);
+    }
+    return true;
+}
+
+void BenevolentPlayerStrategy::issueOrder(Player *p) {
+    Territory *weakest = toDefend(p, new Advance)->back();
+    p->getOrdersList()->add(new Deploy(p, weakest, p->getArmies()));
+}
+BenevolentPlayerStrategy::BenevolentPlayerStrategy() = default;
 
 
+///////////////////////////////CHEATER PLAYER/////////////////////////
+
+//TODO: ADD SOMETHING IN ADVANCE THAT ALWAYS MAKES THE CHEATER WIN
+vector<Territory *> *CheaterPlayerStrategy::toAttack(Player *p, order *type) {
+    auto *out = new vector<Territory *>();
+    for (Territory *t : *p->getTerritories()) {
+        if (dynamic_cast<Advance *>(type)){
+            Territory ** borders = t->getEdges();
+            for (int i = 0; i < t->getEdgeCount(); i++) {
+                Player *owner = borders[i]->getOwner();
+                if (owner != p) {
+                    out->push_back(t);
+                    out->push_back(borders[i]);
+                }
+            }
+        }
+        else
+            //The cheater doesn't need to use cards as he gains ownership instantly
+            out = nullptr;
+    }
+    return out;
+}
+
+vector<Territory *> *CheaterPlayerStrategy::toDefend(Player *p, order *type) {
+    return nullptr;
+}
+
+CheaterPlayerStrategy::CheaterPlayerStrategy() = default;
+
+
+///////////////////////////////NEUTRAL PLAYER/////////////////////////
+
+NeutralPlayerStrategy::NeutralPlayerStrategy() = default;

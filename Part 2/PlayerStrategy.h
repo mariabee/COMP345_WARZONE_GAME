@@ -47,7 +47,7 @@ public :
 };
 class BenevolentPlayerStrategy : public PlayerStrategy {
 public :
-    BenevolentPlayerStrategy();
+    explicit BenevolentPlayerStrategy();
     bool issueOrder(Player *p, order *o) override;
     void issueOrder(Player *p) override;
     vector<Territory *> * toDefend(Player *p, order *type) override;
@@ -55,7 +55,7 @@ public :
 };
 class NeutralPlayerStrategy : public PlayerStrategy {
 public :
-    NeutralPlayerStrategy();
+    explicit NeutralPlayerStrategy();
     bool issueOrder(Player *p, order *o) override;
     void issueOrder(Player *p) override;
     vector<Territory *> * toDefend(Player *p, order *type) override;
@@ -63,7 +63,7 @@ public :
 };
 class CheaterPlayerStrategy : public PlayerStrategy {
 public :
-    CheaterPlayerStrategy();
+    explicit CheaterPlayerStrategy();
     bool issueOrder(Player *p, order *o) override;
     void issueOrder(Player *p) override;
     vector<Territory *> * toDefend(Player *p, order *type) override;

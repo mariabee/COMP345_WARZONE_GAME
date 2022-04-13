@@ -457,6 +457,7 @@ bool BenevolentPlayerStrategy::issueOrder(Player *p, order *o) {
         negotiate->set_player(p);
         p->getOrdersList()->add(negotiate);
     }else if(auto *bomb  = dynamic_cast<Bomb *>(o)){
+        cout<<"A BENEVOLENT PLAYER CANNOT BOMB TERRITORIES";
         return false;
     }
     else{
@@ -466,8 +467,12 @@ bool BenevolentPlayerStrategy::issueOrder(Player *p, order *o) {
 }
 
 void BenevolentPlayerStrategy::issueOrder(Player *p) {
-    Territory *weakest = toDefend(p, new Advance)->back();
-    p->getOrdersList()->add(new Deploy(p, weakest, p->getArmies()));
+    while(!toDefend(p, new Advance)->empty()) {
+        Territory *weakest = toDefend(p, new Advance)->back();
+        cout << "BENEVOLENT PLAYER HAS ISSUED A DEPLOY ON" << toDefend(p, new Advance)->back();
+        toDefend(p, new Advance)->pop_back();
+        p->getOrdersList()->add(new Deploy(p, weakest, p->getArmies()));
+    }
 }
 BenevolentPlayerStrategy::BenevolentPlayerStrategy() = default;
 
@@ -488,15 +493,37 @@ vector<Territory *> *CheaterPlayerStrategy::toAttack(Player *p, order *type) {
                 }
             }
         }
-        else
-            //The cheater doesn't need to use cards as he gains ownership instantly
-            out = nullptr;
     }
     return out;
 }
 
 vector<Territory *> *CheaterPlayerStrategy::toDefend(Player *p, order *type) {
     return nullptr;
+}
+
+bool CheaterPlayerStrategy::issueOrder(Player *p, order *o) {
+    if (auto *negotiate  = dynamic_cast<Negotiate *>(o)) {
+        Player *other = generateNegotiate(p);
+        if (!other) return false;
+        negotiate->setPlayer2(other);
+        negotiate->set_player(p);
+        p->getOrdersList()->add(negotiate);
+    }
+    else{
+        p->getOrdersList()->add(o);
+    }
+    return true;
+
+}
+
+void CheaterPlayerStrategy::issueOrder(Player *p) {
+    while (!toAttack(p, new Advance)->empty()) {
+        Territory *source = toAttack(p,new Advance)->back();
+        toAttack(p,new Advance)->pop_back();
+        Territory *edge =  toAttack(p,new Advance)->back();
+        toAttack(p,new Advance)->pop_back();
+        p->getOrdersList()->add(new Advance(p, source,edge, 0, deck));
+    }
 }
 
 CheaterPlayerStrategy::CheaterPlayerStrategy() = default;

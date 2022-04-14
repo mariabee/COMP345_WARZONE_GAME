@@ -174,7 +174,7 @@ void GameEngine::setState(const std::string& s) {
                   << (*currentState) << std::endl;
     }
     else {
-        currentState = currentState->getTransition(currentState->getCommandIndex(std::move(s)))->getState();
+        currentState = currentState->getTransition(currentState->getCommandIndex(s))->getState();
         std::cout << "Transition to state: \"" << (*currentState) << "\"" << std::endl;
     }
     notify();
@@ -290,6 +290,9 @@ void GameEngine::initializeStrategies() {
     strategies = new PlayerStrategy*[5];
     strategies[0] = new HumanPlayerStrategy();
     strategies[1] = new AggressivePlayerStrategy();
+    strategies[2] = new BenevolentPlayerStrategy();
+    strategies[3] = new NeutralPlayerStrategy();
+    strategies[4] = new CheaterPlayerStrategy();
     PlayerStrategy::addDeck(new_deck);
     PlayerStrategy::addPlayers(&players);
 }
@@ -525,19 +528,15 @@ void GameEngine::executeOrdersPhase() {
         }
         Player *current_p = players.at(current);
         OrdersList *orders = current_p->getOrdersList();
-        if (!orders->getList()->empty()) {
+        deployComplete++;
+        if (orders && !orders->getList()->empty()) {
             //If a player's order's list is not empty, pop it off the top and execute it.
             if (deployRound) {
-                deployComplete++;
                 cout << endl << "Deploying " << *current_p << "'s troops...." << endl;
                 order *o = orders->getList()->back();
                 while (!orders->getList()->empty() && dynamic_cast<Deploy *>(o)) {
                     orders->popTop()->execute();
                     o = orders->getList()->back();
-                }
-                if (deployComplete == players.size()) {
-                    cout << endl << "ALL TROOPS DEPLOYED. MOVING TO OTHER ORDERS." << endl;
-                    deployRound = false;
                 }
             }
             else {
@@ -546,7 +545,10 @@ void GameEngine::executeOrdersPhase() {
         } else {
             skipped++;
         }
-
+        if (deployComplete == players.size()) {
+            cout << endl << "ALL TROOPS DEPLOYED. MOVING TO OTHER ORDERS." << endl;
+            deployRound = false;
+        }
         if (skipped == players.size()) {
             //If all the players have skipped, phase is over and return true
             break;
@@ -587,9 +589,12 @@ void GameEngine::testPhase() {
     map->validate();
     initializeDeck();
     initializeStrategies();
-    for (int i{0}; i < 5; i++) {
-        auto *temp_player = new Player("TEST" + to_string(i));
-        temp_player->setStrategy(strategies[1]);
+    auto *cheat_player = new Player("CHEATER" + to_string(1));
+    cheat_player->setStrategy(strategies[4]);
+    players.push_back(cheat_player);
+    for (int i{1}; i < 4; i++) {
+        auto *temp_player = new Player("NEUTRAL" + to_string(i+1));
+        temp_player->setStrategy(strategies[3]);
         players.push_back(temp_player);
     }
     distributeTerritories();

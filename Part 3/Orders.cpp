@@ -208,16 +208,15 @@ Advance&Advance::operator=(const Advance &other)  {
 //EXECUTE
 void Advance::execute() {
     if (validate()) {
-        if (armies > start->getNumberOfArmies()) {
-            armies = start->getNumberOfArmies();
-        }
+        if (armies > start->getNumberOfArmies()) { armies = start->getNumberOfArmies();}
         if(start->getOwner() == target->getOwner()){
-            target->setNumberOfArmies(target->getNumberOfArmies()+armies);
-            start->setNumberOfArmies(start->getNumberOfArmies()-armies);
-            string s = *get_player()->getName() + " has moved " + to_string(armies) + " troops from " + *start->getName() +
-                    " to " + *target->getName();
+            target->setNumberOfArmies(target->getNumberOfArmies() + armies);
+            start->setNumberOfArmies(start->getNumberOfArmies() - armies);
+            string s = *get_player()->getName() + " has moved " + to_string(armies) + " troops from " +
+                       *start->getName() + " to " + *target->getName();
             set_order_effect(s);
-        }else{
+        }
+        else{
             Player *defender = target->getOwner();
             string name;
             if (!defender) { name = "NEUTRAL"; }
@@ -225,17 +224,22 @@ void Advance::execute() {
 
             cout << "An attack has been initiated by " << *get_player() << " against " << name << " from " << *start->getName() << " onto " << *target->getName() << " with "
             << armies << " armies attacking, and " << target->getNumberOfArmies() << " armies defending." << endl;
-            float random;
-            srand(time(nullptr));
-            while(target->getNumberOfArmies() > 0 && armies > 0){
-                random=((float)rand() / (float)RAND_MAX );
-                if(random>0.4){
-                    target->setNumberOfArmies(target->getNumberOfArmies()-1);
+            if (!dynamic_cast<CheaterPlayerStrategy *>(get_player()->getPlayerStrategy())) {
+                float random;
+                srand(time(nullptr));
+                while (target->getNumberOfArmies() > 0 && armies > 0) {
+                    random = ((float) rand() / (float) RAND_MAX);
+                    if (random > 0.4) {
+                        target->setNumberOfArmies(target->getNumberOfArmies() - 1);
+                    }
+                    if (random > 0.3) {
+                        start->setNumberOfArmies(start->getNumberOfArmies() - 1);
+                        armies--;
+                    }
                 }
-                if(random>0.3){
-                    start->setNumberOfArmies(start->getNumberOfArmies()-1);
-                    armies--;
-                }
+            }
+            else {
+                target->setNumberOfArmies(0);
             }
             if(target->getNumberOfArmies()==0){
                 get_player()->addTerritory(target);
@@ -257,7 +261,7 @@ void Advance::execute() {
             }
         }
     }
-    cout << *get_order_effect() << endl;
+    if (get_order_effect()) (cout << *get_order_effect() << endl);
     notify();
 }
 //VALIDATE
@@ -270,7 +274,7 @@ bool Advance::validate() {
     else {
         s = *get_player()->getName();
     }
-    if (armies <= 0) {
+    if (armies <= 0 && !dynamic_cast<CheaterPlayerStrategy *>(get_player()->getPlayerStrategy())) {
         set_order_effect(s + "'s advance order was not valid since number of armies ordered to attack was zero.");
         return false;
     }
@@ -288,9 +292,15 @@ bool Advance::validate() {
         return false;
     }
     else if (start->getNumberOfArmies() <= 0) {
-        set_order_effect(s + " 's advance order is not valid since " + *start->getName() + " has no more" +
-        " armies to advance with.");
-        return false;
+        if (!dynamic_cast<CheaterPlayerStrategy *>(get_player()->getPlayerStrategy())) {
+            set_order_effect(s + " 's advance order is not valid since " + *start->getName() + " has no more" +
+                             " armies to advance with.");
+            return false;
+        }
+        else if (target->getOwner() == get_player()) {
+            set_order_effect(s + " 's order to move troops from " + *start->getName() + " has been discarded since territory has 0 more armies.");
+            return false;
+        }
     }
     if (!get_player()->getCannotAttack()->empty()) {
         cout << *target << endl;
@@ -632,7 +642,7 @@ void Negotiate::execute() {
     if (validate()) {
         get_player()->getCannotAttack()->push_back(player2);
         player2->getCannotAttack()->push_back(get_player());
-        string s = "Attacks have been prevented between " + *player2->getName() + " and " + *get_player()->getName() + "until the end of turn.";
+        string s = "Attacks have been prevented between " + *player2->getName() + " and " + *get_player()->getName() + " until the end of turn.";
         set_order_effect(s);
     }
     cout << *get_order_effect() << endl;

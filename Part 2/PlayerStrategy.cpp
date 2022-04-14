@@ -310,6 +310,7 @@ void HumanPlayerStrategy::displayEnemyBorders(Territory *t, Player *p) {
         }
     }
 }
+///////////////////////////////AGGRESSIVE PLAYER/////////////////////////
 
 //Returns vector with back being territory to attack, and next being territory to attack from.
 vector<Territory *> *AggressivePlayerStrategy::toAttack(Player *p, order *type) {
@@ -421,10 +422,127 @@ bool AggressivePlayerStrategy::issueOrder(Player *p, order *o) {
     return true;
 }
 
+
 AggressivePlayerStrategy::AggressivePlayerStrategy() {
     previous = nullptr;
 };
 
+
+vector<Territory *> *BenevolentPlayerStrategy::toAttack(Player *p, order *type) {
+    return nullptr;
+}
+vector<Territory *> *BenevolentPlayerStrategy::toDefend(Player *p, order *type) {
+    auto *out = new vector<Territory *>();
+    Territory *weakest = nullptr;
+    Territory *past_weak = nullptr;
+    int min_armies = 0;
+    for (Territory *t : *p->getTerritories()) {
+        if(weakest == nullptr){
+            weakest=t;
+        }
+        else if(t->getNumberOfArmies() == min_armies){
+            past_weak = weakest;
+            weakest = t;
+        }
+        else if(t->getNumberOfArmies()< weakest->getNumberOfArmies()){
+            past_weak = weakest;
+            weakest = t;
+        }
+    }
+    out->push_back(weakest);
+    if (dynamic_cast<Airlift *>(type)) {
+        if (past_weak) {
+            out->push_back(past_weak);
+        }
+        else {
+            return nullptr;
+        }
+    }
+    return out;
+
+}
+
+bool BenevolentPlayerStrategy::issueOrder(Player *p, order *o) {
+    if (auto *negotiate  = dynamic_cast<Negotiate *>(o)) {
+        Player *other = generateNegotiate(p);
+        if (!other) return false;
+        negotiate->setPlayer2(other);
+        negotiate->set_player(p);
+        p->getOrdersList()->add(negotiate);
+    }else if(auto *bomb  = dynamic_cast<Bomb *>(o)){
+        cout<<"A BENEVOLENT PLAYER CANNOT BOMB TERRITORIES";
+        return false;
+    }
+    else{
+        p->getOrdersList()->add(o);
+    }
+    return true;
+}
+
+void BenevolentPlayerStrategy::issueOrder(Player *p) {
+    while(!toDefend(p, new Advance)->empty()) {
+        Territory *weakest = toDefend(p, new Advance)->back();
+        cout << "BENEVOLENT PLAYER HAS ISSUED A DEPLOY ON" << toDefend(p, new Advance)->back();
+        toDefend(p, new Advance)->pop_back();
+        p->getOrdersList()->add(new Deploy(p, weakest, p->getArmies()));
+    }
+}
+BenevolentPlayerStrategy::BenevolentPlayerStrategy() = default;
+
+
+///////////////////////////////CHEATER PLAYER/////////////////////////
+
+//TODO: ADD SOMETHING IN ADVANCE THAT ALWAYS MAKES THE CHEATER WIN
+vector<Territory *> *CheaterPlayerStrategy::toAttack(Player *p, order *type) {
+    auto *out = new vector<Territory *>();
+    for (Territory *t : *p->getTerritories()) {
+        if (dynamic_cast<Advance *>(type)){
+            Territory ** borders = t->getEdges();
+            for (int i = 0; i < t->getEdgeCount(); i++) {
+                Player *owner = borders[i]->getOwner();
+                if (owner != p) {
+                    out->push_back(t);
+                    out->push_back(borders[i]);
+                }
+            }
+        }
+    }
+    return out;
+}
+
+vector<Territory *> *CheaterPlayerStrategy::toDefend(Player *p, order *type) {
+    return nullptr;
+}
+
+bool CheaterPlayerStrategy::issueOrder(Player *p, order *o) {
+    if (auto *negotiate  = dynamic_cast<Negotiate *>(o)) {
+        Player *other = generateNegotiate(p);
+        if (!other) return false;
+        negotiate->setPlayer2(other);
+        negotiate->set_player(p);
+        p->getOrdersList()->add(negotiate);
+    }
+    else{
+        p->getOrdersList()->add(o);
+    }
+    return true;
+
+}
+
+void CheaterPlayerStrategy::issueOrder(Player *p) {
+    while (!toAttack(p, new Advance)->empty()) {
+        Territory *source = toAttack(p,new Advance)->back();
+        toAttack(p,new Advance)->pop_back();
+        Territory *edge =  toAttack(p,new Advance)->back();
+        toAttack(p,new Advance)->pop_back();
+        p->getOrdersList()->add(new Advance(p, source,edge, 0, deck));
+    }
+}
+
+CheaterPlayerStrategy::CheaterPlayerStrategy() = default;
+
+
+///////////////////////////////NEUTRAL PLAYER/////////////////////////
 
 NeutralPlayerStrategy::NeutralPlayerStrategy() = default;
 bool NeutralPlayerStrategy::issueOrder(Player *p, order *o) {
@@ -437,3 +555,4 @@ vector<Territory *> *NeutralPlayerStrategy::toDefend(Player *p, order *type) {
 vector<Territory *> *NeutralPlayerStrategy::toAttack(Player *p, order *type) {
     return nullptr;
 }
+

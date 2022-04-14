@@ -175,8 +175,8 @@ private:
 class OrdersList: public Subject, public ILoggable{
 public:
     OrdersList();
-    OrdersList(const OrdersList &other);
     std::string stringToLog();
+    OrdersList(const OrdersList &other);
     OrdersList& operator=(const OrdersList& o);
     void add(order *o);
     bool move(order* o, int position);

@@ -434,7 +434,6 @@ void GameEngine::mainGameLoop() {
         reinforcementPhase();
         issueOrdersPhase();
         executeOrdersPhase();
-        roundCount++;
     } while (currentState != states[8]);
     string playOrEnd;
     std::cout << "Play or end game?" << std::endl;
@@ -480,84 +479,70 @@ void GameEngine::issueOrdersPhase() {
     setState("issueorder");
     std::cout << "Entering the issue orders phase. " << std::endl;
     //Go through each player
+    int i = 0;
     for (auto current_p : players) {
         //get current player
         cout << "CURRENT PLAYER : " << *current_p << endl;
         current_p->issueOrder();
+        i++;
     }
-    /*
-        int armies = current_p->getArmies();
-        if (!toDefend->empty()) {
-            int split = armies / (toDefend->size());
-            int i = 0;
-            if (split == 0) {
-                split = 1;
-            } else {
-                int remain = armies % (toDefend->size());
-                if (remain > 0) {
-                    current_p->issueOrder(new Deploy(current_p, toDefend->at(0), remain));
-                    i = 1;
-                }
-            }
-            while (armies > 0) { //Deploy armies evenly across all the toDefend territories
-                current_p->issueOrder(new Deploy(current_p, toDefend->at(i), split)); //at toDefend[i]
-                i++;
-                if (i == toDefend->size()) {
-                    i = 0;
-                }
-                armies -= split;
-            }
-        }*/
-
     setState("endissueorders");
+    checkWinner();
 }
 
 
 void GameEngine::executeOrdersPhase() {
-    int skipped;
-    int current = 0;
-    bool deployRound = true;
-    int deployComplete = 0;
-    //Until there are no more orders to be executed...
-    while (true) {
-        //Players execute orders round robin.
-        if (current == 0) {
-            skipped = 0;
-        }
-        Player *current_p = players.at(current);
-        OrdersList *orders = current_p->getOrdersList();
-        deployComplete++;
-        if (orders && !orders->getList()->empty()) {
-            //If a player's order's list is not empty, pop it off the top and execute it.
-            if (deployRound) {
-                cout << endl << "Deploying " << *current_p << "'s troops...." << endl;
-                order *o = orders->getList()->back();
-                while (!orders->getList()->empty() && dynamic_cast<Deploy *>(o)) {
+    if (currentState == states[7]) {
+        int skipped;
+        int current = 0;
+        bool deployRound = true;
+        int deployComplete = 0;
+        //Until there are no more orders to be executed...
+        while (true) {
+            //Players execute orders round robin.
+            if (current == 0) {
+                skipped = 0;
+            }
+            Player *current_p = players.at(current);
+            OrdersList *orders = current_p->getOrdersList();
+            deployComplete++;
+            if (orders && !orders->getList()->empty()) {
+                //If a player's order's list is not empty, pop it off the top and execute it.
+                if (deployRound) {
+                    cout << endl << "Deploying " << *current_p << "'s troops...." << endl;
+                    order *o = orders->getList()->back();
+                    while (!orders->getList()->empty() && dynamic_cast<Deploy *>(o)) {
+                        orders->popTop()->execute();
+                        o = orders->getList()->back();
+                    }
+                } else {
                     orders->popTop()->execute();
-                    o = orders->getList()->back();
                 }
+            } else {
+                skipped++;
             }
-            else {
-                    orders->popTop()->execute();
+            if (deployComplete == players.size()) {
+                cout << endl << "ALL TROOPS DEPLOYED. MOVING TO OTHER ORDERS." << endl;
+                deployRound = false;
             }
-        } else {
-            skipped++;
+            if (skipped == players.size()) {
+                //If all the players have skipped, phase is over and return true
+                break;
+            }
+            current++;
+            if (current == players.size()) {
+                current = 0;
+            }
         }
-        if (deployComplete == players.size()) {
-            cout << endl << "ALL TROOPS DEPLOYED. MOVING TO OTHER ORDERS." << endl;
-            deployRound = false;
-        }
-        if (skipped == players.size()) {
-            //If all the players have skipped, phase is over and return true
-            break;
-        }
-        current++;
-        if (current == players.size()) {
-            current = 0;
-        }
+        cout << endl;
+        //If player owns all the Territories, the game over.
+        checkWinner();
     }
-    cout << endl;
-    //If player owns all the Territories, the game over.
+    if (currentState != states[8]) {
+        setState("endexecorders");
+    }
+}
+void GameEngine::checkWinner() {
     int i = 0;
     for (Player *p: players) {
         if (p->getTerritories()->size() == map->getNumOfTers()) {
@@ -571,10 +556,6 @@ void GameEngine::executeOrdersPhase() {
         }
         i++;
     }
-    if (currentState != states[8]) {
-        setState("endexecorders");
-    }
-
 }
 
 void GameEngine::testPhase() {
@@ -594,8 +575,8 @@ void GameEngine::testPhase() {
     auto *aggressive_player = new Player("AGGRESSIVE");
     aggressive_player->setStrategy(strategies[1]);
     players.push_back(aggressive_player);
-    auto *human_player = new Player("HUMAN" + to_string(1));
-    human_player->setStrategy(strategies[0]);
+    auto *human_player = new Player("AGGRESSIVE" + to_string(2));
+    human_player->setStrategy(strategies[1]);
     players.push_back(human_player);
 
     distributeTerritories();

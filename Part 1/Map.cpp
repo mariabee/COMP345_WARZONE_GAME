@@ -363,14 +363,14 @@ void Map::checkContinentOwners() {
         bool owned = true;
         Player *past_p = continents[i].getTerritories()[0]->getOwner();
         if (past_p) {
-            for (int i = 1; i < continents[i].getNumOfTers(); i++) {
-                if (continents[i].getTerritories()[i]->getOwner() != past_p) {
+            for (int k = 1; k < continents[i].getNumOfTers(); k++) {
+                Player *current_p = continents[i].getTerritories()[k]->getOwner();
+                if (past_p != current_p) {
                     owned = false;
                     break;
                 }
             }
             if (owned) {
-                cout << "OWNED..." << endl;
                 cout << *past_p << " currently owns all of " << *continents[i].getName();
                 cout << ", and will receive " << continents[i].getBonus() << " extra armies!" << endl;
                 past_p->addContinent(&continents[i]);

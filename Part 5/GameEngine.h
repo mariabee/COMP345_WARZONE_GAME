@@ -110,6 +110,7 @@ public:
 
     void play();
 
+    void checkWinner();
 };
 
 #endif

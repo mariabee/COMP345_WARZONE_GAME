@@ -231,11 +231,16 @@ void Player::setStrategy(PlayerStrategy *ps) {
 }
 
 bool Player::issueOrder(order *o) {
-    return strategy->issueOrder(this, o);
+    if (!territories->empty()) {
+        return strategy->issueOrder(this, o);
+    }
+    return false;
 }
 
 void Player::issueOrder() {
-    strategy->issueOrder(this);
+    if (!territories->empty()) {
+        strategy->issueOrder(this);
+    }
 }
 
 

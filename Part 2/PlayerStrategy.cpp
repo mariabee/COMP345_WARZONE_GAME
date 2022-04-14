@@ -527,7 +527,6 @@ void BenevolentPlayerStrategy::issueOrder(Player *p) {
 
 //Returns a vector containing all border territories, and territories to attack from
 vector<Territory *> *CheaterPlayerStrategy::toAttack(Player *p, order *type) {
-    cout << "Generating attack territories..." << endl;
     auto *out = new vector<Territory *>();
     for (Territory *t : *p->getTerritories()) {
         Territory ** borders = t->getEdges();
@@ -559,13 +558,21 @@ bool CheaterPlayerStrategy::issueOrder(Player *p, order *o) {
         p->getOrdersList()->add(negotiate);
     }
     else{
-        p->getOrdersList()->add(o);
+        return false;
     }
     return true;
 
 }
 
 void CheaterPlayerStrategy::issueOrder(Player *p) {
+    vector<Territory *> *targets = toAttack(p, new Advance());
+    for (Territory *t : *targets) {
+        if (!t->getOwner() || t->getOwner() != p) {
+            p->addTerritory(t);
+            cout << *p << " has automatically conquered " << *t->getName() << "." << endl;
+        }
+    }
+    p->getHand()->drawFromDeck(deck);
     vector<Territory *> *defend = toDefend(p, new Deploy);
     int armies = p->getArmies();
     int split = armies / defend->size();
@@ -581,21 +588,7 @@ void CheaterPlayerStrategy::issueOrder(Player *p) {
         remainder--;
     }
     cout << *p << " has successfully issued deploy orders to all territories." << endl;
-
-    p->getHand()->playCard(deck, p, 0);
-    vector<Territory *> *targets = toAttack(p, new Advance());
-    int n = targets->size()/2;
-    while (!targets->empty()) {
-        Territory *edge = targets->back();
-        Territory *source = targets->at(targets->size()-2);
-        auto *a = new Advance(p, source, edge, 1, deck);
-        p->getOrdersList()->add(a);
-        targets->pop_back();
-        targets->pop_back();
-    }
-    if (n > 0) {
-        cout << *p << " has successfully issued orders to attack " << n << " territories." << endl;
-    }
+    p->getHand()->playCard(deck, p,  0);
 }
 
 CheaterPlayerStrategy::CheaterPlayerStrategy() = default;

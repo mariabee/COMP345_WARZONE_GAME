@@ -323,7 +323,7 @@ Hand& Hand::operator = (const Hand & hand){
 // Draw a card from the deck (add a card in hand)
 void Hand::drawFromDeck(Deck* deck){
     if (nbCardsInHand == maxCard){
-        cout << "Your hand is full. You currently have " << nbCardsInHand << " cards.\n";
+        cout << "Hand is full. Player currently has " << nbCardsInHand << " cards.\n";
     }
     else{
         for (int i = 0 ; i < maxCard; i++ ){

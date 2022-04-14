@@ -224,6 +224,10 @@ void Advance::execute() {
 
             cout << "An attack has been initiated by " << *get_player() << " against " << name << " from " << *start->getName() << " onto " << *target->getName() << " with "
             << armies << " armies attacking, and " << target->getNumberOfArmies() << " armies defending." << endl;
+            if (dynamic_cast<NeutralPlayerStrategy *>(defender->getPlayerStrategy())) {
+                defender->setStrategy(new AggressivePlayerStrategy());
+                cout << *defender << " is changing strategy from neutral to aggressive play style." << endl;
+            }
             if (!dynamic_cast<CheaterPlayerStrategy *>(get_player()->getPlayerStrategy())) {
                 float random;
                 srand(time(nullptr));

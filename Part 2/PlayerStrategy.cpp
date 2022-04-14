@@ -20,6 +20,10 @@ Player *PlayerStrategy::generateNegotiate(Player *p) {
     return nullptr;
 }
 
+PlayerStrategy::~PlayerStrategy() {
+    players->clear();
+}
+
 HumanPlayerStrategy::HumanPlayerStrategy() = default;
 
 bool HumanPlayerStrategy::issueOrder(Player *player, order *o) {
@@ -193,6 +197,8 @@ vector<Territory *> *HumanPlayerStrategy::toDefend(Player *p, order *type) {
             toDefend->push_back(t);
         }
         else { return nullptr; }
+        cout << "BORDERS : " << endl;
+        displayBorders(t, player);
         cout << "Please enter the ID of the territory you would like to move troops to." << endl;
     }
     int ID;
@@ -308,6 +314,14 @@ void HumanPlayerStrategy::displayEnemyBorders(Territory *t, Player *p) {
         if (!owner || owner != p) {
             cout << *t->getEdges()[i] << endl;
         }
+    }
+}
+void HumanPlayerStrategy::displayBorders(Territory *t, Player *p) {
+    if (t->getEdgeCount() == 0) {
+        cout << "   NONE" << endl;
+    }
+    for (int i = 0; i < t->getEdgeCount(); i++) {
+        cout << "   " << *t->getEdges()[i] << endl;
     }
 }
 ///////////////////////////////AGGRESSIVE PLAYER/////////////////////////
@@ -430,7 +444,6 @@ vector<Territory *> *AggressivePlayerStrategy::toDefend(Player *p, order *type) 
     }
     return out;
 }
-
 
 ///////////////////////////////BENEVOLENT PLAYER/////////////////////////
 BenevolentPlayerStrategy::BenevolentPlayerStrategy() = default;

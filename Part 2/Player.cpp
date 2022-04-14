@@ -110,58 +110,12 @@ void Player::setArmies(int armies) {
 vector<Territory *> *Player::toDefend(order *type)
 {
     return strategy->toDefend(this, type);
-    /*
-    auto *out = new vector<Territory *>;
-    toMove->clear(); //reset the toMove
-    //Go through all territories bordering the player's
-    for (Territory *t : *territories) {
-        bool threat = false;
-        for (int i = 0; i < t->getEdgeCount(); i++) {
-            Territory *border = t->getEdges()[i];
-            Player *owner = border->getOwner();
-            //If the player doesn't own the bordering territory, and if player has less armies than it...
-            if (owner != nullptr && owner != this && (border->getNumberOfArmies() > armies)) {
-                out->push_back(t); //add the player's territory to the toDefend list
-                threat = true;
-                break;
-            }
-
-        }
-        if (!threat && (t->getNumberOfArmies() > 0)) {
-            toMove->push_back(t); //Otherwise, if the territory is not in danger, add it to the toMove list
-        }
-    }
-    cout << "TERRITORIES TO DEFEND HAVE BEEN GENERATED FOR " << *this << endl;
-    if (out->empty()) {
-        return territories;
-    }
-    return out;
-     */
 }
 
 // Function that returns a list of territories corresponding to the Territories the player would like to attack
 vector<Territory *> *Player::toAttack(order *type)
 {
     return strategy->toAttack(this, type);
-    /*
-    auto *out = new vector<Territory *>;
-    //Go through all the territories bordering the player's territories
-    for (Territory *t : *territories) {
-        for (int i = 0; i < t->getEdgeCount(); i++) {
-            Territory *target = t->getEdges()[i];
-            Player *owner = target->getOwner();
-            //If the player doesn't own a bordering territory,
-            if (!owner || owner != this) {
-                    //add the player-owned territory
-                    out->push_back(t);
-                    //add the enemy or neutral-owned bordering territory
-                    out->push_back(target);
-            }
-        }
-    }
-    cout << "TERRITORIES TO ATTACK HAVE BEEN GENERATED FOR " << *this << endl;
-    return out;
-     */
 }
 
 // Function that sets the Player's territories to a given list and count
@@ -205,7 +159,6 @@ bool Player::removeTerritory(Territory *toRemove) {
             if (c->getOwner() == this) {
                 removeContinent(c);
             }
-            cout << *t->getName() << " removed from " << *this << endl;
             return true;
         }
     }
@@ -257,8 +210,8 @@ bool Player::isCardWon() const {
     return cardWon;
 }
 
-void Player::setCardWon(bool cardWon) {
-    Player::cardWon = cardWon;
+void Player::setCardWon(bool won) {
+    Player::cardWon = won;
 }
 
 vector<Player *> *Player::getCannotAttack() const {

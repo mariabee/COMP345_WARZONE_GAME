@@ -17,13 +17,14 @@ Player *PlayerStrategy::generateNegotiate(Player *p) {
             return other;
         }
     }
+    return nullptr;
 }
 
 HumanPlayerStrategy::HumanPlayerStrategy() = default;
 
 bool HumanPlayerStrategy::issueOrder(Player *player, order *o) {
-        auto *negotiate  = dynamic_cast<Negotiate *>(o);
-        if (negotiate) {
+        if (dynamic_cast<Negotiate *>(o)) {
+            auto *negotiate  = dynamic_cast<Negotiate *>(o);
             Player *p = generateNegotiate(player);
             if (!p) return false;
             negotiate->setPlayer2(p);
@@ -54,8 +55,6 @@ void HumanPlayerStrategy::issueOrder(Player *p) {
             cin >> n;
             n++;
         }
-
-        vector<Territory *> *territories = player->getTerritories();
         vector<Territory *> *deployTo;
         switch(n) {
             case 1:
@@ -335,9 +334,26 @@ vector<Territory *> *AggressivePlayerStrategy::toAttack(Player *p, order *type) 
 void AggressivePlayerStrategy::issueOrder(Player *player) {
     Territory *strongest = toDefend(player, new Advance())->back();
     int armies = player->getArmies();
-    player->getOrdersList()->add(new Deploy(player, strongest, armies));
     vector<Territory *> *targets = toAttack(player, new Advance());
     int n = targets->size();
+    if (n > 0) {
+        cout << *player->getName() << " has issued order(s) to attack " << n/2 << " territories." << endl;
+        n = 0;
+    }
+    else {
+        Territory *border = strongest->getEdges()[0];
+        if (previous && border == previous) {
+            if (strongest->getEdgeCount() > 1) {
+                border = strongest->getEdges()[1];
+            }
+        }
+        auto *a = new Advance(player, strongest, border, strongest->getNumberOfArmies() + armies, deck);
+        previous = strongest;
+        strongest = border;
+        player->getOrdersList()->add(a);
+        n = 1;
+    }
+    player->getOrdersList()->add(new Deploy(player, strongest, armies));
     while (!targets->empty()) {
         Territory *enemy = targets->back();
         Territory *source = targets->at(targets->size()-2);
@@ -347,10 +363,6 @@ void AggressivePlayerStrategy::issueOrder(Player *player) {
         targets->pop_back();
         targets->pop_back();
     }
-    if (n > 0) {
-        cout << *player->getName() << " has issued order(s) to attack " << n/2 << " territories." << endl;
-    }
-    n = 0;
     for (int i = 0; i < strongest->getEdgeCount(); i++) {
         Territory *border = strongest->getEdges()[i];
         Player *owner = border->getOwner();
@@ -363,16 +375,20 @@ void AggressivePlayerStrategy::issueOrder(Player *player) {
     if (n > 0) {
         cout << *player->getName() << " has issued orders to move troops from " << n << " territories. " << endl;
     }
-    player->getHand()->playCard(deck, player);
+    player->getHand()->playCard(deck, player, 0);
 }
 
 vector<Territory *> *AggressivePlayerStrategy::toDefend(Player *p, order *type) {
+    if (dynamic_cast<Blockade *>(type)) {
+        return nullptr;
+    }
     auto *out = new vector<Territory *>();
     Territory *strongest = nullptr;
     Territory *past_strong = nullptr;
     int max_armies = 0;
     for (Territory *t : *p->getTerritories()) {
         if (t->getNumberOfArmies() > max_armies) {
+            max_armies = t->getNumberOfArmies();
             past_strong = strongest;
             strongest = t;
         }
@@ -384,7 +400,7 @@ vector<Territory *> *AggressivePlayerStrategy::toDefend(Player *p, order *type) 
         }
     }
     out->push_back(strongest);
-    if (dynamic_cast<Airlift *>(type) || dynamic_cast<Blockade *>(type)) {
+    if (dynamic_cast<Airlift *>(type)) {
         if (past_strong) {
             out->push_back(past_strong);
         }
@@ -396,13 +412,8 @@ vector<Territory *> *AggressivePlayerStrategy::toDefend(Player *p, order *type) 
 }
 
 bool AggressivePlayerStrategy::issueOrder(Player *p, order *o) {
-    auto *negotiate  = dynamic_cast<Negotiate *>(o);
-    if (negotiate) {
-        Player *other = generateNegotiate(p);
-        if (!other) return false;
-        negotiate->setPlayer2(other);
-        negotiate->set_player(p);
-        p->getOrdersList()->add(negotiate);
+    if (dynamic_cast<Negotiate *>(o) || dynamic_cast<Blockade *>(o)) {
+        return false;
     }
     else {
         p->getOrdersList()->add(o);
@@ -410,7 +421,19 @@ bool AggressivePlayerStrategy::issueOrder(Player *p, order *o) {
     return true;
 }
 
-AggressivePlayerStrategy::AggressivePlayerStrategy() = default;
+AggressivePlayerStrategy::AggressivePlayerStrategy() {
+    previous = nullptr;
+};
 
 
-
+NeutralPlayerStrategy::NeutralPlayerStrategy() = default;
+bool NeutralPlayerStrategy::issueOrder(Player *p, order *o) {
+    return false;
+}
+void NeutralPlayerStrategy::issueOrder(Player *p) {}
+vector<Territory *> *NeutralPlayerStrategy::toDefend(Player *p, order *type) {
+    return nullptr;
+}
+vector<Territory *> *NeutralPlayerStrategy::toAttack(Player *p, order *type) {
+    return nullptr;
+}

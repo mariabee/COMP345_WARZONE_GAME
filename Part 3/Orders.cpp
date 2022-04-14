@@ -218,18 +218,23 @@ void Advance::execute() {
                     " to " + *target->getName();
             set_order_effect(s);
         }else{
-            cout << "An attack has been initiated by " << *get_player() << " from " << *start->getName() << " onto " << *target->getName() << " with "
-            << armies << " armies." << endl;
+            Player *defender = target->getOwner();
+            string name;
+            if (!defender) { name = "NEUTRAL"; }
+            else {name = *defender->getName();}
+
+            cout << "An attack has been initiated by " << *get_player() << " against " << name << " from " << *start->getName() << " onto " << *target->getName() << " with "
+            << armies << " armies attacking, and " << target->getNumberOfArmies() << " armies defending." << endl;
             float random;
-            srand(time(NULL));
+            srand(time(nullptr));
             while(target->getNumberOfArmies() > 0 && armies > 0){
                 random=((float)rand() / (float)RAND_MAX );
                 if(random>0.4){
                     target->setNumberOfArmies(target->getNumberOfArmies()-1);
-                    armies--;
                 }
                 if(random>0.3){
                     start->setNumberOfArmies(start->getNumberOfArmies()-1);
+                    armies--;
                 }
             }
             if(target->getNumberOfArmies()==0){
@@ -565,6 +570,7 @@ bool Airlift::validate() {
     }
     else if (start->getNumberOfArmies() < troops) {
         set_order_effect(s + "'s airlift order was not valid since " + *start->getName() + " has less than " + to_string(troops) + " to move.");
+        return false;
     }
     else
         return true;

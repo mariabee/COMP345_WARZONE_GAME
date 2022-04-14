@@ -568,6 +568,8 @@ void CheaterPlayerStrategy::issueOrder(Player *p) {
         remainder--;
     }
     cout << *p << " has successfully issued deploy orders to all territories." << endl;
+
+    p->getHand()->playCard(deck, p, 0);
     vector<Territory *> *targets = toAttack(p, new Advance());
     int n = targets->size()/2;
     while (!targets->empty()) {
@@ -581,7 +583,6 @@ void CheaterPlayerStrategy::issueOrder(Player *p) {
     if (n > 0) {
         cout << *p << " has successfully issued orders to attack " << n << " territories." << endl;
     }
-    p->getHand()->playCard(deck, p, 0);
 }
 
 CheaterPlayerStrategy::CheaterPlayerStrategy() = default;

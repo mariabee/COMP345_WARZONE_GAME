@@ -430,7 +430,6 @@ void GameEngine::play() {
 
 void GameEngine::mainGameLoop() {
     std::cout << "Main Game Loop starting..." << std::endl;
-    roundCount = 0;
     do {
         reinforcementPhase();
         issueOrdersPhase();
@@ -453,7 +452,6 @@ void GameEngine::mainGameLoop() {
 }
 
 void GameEngine::reinforcementPhase() {
-    cout << "Entering reinforcement phase" << endl;
     map->checkContinentOwners();
     int n;
     //Go through every player
@@ -560,12 +558,6 @@ void GameEngine::executeOrdersPhase() {
     }
     cout << endl;
     //If player owns all the Territories, the game over.
-    if (roundCount == 10) {
-        cout << "FORCING WIN BY ASSIGNING ALL TERRITORIES TO PLAYER 1... " << endl;
-        for (int i = 0; i < map->getNumOfTers(); i++) {
-            players.at(0)->addTerritory(&map->getTerritories()[i]);
-        }
-    }
     int i = 0;
     for (Player *p: players) {
         if (p->getTerritories()->size() == map->getNumOfTers()) {
@@ -574,6 +566,7 @@ void GameEngine::executeOrdersPhase() {
             break;
         }
         else if (p->getTerritories()->empty()) {
+            cout << *p->getName() << " has lost the game." << endl;
             players.erase(players.begin() + i);
         }
         i++;
@@ -589,23 +582,29 @@ void GameEngine::testPhase() {
     map->validate();
     initializeDeck();
     initializeStrategies();
-    auto *cheat_player = new Player("CHEATER" + to_string(1));
+    auto *cheat_player = new Player("CHEATER");
     cheat_player->setStrategy(strategies[4]);
     players.push_back(cheat_player);
-    for (int i{1}; i < 4; i++) {
-        auto *temp_player = new Player("NEUTRAL" + to_string(i+1));
-        temp_player->setStrategy(strategies[3]);
-        players.push_back(temp_player);
-    }
+    auto *neutral_player = new Player("NEUTRAL");
+    neutral_player->setStrategy(strategies[3]);
+    players.push_back(neutral_player);
+    auto *benevolent_player = new Player("BENEVOLENT");
+    benevolent_player->setStrategy(strategies[2]);
+    players.push_back(benevolent_player);
+    auto *aggressive_player = new Player("AGGRESSIVE");
+    aggressive_player->setStrategy(strategies[1]);
+    players.push_back(aggressive_player);
+    auto *human_player = new Player("HUMAN" + to_string(1));
+    human_player->setStrategy(strategies[0]);
+    players.push_back(human_player);
+
     distributeTerritories();
-//                    std::cout << *(players.at(0)->getTerritories()->at(2)->getName()) << std::endl;
     randomizePlayOrder();
     std::cout << "The order of turn is as follow: ";
     for (int i{0}; i < players.size() - 1; i++)
         std::cout << " || Player " << *(players.at(i)) << " ";
     std::cout << " || Player " << *(players.at(players.size() - 1)) << " || ";
     std::cout << std::endl;
-//                    std::cout << *(players.at(0)->getTerritories()->at(2)->getName()) << std::endl;
     for (int i{0}; i < players.size(); i++) {
         players.at(i)->setArmies(50);
         std::cout << "Player " << *(players.at(i)) << " currently has " << players.at(i)->getArmies()

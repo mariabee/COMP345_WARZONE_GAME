@@ -370,6 +370,11 @@ void Hand::playCard(Deck *deck, Player *player, int i) {
     int play = nbCardsInHand - i - 1;
     if (play < 0 || play >= nbCardsInHand){
         cout << *player << " doesn't have any cards to play." << endl;
+        if (nbCardsInHand == maxCard) {
+            cout << *player << " is discarding a " << *cardsInHand[nbCardsInHand -1] << "card.";
+            deck->addCardBackToDeck(cardsInHand[nbCardsInHand -1]);
+            nbCardsInHand--;
+        }
     }
     else {
         if (cardsInHand[play]->play(deck, player)) {

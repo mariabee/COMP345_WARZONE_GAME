@@ -311,7 +311,73 @@ void HumanPlayerStrategy::displayEnemyBorders(Territory *t, Player *p) {
     }
 }
 ///////////////////////////////AGGRESSIVE PLAYER/////////////////////////
-
+AggressivePlayerStrategy::AggressivePlayerStrategy() {
+    previous = nullptr;
+}
+//Returns false if order to be issued is negotiate or blockade, since those don't fit the aggressive strategy.
+//Otherwise issues the order and returns true.
+bool AggressivePlayerStrategy::issueOrder(Player *p, order *o) {
+    if (dynamic_cast<Negotiate *>(o) || dynamic_cast<Blockade *>(o)) {
+        return false;
+    }
+    else {
+        p->getOrdersList()->add(o);
+    }
+    return true;
+}
+//issues a turn of orders according to an aggressive player strategy
+void AggressivePlayerStrategy::issueOrder(Player *player) {
+    Territory *strongest = toDefend(player, new Advance())->back();
+    int armies = player->getArmies();
+    //issue order to deploy troops to strongest territory
+    player->getOrdersList()->add(new Deploy(player, strongest, armies));
+    //issue order to play a card from hand.
+    player->getHand()->playCard(deck, player, 0);
+    //get targets to attack
+    vector<Territory *> *targets = toAttack(player, new Advance());
+    unsigned int n = targets->size();
+    //If toAttack is not empty, display how many territories player is planning to attack.
+    if (n > 0) {
+        cout << *player->getName() << " has issued order(s) to attack " << n/2 << " territories." << endl;
+        n = 0;
+    } //Otherwise, move troops to a bordering territory
+    else {
+        Territory *border = strongest->getEdges()[0];
+        if (previous && previous == border) {
+            if (strongest->getEdgeCount() > 1) {
+                border = strongest->getEdges()[1];
+            }
+        }
+        auto *a = new Advance(player, strongest, border, strongest->getNumberOfArmies() + armies, deck);
+        player->getOrdersList()->add(a);
+        previous = strongest;
+        strongest = border;
+        n = 1;
+    }
+    //issue attack orders from toAttack vector
+    while (!targets->empty()) {
+        Territory *enemy = targets->back();
+        Territory *source = targets->at(targets->size()-2);
+        int max_attack = enemy->getNumberOfArmies() + 3;
+        auto *a = new Advance(player, source, enemy, max_attack, deck);
+        player->getOrdersList()->add(a);
+        targets->pop_back();
+        targets->pop_back();
+    }
+    //issue orders to move troops from friendly neighbouring territories to strongest territory
+    for (int i = 0; i < strongest->getEdgeCount(); i++) {
+        Territory *border = strongest->getEdges()[i];
+        Player *owner = border->getOwner();
+        if (owner && owner == player && border->getNumberOfArmies() > 0 && border != previous) {
+            auto *a = new Advance(player, border, strongest, border->getNumberOfArmies(), deck);
+            n++;
+            player->getOrdersList()->add(a);
+        }
+    }
+    if (n > 0) {
+        cout << *player->getName() << " has issued orders to move troops from " << n << " territories. " << endl;
+    }
+}
 //Returns vector with back being territory to attack, and next being territory to attack from.
 vector<Territory *> *AggressivePlayerStrategy::toAttack(Player *p, order *type) {
     Player *player = p;
@@ -331,54 +397,7 @@ vector<Territory *> *AggressivePlayerStrategy::toAttack(Player *p, order *type) 
     }
     return out;
 }
-
-void AggressivePlayerStrategy::issueOrder(Player *player) {
-    Territory *strongest = toDefend(player, new Advance())->back();
-    int armies = player->getArmies();
-    vector<Territory *> *targets = toAttack(player, new Advance());
-    int n = targets->size();
-    if (n > 0) {
-        cout << *player->getName() << " has issued order(s) to attack " << n/2 << " territories." << endl;
-        n = 0;
-    }
-    else {
-        Territory *border = strongest->getEdges()[0];
-        if (previous && border == previous) {
-            if (strongest->getEdgeCount() > 1) {
-                border = strongest->getEdges()[1];
-            }
-        }
-        auto *a = new Advance(player, strongest, border, strongest->getNumberOfArmies() + armies, deck);
-        previous = strongest;
-        strongest = border;
-        player->getOrdersList()->add(a);
-        n = 1;
-    }
-    player->getOrdersList()->add(new Deploy(player, strongest, armies));
-    while (!targets->empty()) {
-        Territory *enemy = targets->back();
-        Territory *source = targets->at(targets->size()-2);
-        int max_attack = enemy->getNumberOfArmies() + 3;
-        auto *a = new Advance(player, source, enemy, max_attack, deck);
-        player->getOrdersList()->add(a);
-        targets->pop_back();
-        targets->pop_back();
-    }
-    for (int i = 0; i < strongest->getEdgeCount(); i++) {
-        Territory *border = strongest->getEdges()[i];
-        Player *owner = border->getOwner();
-        if (owner && owner == player && border->getNumberOfArmies() > 0) {
-            auto *a = new Advance(player, border, strongest, border->getNumberOfArmies(), deck);
-            n++;
-            player->getOrdersList()->add(a);
-        }
-    }
-    if (n > 0) {
-        cout << *player->getName() << " has issued orders to move troops from " << n << " territories. " << endl;
-    }
-    player->getHand()->playCard(deck, player, 0);
-}
-
+//Returns vector of with strongest territory to defend
 vector<Territory *> *AggressivePlayerStrategy::toDefend(Player *p, order *type) {
     if (dynamic_cast<Blockade *>(type)) {
         return nullptr;
@@ -412,21 +431,9 @@ vector<Territory *> *AggressivePlayerStrategy::toDefend(Player *p, order *type) 
     return out;
 }
 
-bool AggressivePlayerStrategy::issueOrder(Player *p, order *o) {
-    if (dynamic_cast<Negotiate *>(o) || dynamic_cast<Blockade *>(o)) {
-        return false;
-    }
-    else {
-        p->getOrdersList()->add(o);
-    }
-    return true;
-}
 
-
-AggressivePlayerStrategy::AggressivePlayerStrategy() {
-    previous = nullptr;
-};
-
+///////////////////////////////BENEVOLENT PLAYER/////////////////////////
+BenevolentPlayerStrategy::BenevolentPlayerStrategy() = default;
 
 vector<Territory *> *BenevolentPlayerStrategy::toAttack(Player *p, order *type) {
     return nullptr;
@@ -434,25 +441,32 @@ vector<Territory *> *BenevolentPlayerStrategy::toAttack(Player *p, order *type) 
 vector<Territory *> *BenevolentPlayerStrategy::toDefend(Player *p, order *type) {
     auto *out = new vector<Territory *>();
     Territory *weakest = nullptr;
-    Territory *past_weak = nullptr;
-    int min_armies = 0;
+    Territory *strong = nullptr;
+    int min_armies;
+
     for (Territory *t : *p->getTerritories()) {
         if(weakest == nullptr){
-            weakest=t;
+            weakest = t;
+            min_armies = t->getNumberOfArmies();
+            out->push_back(t);
         }
         else if(t->getNumberOfArmies() == min_armies){
-            past_weak = weakest;
             weakest = t;
+            out->push_back(t);
         }
-        else if(t->getNumberOfArmies()< weakest->getNumberOfArmies()){
-            past_weak = weakest;
+        else if(t->getNumberOfArmies() < min_armies){
+            out->clear();
+            out->push_back(t);
             weakest = t;
+            min_armies = t->getNumberOfArmies();
+        }
+        else {
+            strong = t;
         }
     }
-    out->push_back(weakest);
     if (dynamic_cast<Airlift *>(type)) {
-        if (past_weak) {
-            out->push_back(past_weak);
+        if (strong) {
+            out->push_back(strong);
         }
         else {
             return nullptr;
@@ -469,8 +483,7 @@ bool BenevolentPlayerStrategy::issueOrder(Player *p, order *o) {
         negotiate->setPlayer2(other);
         negotiate->set_player(p);
         p->getOrdersList()->add(negotiate);
-    }else if(auto *bomb  = dynamic_cast<Bomb *>(o)){
-        cout<<"A BENEVOLENT PLAYER CANNOT BOMB TERRITORIES";
+    }else if(dynamic_cast<Bomb *>(o)){
         return false;
     }
     else{
@@ -480,30 +493,36 @@ bool BenevolentPlayerStrategy::issueOrder(Player *p, order *o) {
 }
 
 void BenevolentPlayerStrategy::issueOrder(Player *p) {
-    while(!toDefend(p, new Advance)->empty()) {
-        Territory *weakest = toDefend(p, new Advance)->back();
-        cout << "BENEVOLENT PLAYER HAS ISSUED A DEPLOY ON" << toDefend(p, new Advance)->back();
-        toDefend(p, new Advance)->pop_back();
-        p->getOrdersList()->add(new Deploy(p, weakest, p->getArmies()));
+    vector<Territory *> *weakest = toDefend(p, new Deploy);
+    int armies = p->getArmies();
+    int split = armies / weakest->size();
+    int remainder = armies % weakest->size();
+    if (split > 0) {
+        for (Territory *t : *weakest){
+            p->getOrdersList()->add(new Deploy(p, t, split));
+        }
     }
+    while (!weakest->empty() && remainder > 0) {
+        p->getOrdersList()->add(new Deploy(p, weakest->back(), 1));
+        weakest->pop_back();
+        remainder--;
+    }
+    p->getHand()->playCard(deck, p, 0);
 }
-BenevolentPlayerStrategy::BenevolentPlayerStrategy() = default;
-
 
 ///////////////////////////////CHEATER PLAYER/////////////////////////
 
-//TODO: ADD SOMETHING IN ADVANCE THAT ALWAYS MAKES THE CHEATER WIN
+//Returns a vector containing all border territories, and territories to attack from
 vector<Territory *> *CheaterPlayerStrategy::toAttack(Player *p, order *type) {
+    cout << "Generating attack territories..." << endl;
     auto *out = new vector<Territory *>();
     for (Territory *t : *p->getTerritories()) {
-        if (dynamic_cast<Advance *>(type)){
-            Territory ** borders = t->getEdges();
-            for (int i = 0; i < t->getEdgeCount(); i++) {
-                Player *owner = borders[i]->getOwner();
-                if (owner != p) {
-                    out->push_back(t);
-                    out->push_back(borders[i]);
-                }
+        Territory ** borders = t->getEdges();
+        for (int i = 0; i < t->getEdgeCount(); i++) {
+            Player *owner = borders[i]->getOwner();
+            if (!owner || p != owner) {
+                out->push_back(t);
+                out->push_back(borders[i]);
             }
         }
     }
@@ -511,7 +530,11 @@ vector<Territory *> *CheaterPlayerStrategy::toAttack(Player *p, order *type) {
 }
 
 vector<Territory *> *CheaterPlayerStrategy::toDefend(Player *p, order *type) {
-    return nullptr;
+    auto *out = new vector<Territory *>();
+    for (Territory *t : *p->getTerritories()) {
+        out->push_back(t);
+    }
+    return out;
 }
 
 bool CheaterPlayerStrategy::issueOrder(Player *p, order *o) {
@@ -530,13 +553,35 @@ bool CheaterPlayerStrategy::issueOrder(Player *p, order *o) {
 }
 
 void CheaterPlayerStrategy::issueOrder(Player *p) {
-    while (!toAttack(p, new Advance)->empty()) {
-        Territory *source = toAttack(p,new Advance)->back();
-        toAttack(p,new Advance)->pop_back();
-        Territory *edge =  toAttack(p,new Advance)->back();
-        toAttack(p,new Advance)->pop_back();
-        p->getOrdersList()->add(new Advance(p, source,edge, 0, deck));
+    vector<Territory *> *defend = toDefend(p, new Deploy);
+    int armies = p->getArmies();
+    int split = armies / defend->size();
+    int remainder = armies % defend->size();
+    if (split > 0) {
+        for (Territory *t : *defend){
+            p->getOrdersList()->add(new Deploy(p, t, split));
+        }
     }
+    while (!defend->empty() && remainder > 0) {
+        p->getOrdersList()->add(new Deploy(p, defend->back(), 1));
+        defend->pop_back();
+        remainder--;
+    }
+    cout << *p << " has successfully issued deploy orders to all territories." << endl;
+    vector<Territory *> *targets = toAttack(p, new Advance());
+    int n = targets->size()/2;
+    while (!targets->empty()) {
+        Territory *edge = targets->back();
+        Territory *source = targets->at(targets->size()-2);
+        auto *a = new Advance(p, source, edge, 1, deck);
+        p->getOrdersList()->add(a);
+        targets->pop_back();
+        targets->pop_back();
+    }
+    if (n > 0) {
+        cout << *p << " has successfully issued orders to attack " << n << " territories." << endl;
+    }
+    p->getHand()->playCard(deck, p, 0);
 }
 
 CheaterPlayerStrategy::CheaterPlayerStrategy() = default;

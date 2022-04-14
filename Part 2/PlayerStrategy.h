@@ -38,6 +38,7 @@ public :
     static void displayEnemyBorders(Territory *t, Player *p);
 };
 class AggressivePlayerStrategy : public PlayerStrategy {
+    Territory *previous;
 public :
     explicit AggressivePlayerStrategy();
     bool issueOrder(Player *p, order *o) override;

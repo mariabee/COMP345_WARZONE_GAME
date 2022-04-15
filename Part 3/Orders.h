@@ -3,14 +3,18 @@
 #include <iostream>
 #include <vector>
 #include "../Part 1/Map.h"
-using namespace std;
+#include "../Part 5/LoggingObserver.h"
 
+using namespace std;
+class Deck;
 //BASE CLASS 
-class order {
+class order: public Subject, public ILoggable {
 public:
     //Constructors
     order();
     order(const order& other);
+    std::string& toString();
+    std::string stringToLog() override;
     order& operator=(const order& o);
     //Destructor
     virtual ~order();
@@ -63,11 +67,12 @@ private:
     Territory* start;
     Territory* target;
     int armies;
+    Deck *deck;
     bool validate() override;
 public:
     //Constructors
     Advance();
-    Advance(Player*,Territory*, Territory*, int);
+    Advance(Player*,Territory*, Territory*, int, Deck *d);
     Advance(const Advance& other);
     Advance& operator=(const Advance& other);
     void execute() override;
@@ -108,21 +113,18 @@ class Blockade : public order {
 public:
     //Constructors
     Blockade();
-    Blockade(Player*,Territory*, Player* neutral);
+    Blockade(Player *p,Territory *t);
     Blockade(const Blockade& other);
     Blockade& operator=(const Blockade& o);
     //Destructor
     ~Blockade() override;
     //Getters
     Territory *getTerritory() const;
-    Player *getNeutral() const;
     //Setters
     void setTerritory(Territory *territory);
-    void setNeutral(Player *neutral);
     void execute() override;
 private:
     Territory* territory;
-    Player* neutral;
     bool validate() override;
 };
 class Airlift : public order {
@@ -170,9 +172,10 @@ private:
 
 //ORDERS LIST CLASS
 
-class OrdersList{
+class OrdersList: public Subject, public ILoggable{
 public:
     OrdersList();
+    std::string stringToLog();
     OrdersList(const OrdersList &other);
     OrdersList& operator=(const OrdersList& o);
     void add(order *o);
@@ -181,7 +184,7 @@ public:
     bool contain(order *o);
     order *popTop();
     //Destructor
-    ~OrdersList();
+    ~OrdersList() override;
     //Accessors
     vector<order *> *getList() const;
 

@@ -72,6 +72,12 @@ bool order::isBeside(Territory *src, Territory *target) {
     }
     return false;
 }
+
+
+std::string order::stringToLog() { 
+    return "ORDER::" + *order_type_ + " had been executed!";
+}
+
 #pragma endregion Order
 
 //SUBCLASS IMPLEMENTATION
@@ -108,24 +114,36 @@ Deploy &Deploy::operator=(const Deploy &o)  {
 //EXECUTE
 void Deploy::execute() {
     if (validate()) {
-        territory->setNumberOfArmies(territory->getNumberOfArmies()+numberOfArmies);
+        int n = territory->getNumberOfArmies() + numberOfArmies;
+        territory->setNumberOfArmies(n);
         get_player()->setArmies(get_player()->getArmies()-numberOfArmies);
-        cout<<*territory->getName()<<" has now "<<territory->getNumberOfArmies()<<" armies.\n";
-        set_order_effect("Armies have been deployed.");
+        string s = *get_player()->getName() + " has deployed " + to_string(numberOfArmies) +
+                " troops to " + *territory->getName() + ". Territory now has " + to_string(n) + " armies.";
+        set_order_effect(s);
     }
     cout << *get_order_effect() << endl;
+    notify();
 }
 //VALIDATE
 bool Deploy::validate() {
-    if (!territory) {
-        set_order_effect("Order was missing information and will not be executed.");
-    }
-    if(territory->getOwner() != get_player()){
-        set_order_effect("Order was not valid and will not be executed.");
+    string s;
+    if (!get_player()) {
+        set_order_effect("Deploy order was missing player information and will not be executed.");
         return false;
     }
-    if (numberOfArmies > get_player()->getArmies()){
-        set_order_effect("Order was not valid and will not be executed.");
+    else {
+        s = *get_player()->getName();
+    }
+    if (!territory) {
+        set_order_effect(s + "'s deploy order was missing territory information and will not be executed.");
+        return false;
+    }
+    else if(territory->getOwner() != get_player()){
+        set_order_effect(s + "'s deploy order was not valid and will not be executed since " + *territory->getName() + " is no longer owned by them.");
+        return false;
+    }
+    else if (numberOfArmies > get_player()->getArmies()){
+        set_order_effect(s + " does not have enough armies to deploy " + to_string(numberOfArmies) + " troops to " + *territory->getName());
         return false;
     }else
         return true;
@@ -141,8 +159,8 @@ int Deploy::getNumberOfArmies() const {
 void Deploy::setTerritory(Territory *territory) {
     Deploy::territory = territory;
 }
-void Deploy::setNumberOfArmies(int numberOfArmies) {
-    Deploy::numberOfArmies = numberOfArmies;
+void Deploy::setNumberOfArmies(int n) {
+    Deploy::numberOfArmies = n;
 }
 //DESTRUCTOR
 Deploy::~Deploy() {
@@ -158,14 +176,16 @@ Advance::Advance() {
     start = nullptr;
     target = nullptr;
     armies = 0;
+    deck = nullptr;
     set_order_type("Advance");
 }
 //CONSTRUCTOR
-Advance::Advance(Player* player,Territory* start, Territory* target, int armies) {
+Advance::Advance(Player* player,Territory* start, Territory* target, int armies,Deck *deck) {
     this->start=start;
     this->target=target;
     this->armies=armies;
     set_player(player);
+    this->deck= deck;
     set_order_type("Advance");
 }
 //COPY CONSTRUCTOR
@@ -173,6 +193,7 @@ Advance::Advance(const Advance &other) : order(other) {
     this->start = other.getStart();
     this->target = other.getTarget();
     this->armies = other.getArmies();
+    this->deck = other.deck;
 }
 // = OPERATOR
 Advance&Advance::operator=(const Advance &other)  {
@@ -181,52 +202,129 @@ Advance&Advance::operator=(const Advance &other)  {
     this->start = other.getStart();
     this->target = other.getTarget();
     this->armies = other.getArmies();
+    this->deck = other.deck;
     return *this;
 }
 //EXECUTE
 void Advance::execute() {
     if (validate()) {
+        if (armies > start->getNumberOfArmies()) { armies = start->getNumberOfArmies();}
         if(start->getOwner() == target->getOwner()){
-            target->setNumberOfArmies(target->getNumberOfArmies()+armies);
-            start->setNumberOfArmies(start->getNumberOfArmies()-armies);
-            set_order_effect("Troops have advanced.");
-        }else{
-            cout<<"An attack has been initiated\n";
-            float random;
-            srand(time(NULL));
-            while(target->getNumberOfArmies() != 0 && start->getNumberOfArmies() != 0){
-                random=((float)rand() / (float)RAND_MAX );
-                if(random>0.4){
-                    //PERFORMANCE ISSUE??
-                    target->setNumberOfArmies(target->getNumberOfArmies()-1);
+            target->setNumberOfArmies(target->getNumberOfArmies() + armies);
+            start->setNumberOfArmies(start->getNumberOfArmies() - armies);
+            string s = *get_player()->getName() + " has moved " + to_string(armies) + " troops from " +
+                       *start->getName() + " to " + *target->getName();
+            set_order_effect(s);
+        }
+        else{
+            Player *defender = target->getOwner();
+            string name;
+            if (!defender) { name = "NEUTRAL"; }
+            else {name = *defender->getName();}
+
+            cout << "An attack has been initiated by " << *get_player() << " against " << name << " from " << *start->getName() << " onto " << *target->getName() << " with "
+            << armies << " armies attacking, and " << target->getNumberOfArmies() << " armies defending." << endl;
+            if (dynamic_cast<NeutralPlayerStrategy *>(defender->getPlayerStrategy())) {
+                defender->setStrategy(new AggressivePlayerStrategy());
+                cout << *defender << " is changing strategy from neutral to aggressive play style." << endl;
+            }
+            if (!dynamic_cast<CheaterPlayerStrategy *>(get_player()->getPlayerStrategy())) {
+                float random;
+                srand(time(nullptr));
+                while (target->getNumberOfArmies() > 0 && armies > 0) {
+                    random = ((float) rand() / (float) RAND_MAX);
+                    if (random > 0.4) {
+                        target->setNumberOfArmies(target->getNumberOfArmies() - 1);
+                    }
+                    if (random > 0.3) {
+                        start->setNumberOfArmies(start->getNumberOfArmies() - 1);
+                        armies--;
+                    }
                 }
-                if(random>0.3){
-                    //PERFORMANCE ISSUE??
-                    start->setNumberOfArmies(start->getNumberOfArmies()-1);
-                }
+            }
+            else {
+                target->setNumberOfArmies(0);
             }
             if(target->getNumberOfArmies()==0){
-                target->changeOwner(get_player());
-                set_order_effect("New territory has been conquered.");
+                get_player()->addTerritory(target);
+                string s = *target->getName() + " has been conquered by " + *get_player()->getName() + ". ";
+                if(!get_player()->isCardWon()){
+                    get_player()->getHand()->drawFromDeck(deck);
+                    get_player()->setCardWon(true);
+                }
+                if (armies > 0) {
+                    target->setNumberOfArmies(target->getNumberOfArmies() + armies);
+                    start->setNumberOfArmies(start->getNumberOfArmies() - armies);
+                    s += to_string(armies) + " troop(s) are moving to occupy the conquered territory.";
+                }
+                set_order_effect(s);
             }
             else{
-                set_order_effect("Battle lost.");
+                string s = *get_player()->getName() + " has lost the battle for " + *target->getName() + ".";
+                set_order_effect(s);
             }
         }
     }
-    cout << *get_order_effect() << endl;
+    if (get_order_effect()) (cout << *get_order_effect() << endl);
+    notify();
 }
 //VALIDATE
 bool Advance::validate() {
-    if (!start || !target) {
-        set_order_effect("Order was missing information and will not be executed.");
+    string s;
+    if (!get_player()) {
+        set_order_effect("Advance order was missing player information and will not be executed. ");
         return false;
     }
-    if(start->getOwner() != get_player() || /*!isBeside(start,target) ||*/ start->getNumberOfArmies() < armies){
-        set_order_effect("Order was not valid and will not be executed.");
+    else {
+        s = *get_player()->getName();
+    }
+
+    if (armies <= 0 && !dynamic_cast<CheaterPlayerStrategy *>(get_player()->getPlayerStrategy())) {
+        set_order_effect(s + "'s advance order was not valid since number of armies ordered to attack was zero.");
         return false;
-    }else
-        return true;
+    }
+    else if (!start || !target) {
+        set_order_effect(s + "'s advance order was missing territory information and will not be executed.");
+        return false;
+    }
+    else if(!start->getOwner() || start->getOwner() != get_player()){
+        set_order_effect(s + "'s advance order will not be executed since they no longer own " + *start->getName() + ".");
+        return false;
+    }
+    else if (!isBeside(start,target)){
+        set_order_effect(s + "'s advance order will not be executed since " + *start->getName() +
+        " is not beside " + *target->getName() + ".");
+        return false;
+    }
+    else if (start->getNumberOfArmies() <= 0) {
+        if (!dynamic_cast<CheaterPlayerStrategy *>(get_player()->getPlayerStrategy())) {
+            set_order_effect(s + " 's advance order will not be executed since " + *start->getName() + " has no more" +
+                             " armies to advance with.");
+            return false;
+        }
+        else if (target->getOwner() == get_player()) {
+            set_order_effect(s + " 's order to move troops from " + *start->getName() + " has been discarded since territory has 0 armies.");
+            return false;
+        }
+    }
+    else if (dynamic_cast<BenevolentPlayerStrategy *>(get_player()->getPlayerStrategy())){
+        if (target->getOwner() != get_player()) {
+            set_order_effect(s + " 's order to troops to " + *target->getName() + " has been discarded since target territory is no longer owned by them.");
+            return false;
+        }
+    }
+
+    if (!get_player()->getCannotAttack()->empty()) {
+        cout << *target << endl;
+        Player *owner = target->getOwner();
+        for (auto & i : *get_player()->getCannotAttack()) {
+            if (owner && owner == i) {
+                set_order_effect("A NEGOTIATION IS IN ORDER. " + s + "'s ADVANCE ORDER WILL NOT BE EXECUTED");
+                return false;
+            }
+        }
+    }
+    return true;
 }
 //SETTERS
 void Advance::setStart(Territory *start) {
@@ -252,6 +350,7 @@ int Advance::getArmies() const {
 Advance::~Advance() {
     start= nullptr;
     target= nullptr;
+    deck= nullptr;
 }
 #pragma endregion Advance
 
@@ -285,20 +384,46 @@ Bomb&Bomb::operator=(const Bomb &o) {
 void Bomb::execute() {
     if (validate()) {
         target->setNumberOfArmies((target->getNumberOfArmies())/2);
-        set_order_effect("Territory has been bombed.*");
+        string s = *target->getName() + " has been bombed by " + *get_player()->getName() + "."
+                + "It now has " + to_string(target->getNumberOfArmies()) + " armies.";
+        set_order_effect(s);
     }
     cout << *get_order_effect() << endl;
+    notify();
 }
 bool Bomb::validate() {
-    if (start == nullptr || target == nullptr) {
-        set_order_effect("Order was missing information and will not be executed.");
+    string s;
+    if (!get_player()) {
+        set_order_effect("Bomb order is missing player info and will not be executed.");
         return false;
     }
-    if(start->getOwner() != get_player() || target->getOwner() == get_player() || !isBeside(start,target)){
-        set_order_effect("Order was not valid and will not be executed.");
+    else {
+        s = *get_player()->getName();
+    }
+    if (start == nullptr || target == nullptr) {
+        set_order_effect(s + "'s BOMB order was missing territory information and will not be executed.");
         return false;
-    }else
-        return true;
+    }
+    else if(start->getOwner() != get_player()){
+        set_order_effect(s + "'s BOMB order is not longer valid since its start territory, " + *start->getName() + ", is no longer owned by them." );
+        return false;
+    }
+    else if (target->getOwner() == get_player()){
+        set_order_effect(s + "'s BOMB order is not longer valid since its target territory, " + *target->getName() + " , is owned by them." );
+        return false;
+    }
+    else if (!isBeside(start,target)){
+        set_order_effect(s + "'s BOMB order is no longer valid since " + *start->getName() + " is not beside " + *target->getName());
+    }
+    if (!get_player()->getCannotAttack()->empty()) {
+        for (auto & i : *get_player()->getCannotAttack()) {
+            if (target->getOwner() == i) {
+                set_order_effect("A NEGOTIATION IS IN ORDER." + s + "'s BOMB ORDER WILL NOT BE EXECUTED");
+                return false;
+            }
+        }
+    }
+    return true;
     //Returns true if player owns the territory, territory is beside target, and the target is not owned by player.
 }
 //GETTERS
@@ -330,12 +455,12 @@ Blockade::Blockade() {
     territory = nullptr;
     set_order_type("Blockade"); }
 //CONSTRUCTOR
-Blockade::Blockade(Player* player, Territory* territory, Player* neutral) {
+Blockade::Blockade(Player* player, Territory* territory) {
     this->territory=territory;
     set_order_type("Blockade");
     set_player(player);
-    this->neutral = neutral;
 }
+
 //COPY CONSTRUCTOR
 Blockade::Blockade(const Blockade &other) : order(other) {
     this->territory=other.getTerritory();
@@ -345,26 +470,37 @@ Blockade &Blockade::operator=(const Blockade &o) {
     if (this == &o) return *this;
     order::operator = (o);
     this->territory=o.getTerritory();
-    this->neutral=o.getNeutral();
     return *this;
 }
 //EXECUTE
 void Blockade::execute() {
     if (validate()) {
         territory->setNumberOfArmies(territory->getNumberOfArmies()*2);
-        territory->changeOwner(neutral);
-        set_order_effect("Troops have tripled. The territory is now neutral. ");
+        Player *owner = territory->getOwner();
+        if (owner) {
+            territory->getOwner()->removeTerritory(territory);
+        }
+        set_order_effect(*territory->getName() + "'s troops have DOUBLED. The territory is now NEUTRAL. ");
     }
     cout << *get_order_effect() << endl;
+    notify();
 }
 //VALIDATE
 bool Blockade::validate() {
-    if (!territory) {
-        set_order_effect("Order was missing information and will not be executed.");
+    string s;
+    if (!get_player()) {
+        set_order_effect("Blockade is missing player info and will not be executed.");
         return false;
     }
-    if(territory->getOwner() != get_player()){
-        set_order_effect("Order was not valid and will not be executed.");
+    else {
+        s = *get_player()->getName();
+    }
+    if (!territory) {
+        set_order_effect(s + "'s blockade order was missing territory information and will not be executed.");
+        return false;
+    }
+    else if(territory->getOwner() != get_player()){
+        set_order_effect(s + "'s blockade order was not valid since " + s + " no longer owns " + *territory->getName());
         return false;
     }else
         return true;
@@ -385,13 +521,6 @@ Blockade::~Blockade() {
     territory = nullptr;
 }
 
-Player *Blockade::getNeutral() const {
-    return neutral;
-}
-
-void Blockade::setNeutral(Player *neutral) {
-    Blockade::neutral = neutral;
-}
 
 #pragma endregion Blockade
 
@@ -431,20 +560,41 @@ void Airlift::execute() {
     if (validate()) {
         target->setNumberOfArmies(target->getNumberOfArmies()+troops);
         start->setNumberOfArmies(start->getNumberOfArmies()-troops);
-        set_order_effect("Troops have moved.");
+        string s= *get_player()->getName() + " has successfully airlifted " + to_string(troops) + " troops from " +
+                *start->getName() + " to " + *target->getName();
+        set_order_effect(s);
     }
     cout << *get_order_effect() << endl;
+
+    notify();
 }
 //VALIDATE
 bool Airlift::validate() {
-    if (!start) {
-        set_order_effect("Order was missing information and will not be executed.");
+    string s;
+    if (!get_player()) {
+        set_order_effect("Airlift order was not valid, missing player info.");
         return false;
     }
-    if(start->getOwner() != get_player() || target->getOwner() != get_player() || start->getNumberOfArmies() < troops){
-        set_order_effect("Order was not valid and will not be executed.");
+    else {
+        s = *get_player()->getName();
+    }
+    if (!start) {
+        set_order_effect(s + "'s airlift order was missing start territory and will not be executed.");
         return false;
-    }else
+    }
+    else if(target->getOwner() != get_player()){
+        set_order_effect(s + "'s airlift order was not valid since " + *start->getName() + " is not owned by them.");
+        return false;
+    }
+    else if (target->getOwner() != get_player()) {
+        set_order_effect(s + "'s airlift order was not valid since " + *target->getName() + " is not owned by them.");
+        return false;
+    }
+    else if (start->getNumberOfArmies() < troops) {
+        set_order_effect(s + "'s airlift order was not valid since " + *start->getName() + " has less than " + to_string(troops) + " to move.");
+        return false;
+    }
+    else
         return true;
     //Returns true if player owns start territory and has enough armies on the territory to move.
 }
@@ -502,19 +652,30 @@ Negotiate &Negotiate::operator=(const Negotiate &o) {
 //EXECUTE
 void Negotiate::execute() {
     if (validate()) {
-
-        set_order_effect("Attacks have been prevented until the end of turn.");
-        cout << *get_order_effect() << endl;
+        get_player()->getCannotAttack()->push_back(player2);
+        player2->getCannotAttack()->push_back(get_player());
+        string s = "Attacks have been prevented between " + *player2->getName() + " and " + *get_player()->getName() + " until the end of turn.";
+        set_order_effect(s);
     }
+    cout << *get_order_effect() << endl;
+    notify();
 }
 //VALIDATE
 bool Negotiate::validate() {
-    if (!player2) {
-        set_order_effect("Order was missing information and will not be executed.");
+    string s;
+    if (!get_player()) {
+        set_order_effect("Negotiate is missing player info and will not be executed.");
         return false;
     }
-    if(get_player() == player2){
-        set_order_effect("Order was not valid and will not be executed.");
+    else {
+        s = *get_player()->getName();
+    }
+    if (!player2) {
+        set_order_effect(s + "'s negotiate order was missing the other player information and will not be executed.");
+        return false;
+    }
+    else if(get_player() == player2){
+        set_order_effect(s + "'s order was not valid and will not be executed since target player was themself.");
         return false;
     }
     return true;
@@ -525,8 +686,8 @@ Player *Negotiate::getPlayer2() const {
     return player2;
 }
 //SETTERS
-void Negotiate::setPlayer2(Player *player2) {
-    Negotiate::player2 = player2;
+void Negotiate::setPlayer2(Player *other) {
+    Negotiate::player2 = other;
 }
 //DESTRUCTOR
 Negotiate::~Negotiate() {
@@ -539,7 +700,15 @@ Negotiate::~Negotiate() {
 //ORDERS LIST IMPLEMENTATION
 #pragma region OrderList
 void OrdersList::add(order* o) {
-    list->push_back(o);
+    if (dynamic_cast<Deploy *> (o)) {
+        list->push_back(o);
+    }
+    else {
+        list->push_back(o);
+        std::rotate(list->rbegin(), list->rbegin() + 1, list->rend());
+    }
+
+    notify();
 }
 bool OrdersList::move(order* o, int position) {
     if (position >= list->size() || position < 0) {
@@ -573,7 +742,6 @@ bool OrdersList::contain(order *o) {
     *ptr = find(list->begin(), list->end(), o);
     if (*ptr != list->end())
     {
-        cout << *o->get_order_type() + " found  at position : " ;
         cout << *ptr - list->begin() <<endl;
         *ptr = list->begin();
         return true;
@@ -602,14 +770,22 @@ OrdersList::OrdersList(const OrdersList &other) {
 }
 OrdersList &OrdersList:: operator=(const OrdersList& o) {
     if (this == &o) return *this;
-    for (order *o : *list) {
-        delete o;
+    for (order *o_ : *list) {
+        delete o_;
     }
     list->clear();
-    for (order *o : *o.getList()) {
-        add(o);
+    for (order *o_ : *o.getList()) {
+        add(o_);
     }
     return *this;
+}
+
+std::string OrdersList::stringToLog() { 
+    return "ORDER_LIST::" + (*list->back()).toString() + " had been added to list!";
+}
+
+std::string& order::toString() {
+    return *order_type_;
 }
 
 OrdersList::~OrdersList() {

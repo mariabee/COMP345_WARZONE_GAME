@@ -11,7 +11,7 @@
 Territory::Territory() {
     name = new string("UNKNOWN");
     ID = -1;
-    number_of_armies = -1;
+    number_of_armies = 0;
     edges = nullptr;
     edge_count = 0;
     player = nullptr;
@@ -66,11 +66,14 @@ Territory::~Territory() {
     edges = nullptr;
     player = nullptr;
     continent = nullptr;
+    cout << "Successfully deleted territory object" << endl;
 }
 //OVERLOADED << OPERATOR
 ostream &operator<<(ostream &os, const Territory &territory) {
-    os << "ID: " << territory.getId() << "\tName: " << *territory.getName() << "\tContinent: " << *territory.getContinent()->getName();
-    if (territory.getOwner()) {os << "Currently occupied by : " << *territory.getOwner();}
+    os << "ID: " << territory.getId() << "\tName: " << *territory.getName() << "\tContinent: " << *territory.getContinent()->getName()
+    << "\tArmies: " << territory.getNumberOfArmies();
+    if (territory.getOwner()) {os << "\tOccupied by : " << *territory.getOwner();}
+    else {os << "\tOccupied by : NEUTRAL";}
     return os;
 }
 //METHOD TO ADD EDGES/BORDERS TO AN ARRAY OF TERRITORIES
@@ -98,7 +101,7 @@ Player *Territory::getOwner() const { return player; }
 //MUTATORS
 void Territory::setId(int id) { ID = id; }
 void Territory::setName(string name_) {*this->name = move(name_);}
-void Territory::setContinent(Continent *continent) { this->continent = continent; }
+void Territory::setContinent(Continent *c) { this->continent = c; }
 void Territory::setNumberOfArmies(int numberOfArmies) { this->number_of_armies = numberOfArmies; }
 void Territory::changeOwner(Player *player_) {this->player = player_;}
 //CONTINENT IMPLEMENTATION
@@ -112,6 +115,7 @@ Continent::Continent() {
     NUM_OF_TERS = -1;
     count = 0;
     subTerritories = nullptr;
+    owner = nullptr;
 }
 Continent::Continent(const int ID, string _name, int bonus, string _color) {
     this->name = new string();
@@ -121,6 +125,7 @@ Continent::Continent(const int ID, string _name, int bonus, string _color) {
     this->ID = ID;
     this->bonus = bonus;
     subTerritories = nullptr;
+    owner = nullptr;
     count = 0;
     NUM_OF_TERS = -1;
 }
@@ -130,6 +135,7 @@ Continent::Continent(const Continent &c) {
     ID = c.getId();
     bonus = c.getBonus();
     count = c.count;
+    owner = c.getOwner();
     NUM_OF_TERS = c.getNumOfTers();
     if (NUM_OF_TERS > 0) {
         subTerritories = new Territory *[NUM_OF_TERS]();
@@ -150,6 +156,7 @@ Continent &Continent::operator=(const Continent &c) {
     bonus = c.getBonus();
     NUM_OF_TERS = c.getNumOfTers();
     count = c.count;
+    owner = c.getOwner();
     if (NUM_OF_TERS > 0) {
         subTerritories = new Territory *[NUM_OF_TERS]();
         for (int k = 0; k < NUM_OF_TERS; k++) {
@@ -166,7 +173,7 @@ Continent::~Continent() {
     name = nullptr;
     color = nullptr;
     subTerritories = nullptr;
-
+    cout << "Successfully deleted continent object " << endl;
 }
 //OVERLOADED << OPERATOR
 ostream &operator<<(ostream &os, const Continent &continent) {
@@ -351,17 +358,23 @@ bool Map::validate() {
 }
 
 void Map::checkContinentOwners() {
+    cout << "CHECKING CONTINENT OWNERS..." << endl;
     for (int i = 0; i < NUM_OF_CNTS; i++) {
         bool owned = true;
         Player *past_p = continents[i].getTerritories()[0]->getOwner();
-        for (int i = 1; i < continents[i].getNumOfTers(); i++){
-            if (continents[i].getTerritories()[i]->getOwner() != past_p) {
-                owned = false;
-                break;
+        if (past_p) {
+            for (int k = 1; k < continents[i].getNumOfTers(); k++) {
+                Player *current_p = continents[i].getTerritories()[k]->getOwner();
+                if (past_p != current_p) {
+                    owned = false;
+                    break;
+                }
             }
-        }
-        if (owned) {
-            past_p->addContinent(&continents[i]);
+            if (owned) {
+                cout << *past_p << " currently owns all of " << *continents[i].getName();
+                cout << ", and will receive " << continents[i].getBonus() << " extra armies!" << endl;
+                past_p->addContinent(&continents[i]);
+            }
         }
     }
 }
@@ -437,8 +450,6 @@ Map MapLoader::loadMap(const string &filename)  {
         }
         i++;
     }
-    delete continentLine;
-    continentLine = nullptr;
 
     int N = countries->size();
     // initialize Territory array

@@ -1,6 +1,9 @@
 #include "Player.h"
 #include <map>
+//Default constructor
+Player::Player() {
 
+}
 // Constructor for Player
 Player::Player(std::string n)
 {
@@ -11,6 +14,9 @@ Player::Player(std::string n)
     continents = new vector<Continent *>();
     toMove = new vector<Territory *>();
     armies = 3;
+    cardWon= false;
+    cannotAttack = new vector<Player *>();
+    strategy = nullptr;
 }
 
 // Assignment operator overload for Player
@@ -19,6 +25,7 @@ Player &Player::operator=(const Player &p)
 	if (this == &p)
 		return *this;
 	delete name;
+    delete strategy;
 	delete hand;
 	delete[] territories;
     delete[] continents;
@@ -27,7 +34,6 @@ Player &Player::operator=(const Player &p)
 
 	name = new string(*p.name);
 	hand = new Hand(*p.hand);
-	territoryCount = p.territoryCount;
 	territories = new vector<Territory *>();
     continents = new vector<Continent *>();
 	for (Territory *t : *p.territories )
@@ -38,6 +44,11 @@ Player &Player::operator=(const Player &p)
         continents->push_back(c);
     }
 	orderList = new OrdersList(*p.orderList);
+    cannotAttack = new vector<Player *>();
+    for (Player* p: *p.cannotAttack)
+    {
+        cannotAttack->push_back(p);
+    }
 	return *this;
 }
 
@@ -45,7 +56,6 @@ Player &Player::operator=(const Player &p)
 Player::Player(Player &p) {
     name = new string(*p.name);
     hand = new Hand(*p.hand);
-    territoryCount = p.territoryCount;
     armies = p.getArmies();
     territories = new vector<Territory *>();
     continents = new vector<Continent *>();
@@ -53,10 +63,13 @@ Player::Player(Player &p) {
     for (Territory *t: *p.getTerritories()) {
         territories->push_back(t);
     }
-    for (Territory *t: *p.getToMove()) {
-        territories->push_back(t);
-    }
     orderList = new OrdersList(*p.getOrdersList());
+    cardWon = p.cardWon;
+    cannotAttack = new vector<Player *>();
+    for (Player* p: *p.cannotAttack)
+    {
+        cannotAttack->push_back(p);
+    }
 }
 
 // Stream insertion operator overload for Player
@@ -77,6 +90,8 @@ Player::~Player()
 	delete[] territories;
     delete[] continents;
     delete[] toMove;
+    delete[] cannotAttack;
+
 }
 
 // Function that returns a pointer to the players hand
@@ -92,156 +107,48 @@ void Player::setArmies(int armies) {
     Player::armies = armies;
 }
 // Function that returns a list of territories corresponding to the Territories the player would like to defend
-vector<Territory *> *Player::toDefend()
+vector<Territory *> *Player::toDefend(order *type)
 {
-    auto *out = new vector<Territory *>;
-    toMove->clear(); //reset the toMove
-    //Go through all territories bordering the player's
-    for (Territory *t : *territories) {
-        bool threat = false;
-        for (int i = 0; i < t->getEdgeCount(); i++) {
-            Territory *border = t->getEdges()[i];
-            //If the player doesn't own the bordering territory, and if it has armies on it...
-            if (border->getOwner() != this && border->getNumberOfArmies() > 0) {
-                if (border->getNumberOfArmies() > armies) {
-                    out->push_back(t); //add the player's territory to the toDefend list
-                }
-                threat = true;
-                break;
-            }
-        }
-        if (!threat) {
-            toMove->push_back(t); //Otherwise, if the territory is not in danger, add it to the toMove list
-        }
-        cout << "Current list of territories to defend (automatic priority) : " << endl;
-        for (Territory *t : *out) {
-            int i;
-            cout << i << ": " <<  *t->getName() << endl;
-            i++;
-        }
-    }
-    return out;
+    return strategy->toDefend(this, type);
 }
 
 // Function that returns a list of territories corresponding to the Territories the player would like to attack
-vector<Territory *> *Player::toAttack()
+vector<Territory *> *Player::toAttack(order *type)
 {
-    auto *out = new vector<Territory *>;
-    //Go through all the territories bordering the player's territories
-    for (Territory *t : *territories) {
-        for (int i = 0; i < t->getEdgeCount(); i++) {
-            Territory *target = t->getEdges()[i];
-            //If the player doesn't own a bordering territory,
-            if (target->getOwner() != this) {
-                    //add the player-owned territory
-                    out->push_back(t);
-                    //add the enemy or neutral-owned bordering territory
-                    out->push_back(target);
-            }
-        }
-    }
-    cout << "Current list of territories to attack (automatic priority) : " << endl;
-    int i = 1;
-    for (Territory *t : *out) {
-        if (i%2 ==0) {
-            cout << i << " : " << *t << endl;
-        }
-        i++;
-    }
-
-    //return the list of attacks
-    return out;
+    return strategy->toAttack(this, type);
 }
 
 // Function that sets the Player's territories to a given list and count
-void Player::setTerritories(vector<Territory *> *t, int count)
+void Player::setTerritories(vector<Territory *> *t)
 {
 	territories = t;
     for (Territory *territory : *t) {
         territory->changeOwner(this);
     }
-	territoryCount = count;
 }
 
-//ISSUE ORDERS
-void Player::issueOrder(Deploy* d) {
-    orderList->add(d);
-    std::cout << "Player - Successfully issued order: DEPLOY \n ";
-}
-void Player::issueOrder(Advance* a) {
-    orderList->add(a);
-    std::cout << "Player - Successfully issued order: ADVANCE \n";
-}
-void Player::issueOrder(Bomb* b) {
-    orderList->add(b);
-    std::cout << "Player - Successfully issued order: BOMB \n";
-}
-void Player::issueOrder(Blockade* b) {
-    orderList->add(b);
-    std::cout << "Player - Successfully issued order: BLOCKADE \n";
-}
-void Player::issueOrder(Airlift* b) {
-    orderList->add(b);
-    std::cout << "Player - Successfully issued order: AIRLIFT \n";
-}
-void Player::issueOrder(Negotiate* b) {
-    orderList->add(b);
-    std::cout << "Player - Successfully issued order: DIPLOMACY \n";
-}
 
-// Function that creates an order based on the type passed as a string
-void Player::issueOrder(std::string type)
-{
-	std::string typeMap[6] {"deploy", "advance", "bomb", "blockade", "airlift", "negotiate"};
-
-	int index = -1;
-
-	for(index = 0; index < 6; index++)
-		if (type == typeMap[index]) break;
-
-	order *o;
-	switch (index)
-	{
-	case 0:
-		o = new Deploy();
-		break;
-	case 1:
-		o = new Advance();
-		break;
-	case 2:
-		o = new Bomb();
-		break;
-	case 3:
-		o = new Blockade();
-		break;
-	case 4:
-		o = new Airlift();
-		break;
-
-	case 5:
-		o = new Negotiate();
-		break;
-	default:
-		std::cout << "Error::Player - Unknown Type: " << type << std::endl;
-		return;
-	}
-}
-
-int Player::getTerritoryCount() const {
-    return territoryCount;
-}
 
 void Player::addTerritory(Territory *t) {
-    territories->push_back(t);
-    t->changeOwner(this);
-    territoryCount++;
+    Player *owner = t->getOwner(); //get the territory owner
+    if (owner) { //if the territory has an owner...
+        if (owner != this) { //if the owner isn't the player,
+            t->getOwner()->removeTerritory(t); //remove the territory from its current owner
+            territories->push_back(t); //add the territory to player
+            t->changeOwner(this); //add the player to territory
+        }
+    }
+    else {
+        t->changeOwner(this);
+        territories->push_back(t);
+    }
 }
 
 bool Player::removeTerritory(Territory *toRemove) {
     //Find the territory in the vector
     for (int i = 0; i < territories->size(); i++) {
         Territory *t = territories->at(i);
-        if (t->getId() == toRemove->getId()) {
+        if (t == toRemove) {
             //change the owner in Territory
             t->changeOwner(nullptr);
             //erase the territory in Player
@@ -252,8 +159,6 @@ bool Player::removeTerritory(Territory *toRemove) {
             if (c->getOwner() == this) {
                 removeContinent(c);
             }
-            //decrement territory count
-            territoryCount--;
             return true;
         }
     }
@@ -288,18 +193,61 @@ vector<Territory *> * Player::getTerritories() {
 vector<Continent *> * Player::getContinents() {
     return continents;
 }
+PlayerStrategy *Player::getPlayerStrategy() {
+    return strategy;
+}
 
 OrdersList *Player::getOrdersList() {
     return orderList;
 }
 
-vector<Territory *> *Player::getToMove() {
-    return toMove;
-}
 
 string *Player::getName() const {
     return name;
 }
+
+bool Player::isCardWon() const {
+    return cardWon;
+}
+
+void Player::setCardWon(bool won) {
+    Player::cardWon = won;
+}
+
+vector<Player *> *Player::getCannotAttack() const {
+    return cannotAttack;
+}
+
+void Player::setCannotAttack(vector<Player *> *cannotAttack) {
+    Player::cannotAttack = cannotAttack;
+}
+
+void Player::clearCannotAttack() {
+    cannotAttack->clear();
+}
+
+void Player::setStrategy(PlayerStrategy *ps) {
+    strategy = ps;
+}
+
+bool Player::issueOrder(order *o) {
+    if (!territories->empty()) {
+        return strategy->issueOrder(this, o);
+    }
+    return false;
+}
+
+void Player::issueOrder() {
+    if (!territories->empty()) {
+        strategy->issueOrder(this);
+    }
+}
+
+
+
+
+
+
 
 
 

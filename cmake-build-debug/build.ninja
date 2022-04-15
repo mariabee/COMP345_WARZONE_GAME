@@ -39,7 +39,7 @@ include CMakeFiles/rules.ninja
 #############################################
 # Logical path to working directory; prefix for absolute paths.
 
-cmake_ninja_workdir = C$:/Users/there/CLionProjects/COMP345_WARZONE_GAME/cmake-build-debug/
+cmake_ninja_workdir = G$:/COMP345_WARZONE_GAME/cmake-build-debug/
 # =============================================================================
 # Object build statements for EXECUTABLE target COMP345_WARZONE_GAME
 
@@ -49,64 +49,55 @@ cmake_ninja_workdir = C$:/Users/there/CLionProjects/COMP345_WARZONE_GAME/cmake-b
 
 build cmake_object_order_depends_target_COMP345_WARZONE_GAME: phony || CMakeFiles/COMP345_WARZONE_GAME.dir
 
-build CMakeFiles/COMP345_WARZONE_GAME.dir/Part_1/Map.cpp.obj: CXX_COMPILER__COMP345_WARZONE_GAME_Debug C$:/Users/there/CLionProjects/COMP345_WARZONE_GAME/Part$ 1/Map.cpp || cmake_object_order_depends_target_COMP345_WARZONE_GAME
+build CMakeFiles/COMP345_WARZONE_GAME.dir/Part_1/Map.cpp.obj: CXX_COMPILER__COMP345_WARZONE_GAME_Debug G$:/COMP345_WARZONE_GAME/Part$ 1/Map.cpp || cmake_object_order_depends_target_COMP345_WARZONE_GAME
   DEP_FILE = CMakeFiles\COMP345_WARZONE_GAME.dir\Part_1\Map.cpp.obj.d
   FLAGS = -g -std=gnu++14
-  INCLUDES = -I"C:/Users/there/CLionProjects/COMP345_WARZONE_GAME/Part 1" -I"C:/Users/there/CLionProjects/COMP345_WARZONE_GAME/Part 2" -I"C:/Users/there/CLionProjects/COMP345_WARZONE_GAME/Part 3" -I"C:/Users/there/CLionProjects/COMP345_WARZONE_GAME/Part 4" -I"C:/Users/there/CLionProjects/COMP345_WARZONE_GAME/Part 5"
+  INCLUDES = -I"G:/COMP345_WARZONE_GAME/Part 1" -I"G:/COMP345_WARZONE_GAME/Part 2" -I"G:/COMP345_WARZONE_GAME/Part 3" -I"G:/COMP345_WARZONE_GAME/Part 4" -I"G:/COMP345_WARZONE_GAME/Part 5"
   OBJECT_DIR = CMakeFiles\COMP345_WARZONE_GAME.dir
   OBJECT_FILE_DIR = CMakeFiles\COMP345_WARZONE_GAME.dir\Part_1
   TARGET_COMPILE_PDB = CMakeFiles\COMP345_WARZONE_GAME.dir\
   TARGET_PDB = COMP345_WARZONE_GAME.pdb
 
-build CMakeFiles/COMP345_WARZONE_GAME.dir/Part_2/Player.cpp.obj: CXX_COMPILER__COMP345_WARZONE_GAME_Debug C$:/Users/there/CLionProjects/COMP345_WARZONE_GAME/Part$ 2/Player.cpp || cmake_object_order_depends_target_COMP345_WARZONE_GAME
+build CMakeFiles/COMP345_WARZONE_GAME.dir/Part_2/Player.cpp.obj: CXX_COMPILER__COMP345_WARZONE_GAME_Debug G$:/COMP345_WARZONE_GAME/Part$ 2/Player.cpp || cmake_object_order_depends_target_COMP345_WARZONE_GAME
   DEP_FILE = CMakeFiles\COMP345_WARZONE_GAME.dir\Part_2\Player.cpp.obj.d
   FLAGS = -g -std=gnu++14
-  INCLUDES = -I"C:/Users/there/CLionProjects/COMP345_WARZONE_GAME/Part 1" -I"C:/Users/there/CLionProjects/COMP345_WARZONE_GAME/Part 2" -I"C:/Users/there/CLionProjects/COMP345_WARZONE_GAME/Part 3" -I"C:/Users/there/CLionProjects/COMP345_WARZONE_GAME/Part 4" -I"C:/Users/there/CLionProjects/COMP345_WARZONE_GAME/Part 5"
+  INCLUDES = -I"G:/COMP345_WARZONE_GAME/Part 1" -I"G:/COMP345_WARZONE_GAME/Part 2" -I"G:/COMP345_WARZONE_GAME/Part 3" -I"G:/COMP345_WARZONE_GAME/Part 4" -I"G:/COMP345_WARZONE_GAME/Part 5"
   OBJECT_DIR = CMakeFiles\COMP345_WARZONE_GAME.dir
   OBJECT_FILE_DIR = CMakeFiles\COMP345_WARZONE_GAME.dir\Part_2
   TARGET_COMPILE_PDB = CMakeFiles\COMP345_WARZONE_GAME.dir\
   TARGET_PDB = COMP345_WARZONE_GAME.pdb
 
-build CMakeFiles/COMP345_WARZONE_GAME.dir/Part_3/Orders.cpp.obj: CXX_COMPILER__COMP345_WARZONE_GAME_Debug C$:/Users/there/CLionProjects/COMP345_WARZONE_GAME/Part$ 3/Orders.cpp || cmake_object_order_depends_target_COMP345_WARZONE_GAME
+build CMakeFiles/COMP345_WARZONE_GAME.dir/Part_3/Orders.cpp.obj: CXX_COMPILER__COMP345_WARZONE_GAME_Debug G$:/COMP345_WARZONE_GAME/Part$ 3/Orders.cpp || cmake_object_order_depends_target_COMP345_WARZONE_GAME
   DEP_FILE = CMakeFiles\COMP345_WARZONE_GAME.dir\Part_3\Orders.cpp.obj.d
   FLAGS = -g -std=gnu++14
-  INCLUDES = -I"C:/Users/there/CLionProjects/COMP345_WARZONE_GAME/Part 1" -I"C:/Users/there/CLionProjects/COMP345_WARZONE_GAME/Part 2" -I"C:/Users/there/CLionProjects/COMP345_WARZONE_GAME/Part 3" -I"C:/Users/there/CLionProjects/COMP345_WARZONE_GAME/Part 4" -I"C:/Users/there/CLionProjects/COMP345_WARZONE_GAME/Part 5"
+  INCLUDES = -I"G:/COMP345_WARZONE_GAME/Part 1" -I"G:/COMP345_WARZONE_GAME/Part 2" -I"G:/COMP345_WARZONE_GAME/Part 3" -I"G:/COMP345_WARZONE_GAME/Part 4" -I"G:/COMP345_WARZONE_GAME/Part 5"
   OBJECT_DIR = CMakeFiles\COMP345_WARZONE_GAME.dir
   OBJECT_FILE_DIR = CMakeFiles\COMP345_WARZONE_GAME.dir\Part_3
   TARGET_COMPILE_PDB = CMakeFiles\COMP345_WARZONE_GAME.dir\
   TARGET_PDB = COMP345_WARZONE_GAME.pdb
 
-build CMakeFiles/COMP345_WARZONE_GAME.dir/Part_4/Cards.cpp.obj: CXX_COMPILER__COMP345_WARZONE_GAME_Debug C$:/Users/there/CLionProjects/COMP345_WARZONE_GAME/Part$ 4/Cards.cpp || cmake_object_order_depends_target_COMP345_WARZONE_GAME
+build CMakeFiles/COMP345_WARZONE_GAME.dir/Part_4/Cards.cpp.obj: CXX_COMPILER__COMP345_WARZONE_GAME_Debug G$:/COMP345_WARZONE_GAME/Part$ 4/Cards.cpp || cmake_object_order_depends_target_COMP345_WARZONE_GAME
   DEP_FILE = CMakeFiles\COMP345_WARZONE_GAME.dir\Part_4\Cards.cpp.obj.d
   FLAGS = -g -std=gnu++14
-  INCLUDES = -I"C:/Users/there/CLionProjects/COMP345_WARZONE_GAME/Part 1" -I"C:/Users/there/CLionProjects/COMP345_WARZONE_GAME/Part 2" -I"C:/Users/there/CLionProjects/COMP345_WARZONE_GAME/Part 3" -I"C:/Users/there/CLionProjects/COMP345_WARZONE_GAME/Part 4" -I"C:/Users/there/CLionProjects/COMP345_WARZONE_GAME/Part 5"
+  INCLUDES = -I"G:/COMP345_WARZONE_GAME/Part 1" -I"G:/COMP345_WARZONE_GAME/Part 2" -I"G:/COMP345_WARZONE_GAME/Part 3" -I"G:/COMP345_WARZONE_GAME/Part 4" -I"G:/COMP345_WARZONE_GAME/Part 5"
   OBJECT_DIR = CMakeFiles\COMP345_WARZONE_GAME.dir
   OBJECT_FILE_DIR = CMakeFiles\COMP345_WARZONE_GAME.dir\Part_4
   TARGET_COMPILE_PDB = CMakeFiles\COMP345_WARZONE_GAME.dir\
   TARGET_PDB = COMP345_WARZONE_GAME.pdb
 
-build CMakeFiles/COMP345_WARZONE_GAME.dir/Part_5/GameEngine.cpp.obj: CXX_COMPILER__COMP345_WARZONE_GAME_Debug C$:/Users/there/CLionProjects/COMP345_WARZONE_GAME/Part$ 5/GameEngine.cpp || cmake_object_order_depends_target_COMP345_WARZONE_GAME
+build CMakeFiles/COMP345_WARZONE_GAME.dir/Part_5/GameEngine.cpp.obj: CXX_COMPILER__COMP345_WARZONE_GAME_Debug G$:/COMP345_WARZONE_GAME/Part$ 5/GameEngine.cpp || cmake_object_order_depends_target_COMP345_WARZONE_GAME
   DEP_FILE = CMakeFiles\COMP345_WARZONE_GAME.dir\Part_5\GameEngine.cpp.obj.d
   FLAGS = -g -std=gnu++14
-  INCLUDES = -I"C:/Users/there/CLionProjects/COMP345_WARZONE_GAME/Part 1" -I"C:/Users/there/CLionProjects/COMP345_WARZONE_GAME/Part 2" -I"C:/Users/there/CLionProjects/COMP345_WARZONE_GAME/Part 3" -I"C:/Users/there/CLionProjects/COMP345_WARZONE_GAME/Part 4" -I"C:/Users/there/CLionProjects/COMP345_WARZONE_GAME/Part 5"
+  INCLUDES = -I"G:/COMP345_WARZONE_GAME/Part 1" -I"G:/COMP345_WARZONE_GAME/Part 2" -I"G:/COMP345_WARZONE_GAME/Part 3" -I"G:/COMP345_WARZONE_GAME/Part 4" -I"G:/COMP345_WARZONE_GAME/Part 5"
   OBJECT_DIR = CMakeFiles\COMP345_WARZONE_GAME.dir
   OBJECT_FILE_DIR = CMakeFiles\COMP345_WARZONE_GAME.dir\Part_5
   TARGET_COMPILE_PDB = CMakeFiles\COMP345_WARZONE_GAME.dir\
   TARGET_PDB = COMP345_WARZONE_GAME.pdb
 
-build CMakeFiles/COMP345_WARZONE_GAME.dir/Part_5/GameEngineDriver.cpp.obj: CXX_COMPILER__COMP345_WARZONE_GAME_Debug C$:/Users/there/CLionProjects/COMP345_WARZONE_GAME/Part$ 5/GameEngineDriver.cpp || cmake_object_order_depends_target_COMP345_WARZONE_GAME
+build CMakeFiles/COMP345_WARZONE_GAME.dir/Part_5/GameEngineDriver.cpp.obj: CXX_COMPILER__COMP345_WARZONE_GAME_Debug G$:/COMP345_WARZONE_GAME/Part$ 5/GameEngineDriver.cpp || cmake_object_order_depends_target_COMP345_WARZONE_GAME
   DEP_FILE = CMakeFiles\COMP345_WARZONE_GAME.dir\Part_5\GameEngineDriver.cpp.obj.d
   FLAGS = -g -std=gnu++14
-  INCLUDES = -I"C:/Users/there/CLionProjects/COMP345_WARZONE_GAME/Part 1" -I"C:/Users/there/CLionProjects/COMP345_WARZONE_GAME/Part 2" -I"C:/Users/there/CLionProjects/COMP345_WARZONE_GAME/Part 3" -I"C:/Users/there/CLionProjects/COMP345_WARZONE_GAME/Part 4" -I"C:/Users/there/CLionProjects/COMP345_WARZONE_GAME/Part 5"
-  OBJECT_DIR = CMakeFiles\COMP345_WARZONE_GAME.dir
-  OBJECT_FILE_DIR = CMakeFiles\COMP345_WARZONE_GAME.dir\Part_5
-  TARGET_COMPILE_PDB = CMakeFiles\COMP345_WARZONE_GAME.dir\
-  TARGET_PDB = COMP345_WARZONE_GAME.pdb
-
-build CMakeFiles/COMP345_WARZONE_GAME.dir/Part_5/CommandProcessor.cpp.obj: CXX_COMPILER__COMP345_WARZONE_GAME_Debug C$:/Users/there/CLionProjects/COMP345_WARZONE_GAME/Part$ 5/CommandProcessor.cpp || cmake_object_order_depends_target_COMP345_WARZONE_GAME
-  DEP_FILE = CMakeFiles\COMP345_WARZONE_GAME.dir\Part_5\CommandProcessor.cpp.obj.d
-  FLAGS = -g -std=gnu++14
-  INCLUDES = -I"C:/Users/there/CLionProjects/COMP345_WARZONE_GAME/Part 1" -I"C:/Users/there/CLionProjects/COMP345_WARZONE_GAME/Part 2" -I"C:/Users/there/CLionProjects/COMP345_WARZONE_GAME/Part 3" -I"C:/Users/there/CLionProjects/COMP345_WARZONE_GAME/Part 4" -I"C:/Users/there/CLionProjects/COMP345_WARZONE_GAME/Part 5"
+  INCLUDES = -I"G:/COMP345_WARZONE_GAME/Part 1" -I"G:/COMP345_WARZONE_GAME/Part 2" -I"G:/COMP345_WARZONE_GAME/Part 3" -I"G:/COMP345_WARZONE_GAME/Part 4" -I"G:/COMP345_WARZONE_GAME/Part 5"
   OBJECT_DIR = CMakeFiles\COMP345_WARZONE_GAME.dir
   OBJECT_FILE_DIR = CMakeFiles\COMP345_WARZONE_GAME.dir\Part_5
   TARGET_COMPILE_PDB = CMakeFiles\COMP345_WARZONE_GAME.dir\
@@ -120,7 +111,7 @@ build CMakeFiles/COMP345_WARZONE_GAME.dir/Part_5/CommandProcessor.cpp.obj: CXX_C
 #############################################
 # Link the executable COMP345_WARZONE_GAME.exe
 
-build COMP345_WARZONE_GAME.exe: CXX_EXECUTABLE_LINKER__COMP345_WARZONE_GAME_Debug CMakeFiles/COMP345_WARZONE_GAME.dir/Part_1/Map.cpp.obj CMakeFiles/COMP345_WARZONE_GAME.dir/Part_2/Player.cpp.obj CMakeFiles/COMP345_WARZONE_GAME.dir/Part_3/Orders.cpp.obj CMakeFiles/COMP345_WARZONE_GAME.dir/Part_4/Cards.cpp.obj CMakeFiles/COMP345_WARZONE_GAME.dir/Part_5/GameEngine.cpp.obj CMakeFiles/COMP345_WARZONE_GAME.dir/Part_5/GameEngineDriver.cpp.obj CMakeFiles/COMP345_WARZONE_GAME.dir/Part_5/CommandProcessor.cpp.obj
+build COMP345_WARZONE_GAME.exe: CXX_EXECUTABLE_LINKER__COMP345_WARZONE_GAME_Debug CMakeFiles/COMP345_WARZONE_GAME.dir/Part_1/Map.cpp.obj CMakeFiles/COMP345_WARZONE_GAME.dir/Part_2/Player.cpp.obj CMakeFiles/COMP345_WARZONE_GAME.dir/Part_3/Orders.cpp.obj CMakeFiles/COMP345_WARZONE_GAME.dir/Part_4/Cards.cpp.obj CMakeFiles/COMP345_WARZONE_GAME.dir/Part_5/GameEngine.cpp.obj CMakeFiles/COMP345_WARZONE_GAME.dir/Part_5/GameEngineDriver.cpp.obj
   FLAGS = -g
   LINK_LIBRARIES = -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
   OBJECT_DIR = CMakeFiles\COMP345_WARZONE_GAME.dir
@@ -136,7 +127,7 @@ build COMP345_WARZONE_GAME.exe: CXX_EXECUTABLE_LINKER__COMP345_WARZONE_GAME_Debu
 # Utility command for edit_cache
 
 build CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D C:\Users\there\CLionProjects\COMP345_WARZONE_GAME\cmake-build-debug && "C:\Program Files\JetBrains\CLion 2021.3.2\bin\cmake\win\bin\cmake.exe" -E echo "No interactive CMake dialog available.""
+  COMMAND = cmd.exe /C "cd /D G:\COMP345_WARZONE_GAME\cmake-build-debug && "C:\Program Files\JetBrains\CLion 2021.3.2\bin\cmake\win\bin\cmake.exe" -E echo "No interactive CMake dialog available.""
   DESC = No interactive CMake dialog available...
   restat = 1
 
@@ -147,7 +138,7 @@ build edit_cache: phony CMakeFiles/edit_cache.util
 # Utility command for rebuild_cache
 
 build CMakeFiles/rebuild_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D C:\Users\there\CLionProjects\COMP345_WARZONE_GAME\cmake-build-debug && "C:\Program Files\JetBrains\CLion 2021.3.2\bin\cmake\win\bin\cmake.exe" --regenerate-during-build -SC:\Users\there\CLionProjects\COMP345_WARZONE_GAME -BC:\Users\there\CLionProjects\COMP345_WARZONE_GAME\cmake-build-debug"
+  COMMAND = cmd.exe /C "cd /D G:\COMP345_WARZONE_GAME\cmake-build-debug && "C:\Program Files\JetBrains\CLion 2021.3.2\bin\cmake\win\bin\cmake.exe" --regenerate-during-build -SG:\COMP345_WARZONE_GAME -BG:\COMP345_WARZONE_GAME\cmake-build-debug"
   DESC = Running CMake to regenerate build system...
   pool = console
   restat = 1
@@ -165,7 +156,7 @@ build COMP345_WARZONE_GAME: phony COMP345_WARZONE_GAME.exe
 # =============================================================================
 
 #############################################
-# Folder: C:/Users/there/CLionProjects/COMP345_WARZONE_GAME/cmake-build-debug
+# Folder: G:/COMP345_WARZONE_GAME/cmake-build-debug
 
 build all: phony COMP345_WARZONE_GAME.exe
 

@@ -1,36 +1,37 @@
 #ifndef GAME_ENGINE_H
 #define GAME_ENGINE_H
 
+#include "LoggingObserver.h"
+
 #include <string>
 #include <vector>
 #include <iostream>
-#include "../Part 2/Player.h"
-#include "../Part 1/Map.h"
-
+#include "Player.h"
+#include "Map.h"
 
 #define START_STATE "start"
 #define END_STATE "end"
 
-extern class CommandProcessor cp;
-
 class State;
 
 // Class that provides functionality to match a Command.
-class Command
+class Command: public Subject, public ILoggable
 {
 public:
 	Command& operator=(const Command &c);
 	Command(const Command &c);
-	Command(std::string c);
-	Command();
+	explicit Command(std::string c);
 	friend std::ostream& operator<<(std::ostream &out, const Command &c);
-	bool matches(std::string s);
-	~Command();
+	bool matches(const std::string& s) const;
+	std::string stringToLog() override;
+	void saveEffect(std::string* e);
+	~Command() override;
+
+
 	std::string* command;
-	void saveEffect(Command &c);
 
 private:
-	
+	std::string* effect;
 };
 
 class Transition
@@ -47,7 +48,7 @@ public:
 	~Transition();
 	Transition(State *f, State *t, std::string o);
 	State *getState();
-	bool matches(std::string s);
+	bool matches(const std::string& s);
 };
 
 class State
@@ -55,31 +56,33 @@ class State
 public:
 	State& operator=(const State &s);
 	State(const State &s);
-	State(std::string n);
+	explicit State(std::string n);
 	friend std::ostream& operator<< (std::ostream &out, const State &s);
-    void setState(std::string s);
 	~State();
-	bool isEnd();
-	int getCommandIndex(std::string s);
+	std::string& toString() const;
+	bool isEnd() const;
+	int getCommandIndex(const std::string& s);
 	Transition *getTransition(int i);
 	void setTransitions(Transition *t);
+
 	std::string* name;
 
 private:
-
 	int index = 0;
 	Transition **transitions = new Transition *[2];
 };
 
-class GameEngine
+class GameEngine: public Subject, public ILoggable
 {
 private:
     const std::string dir {"../Debug/MapFiles/"};
     const int MAX_NUM_PLAYERS {6};
     const int MIN_NUM_PLAYERS {2};
+    int roundCount {5};
     vector<Player *> players;
     Map *map;
 	State **states;
+    PlayerStrategy **strategies;
     Deck* new_deck;
 	int stateCount;
     bool gameOver;
@@ -87,19 +90,27 @@ private:
     void issueOrdersPhase();
     void executeOrdersPhase();
 public:
+	State *currentState;
+	std::string stringToLog() override;
 	GameEngine& operator=(const GameEngine &ge);
 	GameEngine(const GameEngine &ge);
 	GameEngine();
 	friend std::ostream& operator<< (std::ostream &out, const GameEngine &ge);
-	~GameEngine();
+	~GameEngine() override;
 	void build();
-    void start();
 	void startupPhase();
     void distributeTerritories();
     void mainGameLoop();
     void randomizePlayOrder();
     void initializeDeck();
-    State *currentState;
+    void initializeStrategies();
+    void setState(const std::string& s);
+    void initial_start();
+    void testPhase();
+
+    void play();
+
+    void checkWinner();
 };
 
 #endif

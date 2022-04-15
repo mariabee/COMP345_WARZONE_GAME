@@ -14,15 +14,53 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="fb62c439-f59a-4880-90da-ca031f99db12" name="Changes" comment="some fixes?">
+    <list default="true" id="fb62c439-f59a-4880-90da-ca031f99db12" name="Changes" comment="added PlayerStrategy">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Part 5/CommandProcessor.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Part 5/CommandProcessor.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Part 5/CommandProcessor.h" beforeDir="false" afterPath="$PROJECT_DIR$/Part 5/CommandProcessor.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Part 1/Map.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Part 1/Map.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Part 2/Player.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Part 2/Player.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Part 2/Player.h" beforeDir="false" afterPath="$PROJECT_DIR$/Part 2/Player.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Part 2/PlayerDriver.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Part 2/PlayerDriver.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Part 2/PlayerStrategy.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Part 2/PlayerStrategy.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Part 2/PlayerStrategy.h" beforeDir="false" afterPath="$PROJECT_DIR$/Part 2/PlayerStrategy.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Part 3/Orders.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Part 3/Orders.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Part 3/Orders.h" beforeDir="false" afterPath="$PROJECT_DIR$/Part 3/Orders.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Part 4/Cards.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Part 4/Cards.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Part 4/Cards.h" beforeDir="false" afterPath="$PROJECT_DIR$/Part 4/Cards.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Part 5/GameEngine.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Part 5/GameEngine.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Part 5/GameEngine.h" beforeDir="false" afterPath="$PROJECT_DIR$/Part 5/GameEngine.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/.cmake/api/v1/reply/cache-v2-f2139b2c4a1415ccb598.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/.cmake/api/v1/reply/cmakeFiles-v1-ae1572dd21bd2e286461.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/.cmake/api/v1/reply/codemodel-v2-06b41591fc93c1e0d579.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/.cmake/api/v1/reply/index-2022-03-28T02-41-11-0070.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/.cmake/api/v1/reply/target-COMP345_WARZONE_GAME-Debug-839381b8cec40ed502ee.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/.cmake/api/v1/reply/toolchains-v1-2120af67d5621e174487.json" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/cmake-build-debug/.ninja_deps" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/.ninja_deps" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cmake-build-debug/.ninja_log" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/.ninja_log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeCache.txt" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeCache.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.21.1/CMakeCCompiler.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.21.1/CMakeCCompiler.cmake" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.21.1/CMakeCXXCompiler.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.21.1/CMakeCXXCompiler.cmake" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.21.1/CMakeDetermineCompilerABI_C.bin" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.21.1/CMakeDetermineCompilerABI_C.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.21.1/CMakeDetermineCompilerABI_CXX.bin" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.21.1/CMakeDetermineCompilerABI_CXX.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.21.1/CMakeRCCompiler.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.21.1/CMakeRCCompiler.cmake" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.21.1/CMakeSystem.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.21.1/CMakeSystem.cmake" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.21.1/CompilerIdC/a.exe" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.21.1/CompilerIdC/a.exe" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.21.1/CompilerIdCXX/a.exe" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.21.1/CompilerIdCXX/a.exe" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/CMakeOutput.log" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/CMakeOutput.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/COMP345_WARZONE_GAME.dir/Part_1/Map.cpp.obj" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/COMP345_WARZONE_GAME.dir/Part_1/Map.cpp.obj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/COMP345_WARZONE_GAME.dir/Part_2/Player.cpp.obj" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/COMP345_WARZONE_GAME.dir/Part_2/Player.cpp.obj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/COMP345_WARZONE_GAME.dir/Part_3/Orders.cpp.obj" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/COMP345_WARZONE_GAME.dir/Part_3/Orders.cpp.obj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/COMP345_WARZONE_GAME.dir/Part_4/Cards.cpp.obj" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/COMP345_WARZONE_GAME.dir/Part_4/Cards.cpp.obj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/COMP345_WARZONE_GAME.dir/Part_5/GameEngine.cpp.obj" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/COMP345_WARZONE_GAME.dir/Part_5/GameEngine.cpp.obj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/COMP345_WARZONE_GAME.dir/Part_5/GameEngineDriver.cpp.obj" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/COMP345_WARZONE_GAME.dir/Part_5/GameEngineDriver.cpp.obj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/TargetDirectories.txt" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/TargetDirectories.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/clion-environment.txt" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/clion-environment.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/clion-log.txt" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/clion-log.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/rules.ninja" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/rules.ninja" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cmake-build-debug/COMP345_WARZONE_GAME.exe" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/COMP345_WARZONE_GAME.exe" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cmake-build-debug/Testing/Temporary/LastTest.log" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/Testing/Temporary/LastTest.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/build.ninja" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/build.ninja" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/cmake_install.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/cmake_install.cmake" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -114,12 +152,12 @@
     </key>
   </component>
   <component name="RunManager">
-    <configuration name="COMP345_WARZONE_GAME" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="COMP345_WARZONE_GAME" TARGET_NAME="COMP345_WARZONE_GAME" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="COMP345_WARZONE_GAME" RUN_TARGET_NAME="COMP345_WARZONE_GAME">
+    <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
       <method v="2">
-        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+        <option name="CLION.EXTERNAL.BUILD" enabled="true" />
       </method>
     </configuration>
-    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
+    <configuration name="COMP345_WARZONE_GAME" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="COMP345_WARZONE_GAME" TARGET_NAME="COMP345_WARZONE_GAME" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="COMP345_WARZONE_GAME" RUN_TARGET_NAME="COMP345_WARZONE_GAME">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
@@ -159,6 +197,12 @@
       <workItem from="1648320727881" duration="6892000" />
       <workItem from="1648328725904" duration="4719000" />
       <workItem from="1648346431163" duration="2830000" />
+      <workItem from="1648416961906" duration="140000" />
+      <workItem from="1648417120201" duration="279000" />
+      <workItem from="1648420812143" duration="3380000" />
+      <workItem from="1648435204949" duration="415000" />
+      <workItem from="1648759995348" duration="6475000" />
+      <workItem from="1648825133389" duration="13830000" />
     </task>
     <task id="LOCAL-00001" summary="Moved OrdersList into Orders files, and created seperated Driver file to run testing.">
       <created>1643149106708</created>
@@ -370,14 +414,21 @@
       <option name="project" value="LOCAL" />
       <updated>1648333497875</updated>
     </task>
-    <task id="LOCAL-00032" summary="some fixes?">
-      <created>1648525189861</created>
+    <task id="LOCAL-00032" summary="added PlayerStrategy">
+      <created>1648699980384</created>
       <option name="number" value="00032" />
       <option name="presentableId" value="LOCAL-00032" />
       <option name="project" value="LOCAL" />
-      <updated>1648525189861</updated>
+      <updated>1648699980384</updated>
     </task>
-    <option name="localTasksCounter" value="33" />
+    <task id="LOCAL-00033" summary="added PlayerStrategy">
+      <created>1648700094371</created>
+      <option name="number" value="00033" />
+      <option name="presentableId" value="LOCAL-00033" />
+      <option name="project" value="LOCAL" />
+      <updated>1648700094371</updated>
+    </task>
+    <option name="localTasksCounter" value="34" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -476,8 +527,8 @@
     <MESSAGE value="Added comments to clarify" />
     <MESSAGE value="maria edits" />
     <MESSAGE value="added comments for clarification" />
-    <MESSAGE value="some fixes?" />
-    <option name="LAST_COMMIT_MESSAGE" value="some fixes?" />
+    <MESSAGE value="added PlayerStrategy" />
+    <option name="LAST_COMMIT_MESSAGE" value="added PlayerStrategy" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -488,9 +539,9 @@
           <option name="timeStamp" value="1" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/Part 5/CommandProcessor.cpp</url>
-          <line>74</line>
-          <option name="timeStamp" value="10" />
+          <url>file://$PROJECT_DIR$/Part 5/GameEngine.cpp</url>
+          <line>427</line>
+          <option name="timeStamp" value="2" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

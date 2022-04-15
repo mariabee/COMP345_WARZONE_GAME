@@ -278,6 +278,7 @@ bool Advance::validate() {
     else {
         s = *get_player()->getName();
     }
+
     if (armies <= 0 && !dynamic_cast<CheaterPlayerStrategy *>(get_player()->getPlayerStrategy())) {
         set_order_effect(s + "'s advance order was not valid since number of armies ordered to attack was zero.");
         return false;
@@ -287,25 +288,32 @@ bool Advance::validate() {
         return false;
     }
     else if(!start->getOwner() || start->getOwner() != get_player()){
-        set_order_effect(s + "'s advance order is not valid since they no longer own " + *start->getName() + ".");
+        set_order_effect(s + "'s advance order will not be executed since they no longer own " + *start->getName() + ".");
         return false;
     }
     else if (!isBeside(start,target)){
-        set_order_effect(s + "'s advance order is not valid since " + *start->getName() +
+        set_order_effect(s + "'s advance order will not be executed since " + *start->getName() +
         " is not beside " + *target->getName() + ".");
         return false;
     }
     else if (start->getNumberOfArmies() <= 0) {
         if (!dynamic_cast<CheaterPlayerStrategy *>(get_player()->getPlayerStrategy())) {
-            set_order_effect(s + " 's advance order is not valid since " + *start->getName() + " has no more" +
+            set_order_effect(s + " 's advance order will not be executed since " + *start->getName() + " has no more" +
                              " armies to advance with.");
             return false;
         }
         else if (target->getOwner() == get_player()) {
-            set_order_effect(s + " 's order to move troops from " + *start->getName() + " has been discarded since territory has 0 more armies.");
+            set_order_effect(s + " 's order to move troops from " + *start->getName() + " has been discarded since territory has 0 armies.");
             return false;
         }
     }
+    else if (dynamic_cast<BenevolentPlayerStrategy *>(get_player()->getPlayerStrategy())){
+        if (target->getOwner() != get_player()) {
+            set_order_effect(s + " 's order to troops to " + *target->getName() + " has been discarded since target territory is no longer owned by them.");
+            return false;
+        }
+    }
+
     if (!get_player()->getCannotAttack()->empty()) {
         cout << *target << endl;
         Player *owner = target->getOwner();

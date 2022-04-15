@@ -451,10 +451,11 @@ BenevolentPlayerStrategy::BenevolentPlayerStrategy() = default;
 vector<Territory *> *BenevolentPlayerStrategy::toAttack(Player *p, order *type) {
     return nullptr;
 }
+//Returns vector of weakest territories
 vector<Territory *> *BenevolentPlayerStrategy::toDefend(Player *p, order *type) {
     auto *out = new vector<Territory *>();
     Territory *weakest = nullptr;
-    Territory *strong = nullptr;
+    Territory *stronger;
     int min_armies;
 
     for (Territory *t : *p->getTerritories()) {
@@ -474,12 +475,12 @@ vector<Territory *> *BenevolentPlayerStrategy::toDefend(Player *p, order *type) 
             min_armies = t->getNumberOfArmies();
         }
         else {
-            strong = t;
+            stronger = t;
         }
     }
     if (dynamic_cast<Airlift *>(type)) {
-        if (strong) {
-            out->push_back(strong);
+        if (stronger) {
+            out->push_back(stronger);
         }
         else {
             return nullptr;
@@ -510,17 +511,29 @@ void BenevolentPlayerStrategy::issueOrder(Player *p) {
     int armies = p->getArmies();
     int split = armies / weakest->size();
     int remainder = armies % weakest->size();
-    if (split > 0) {
-        for (Territory *t : *weakest){
+    int count = 0;
+    for (Territory *t : *weakest){
+        if (split > 0) {
             p->getOrdersList()->add(new Deploy(p, t, split));
         }
+        int n = t->getNumberOfArmies();
+        for (int i = 0; i <t->getEdgeCount(); i++) {
+            Territory *edge = t->getEdges()[i];
+            if (edge->getOwner() == p && edge->getNumberOfArmies() > n + 1) {
+                auto *move = new Advance(p, edge, t, edge->getNumberOfArmies()/2, deck);
+                p->issueOrder(move);
+                count++;
+            }
+        }
     }
+    if (count > 0) {cout << *p << " has issued orders to move troops from " << count << " territories.";}
     while (!weakest->empty() && remainder > 0) {
         p->getOrdersList()->add(new Deploy(p, weakest->back(), 1));
         weakest->pop_back();
         remainder--;
     }
     p->getHand()->playCard(deck, p, 0);
+
 }
 
 ///////////////////////////////CHEATER PLAYER/////////////////////////

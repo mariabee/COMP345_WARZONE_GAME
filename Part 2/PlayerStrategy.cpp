@@ -324,6 +324,23 @@ void HumanPlayerStrategy::displayBorders(Territory *t, Player *p) {
         cout << "   " << *t->getEdges()[i] << endl;
     }
 }
+
+HumanPlayerStrategy::~HumanPlayerStrategy() {
+
+}
+std::ostream &operator << ( std::ostream &out, const HumanPlayerStrategy &humanPlayerStrategy ){
+    out<< "Human Player Strategy";
+    return out;
+}
+HumanPlayerStrategy::HumanPlayerStrategy(const HumanPlayerStrategy &other){
+    this->players=other.players;
+    this->deck=other.deck;
+}
+HumanPlayerStrategy& HumanPlayerStrategy::operator=(const HumanPlayerStrategy& other){
+    this->players=other.players;
+    this->deck=other.deck;
+    return *this;
+}
 ///////////////////////////////AGGRESSIVE PLAYER/////////////////////////
 AggressivePlayerStrategy::AggressivePlayerStrategy() {
     previous = nullptr;
@@ -445,6 +462,22 @@ vector<Territory *> *AggressivePlayerStrategy::toDefend(Player *p, order *type) 
     return out;
 }
 
+AggressivePlayerStrategy::~AggressivePlayerStrategy() {
+
+}
+std::ostream &operator << ( std::ostream &out, const AggressivePlayerStrategy &aggressivePlayerStrategy ){
+    out<< "Aggressive Player Strategy";
+    return out;
+}
+AggressivePlayerStrategy::AggressivePlayerStrategy(const AggressivePlayerStrategy &other){
+    this->players=other.players;
+    this->deck=other.deck;
+}
+AggressivePlayerStrategy& AggressivePlayerStrategy::operator=(const AggressivePlayerStrategy& other){
+    this->players=other.players;
+    this->deck=other.deck;
+    return *this;
+}
 ///////////////////////////////BENEVOLENT PLAYER/////////////////////////
 BenevolentPlayerStrategy::BenevolentPlayerStrategy() = default;
 
@@ -536,6 +569,23 @@ void BenevolentPlayerStrategy::issueOrder(Player *p) {
 
 }
 
+BenevolentPlayerStrategy::~BenevolentPlayerStrategy() {
+
+}
+std::ostream &operator << ( std::ostream &out, const BenevolentPlayerStrategy &benevolentPlayerStrategy ){
+    out<< "Benevolent Player Strategy";
+    return out;
+}
+
+BenevolentPlayerStrategy::BenevolentPlayerStrategy(const BenevolentPlayerStrategy &other){
+    this->players=other.players;
+    this->deck=other.deck;
+}
+BenevolentPlayerStrategy& BenevolentPlayerStrategy::operator=(const BenevolentPlayerStrategy& other){
+    this->players=other.players;
+    this->deck=other.deck;
+    return *this;
+}
 ///////////////////////////////CHEATER PLAYER/////////////////////////
 
 //Returns a vector containing all border territories, and territories to attack from
@@ -604,8 +654,26 @@ void CheaterPlayerStrategy::issueOrder(Player *p) {
     p->getHand()->playCard(deck, p,  0);
 }
 
+CheaterPlayerStrategy::~CheaterPlayerStrategy() {
+
+}
+
 CheaterPlayerStrategy::CheaterPlayerStrategy() = default;
 
+std::ostream &operator << ( std::ostream &out, const CheaterPlayerStrategy &cheaterPlayerStrategy ){
+    out<< "Cheater Player Strategy";
+    return out;
+}
+
+CheaterPlayerStrategy::CheaterPlayerStrategy(const CheaterPlayerStrategy &other){
+    this->players=other.players;
+    this->deck=other.deck;
+}
+CheaterPlayerStrategy& CheaterPlayerStrategy::operator=(const CheaterPlayerStrategy& other){
+    this->players=other.players;
+    this->deck=other.deck;
+    return *this;
+}
 
 ///////////////////////////////NEUTRAL PLAYER/////////////////////////
 
@@ -621,3 +689,19 @@ vector<Territory *> *NeutralPlayerStrategy::toAttack(Player *p, order *type) {
     return nullptr;
 }
 
+NeutralPlayerStrategy::~NeutralPlayerStrategy() {
+
+}
+std::ostream &operator << ( std::ostream &out, const NeutralPlayerStrategy &neutralPlayerStrategy ){
+    out<< "Neutral Player Strategy";
+    return out;
+}
+NeutralPlayerStrategy::NeutralPlayerStrategy(const NeutralPlayerStrategy &other){
+    this->players=other.players;
+    this->deck=other.deck;
+}
+NeutralPlayerStrategy& NeutralPlayerStrategy::operator=(const NeutralPlayerStrategy& other){
+    this->players=other.players;
+    this->deck=other.deck;
+    return *this;
+}

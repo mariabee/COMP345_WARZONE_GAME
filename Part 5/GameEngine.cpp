@@ -89,7 +89,7 @@ std::ostream &operator<<(std::ostream &out, const Transition &t) {
 
 // Destructor for Transition
 Transition::~Transition() {
-    // std::cout << "Deleting transition" << std::endl;
+    std::cout << "Deleting transition" << std::endl;
     delete on;
 }
 
@@ -146,7 +146,7 @@ std::string& State::toString() const {
 
 // Destructor for State
 State::~State() {
-    //std::cout << "Deleting state: \"" << *this << "\"" << std::endl;
+    std::cout << "Deleting state: \"" << *this << "\"" << std::endl;
     for (int i = 0; i < index; i++)
         delete transitions[i];
     delete[] transitions;
@@ -365,7 +365,6 @@ void GameEngine::startupPhase() {
         std::cin >> input;
         map = new Map(MapLoader::loadMap(dir + input));
         std::cout << "Map " << input << " loaded successfully" << std::endl;
-        //               std::cout << map->getTerritories()[2] << std::endl;
     }
 
     if (currentState == states[2]) {
@@ -399,7 +398,6 @@ void GameEngine::startupPhase() {
             currentState = states[3];
         } else {
             distributeTerritories();
-//                    std::cout << *(players.at(0)->getTerritories()->at(2)->getName()) << std::endl;
             randomizePlayOrder();
             std::cout << "The order of turn is as follow: ";
             for (int i{0}; i < players.size() - 1; i++)

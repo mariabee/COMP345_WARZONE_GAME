@@ -1,13 +1,11 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 #include "../Part 1/Map.h"
-#include "../Part 4/Cards.h"
 #include "PlayerStrategy.h"
+#include "Cards.h"
 #include <vector>
 #include <string>
 
-class Hand;
-class Deck;
 class order;
 class PlayerStrategy;
 

@@ -4,58 +4,6 @@
 #include <utility>
 #include "GameEngine.h"
 
-
-// Assignment operator overload for Command
-Command &Command::operator=(const Command &c) {
-    if (this == &c) return *this;
-    delete command;
-    delete effect;
-
-    command = new std::string(*c.command);
-    effect = new std::string(*c.effect);
-    return *this;
-}
-
-// Copy constructor for Command
-Command::Command(const Command &c) {
-    command = new std::string(*c.command);
-    effect = new std::string(*c.effect);
-}
-
-// Stream insertion operator overload for Command
-std::ostream &operator<<(std::ostream &out, const Command &c) {
-    out << *c.command;
-    return out;
-}
-
-void Command::saveEffect(std::string* e) {
-    effect = e;
-    notify();
-}
-
-std::string Command::stringToLog() {
-    return "COMMAND::\"" + *effect + "\"";
-}
-
-// Destructor for Command
-Command::~Command() {
-    std::cout << "Deleting command: \"" << *this << "\"" << std::endl;
-
-    delete effect;
-    delete command;
-}
-
-// Constructor for Command that takes a string
-Command::Command(std::string c) {
-    command = new std::string(std::move(c));
-    effect = new std::string("");
-}
-
-// Function that returns a boolean corresponding to whether a given string matches the command
-bool Command::matches(const std::string& s) const {
-    return *command == s;
-}
-
 // Assignment operator overload for Transition
 Transition &Transition::operator=(const Transition &t) {
     if (this == &t) {return *this; }
@@ -223,6 +171,8 @@ GameEngine::GameEngine(const GameEngine &ge) {
 // Default constructor for GameEngine
 GameEngine::GameEngine() {
     gameOver = false;
+    strategies = nullptr;
+    map = nullptr;
     build();
 }
 
@@ -334,61 +284,84 @@ void GameEngine::build() {
 }
 
 // Function that starts the game engine, which waits for player input.
-void GameEngine::initial_start() {
-    std::string input;
+void GameEngine::initial_start(CommandProcessor *cp) {
     int index;
+    cp->getCommand();
+    vector<Command *> *commands = cp->getCommandList();
 
     while (currentState != states[5]) {
-        std::cin >> input;
-        if ((index = currentState->getCommandIndex(input)) == -1)
-            std::cout << "No command: \"" << input << "\" usable from current state! Currently at state "
-                      << (*currentState) << std::endl;
-        else {
-            currentState = (currentState->getTransition(index))->getState();
-            std::cout << "Transition to state: \"" << (*currentState) << "\"" << std::endl;
-            startupPhase();
+        if (!commands->empty()) {
+            Command *c = commands->front();
+            index = currentState->getCommandIndex(*c->command);
+            if (!CommandProcessor::validate(*c, this)) {
+                std::cout << "No command: \"" << *c->command << "\" usable from current state! Currently at state "
+                          << (*currentState) << std::endl;
+                cp->resetCommandList();
+            } else {
+                currentState = (currentState->getTransition(index))->getState();
+                auto *effect = new string("Transition to state : \"" + *currentState->name  + "\"");
+                c->saveEffect(effect);
+                startupPhase(c, commands);
+            }
         }
-        notify();
+        else {
+            cp->resetCommandList();
+            cp->getCommand();
+            commands = cp->getCommandList();
+        }
 
     }
 }
 
 
-void GameEngine::startupPhase() {
-    std::string input;
+void GameEngine::startupPhase(Command *c, vector<Command *> *commands) {
     Player *temp_player;
-    initializeStrategies();
-    initializeDeck();
-
     if (currentState == states[1]) {
-        std::cout << "Enter the map you want to load in the game: " << std::endl;
-        std::cin >> input;
-        map = new Map(MapLoader::loadMap(dir + input));
-        std::cout << "Map " << input << " loaded successfully" << std::endl;
+        commands->erase(commands->begin());
+        c = commands->front();
+        map = new Map(MapLoader::loadMap(dir + *c->command));
+        std::cout << "Map " << *c->command << " loaded successfully" << std::endl;
+        c->saveEffect(new string("Map loaded successfully."));
+        //               std::cout << map->getTerritories()[2] << std::endl;
     }
 
     if (currentState == states[2]) {
         if (!map->validate()) {
             std::cout << "Map not valid, please reenter a valid map file" << std::endl;
+            c->saveEffect(new string("Map file not valid."));
             currentState = states[0];
         }
     }
 
     if (currentState == states[3]) {
+        commands->erase(commands->begin());
+        c = commands->front();
         int num_of_players;
-        std::cout << "Enter the number of players joining the game (2-6): " << std::endl;
-        std::cin >> num_of_players;
+        try {
+            num_of_players = std::stoi(*c->command);
+        }
+        catch(std::invalid_argument& e){
+            c->saveEffect(new string("Invalid integer entered for number of players."));
+            return;
+        }
         if (num_of_players + players.size() > MAX_NUM_PLAYERS) {
             std::cout << "Max number of players reached, failed to add these players!" << std::endl;
+            c->saveEffect(new string("Max number of players reached, failed to add these players!"));
         } else {
+            initializeDeck();
+            initializeStrategies();
             for (int i{0}; i < num_of_players; i++) {
-                std::cout << "Enter the player's name: " << std::endl;
-                std::cin >> input;
-                temp_player = new Player(input);
-                temp_player->setStrategy(strategies[0]);
-                players.push_back(temp_player);
+                commands->erase(commands->begin());
+                if (!commands->empty()) {
+                    c = commands->front();
+                    temp_player = new Player(*c->command);
+                    temp_player->setStrategy(strategies[3]);
+                    players.push_back(temp_player);
+                }
             }
+            players.back()->setStrategy(strategies[4]);
             std::cout << "Players added successfully" << std::endl;
+            c->saveEffect(new string("Players added successfully."));
         }
     }
 
@@ -404,7 +377,6 @@ void GameEngine::startupPhase() {
                 std::cout << " || Player " << *(players.at(i)) << " ";
             std::cout << " || Player " << *(players.at(players.size() - 1)) << " || ";
             std::cout << std::endl;
-//                    std::cout << *(players.at(0)->getTerritories()->at(2)->getName()) << std::endl;
             for (int i{0}; i < players.size(); i++) {
                 players.at(i)->setArmies(50);
                 std::cout << "Player " << *(players.at(i)) << " currently has " << players.at(i)->getArmies()
@@ -412,33 +384,39 @@ void GameEngine::startupPhase() {
                 std::cout << "Player " << *(players.at(i)) << " will now pick 2 cards from the deck!" << std::endl;
                 players.at(i)->getHand()->drawFromDeck(new_deck);
                 players.at(i)->getHand()->drawFromDeck(new_deck);
+                cout << *players.at(i)->getHand() << endl;
             }
             currentState = states[5];
         }
-
     }
-
+    commands->erase(commands->begin());
 }
 
 
 void GameEngine::play() {
-    initial_start();
-    mainGameLoop();
+    auto *cp = new CommandProcessor();
+    initial_start(cp);
+    mainGameLoop(cp);
 }
 
-void GameEngine::mainGameLoop() {
-    std::cout << "Main Game Loop starting..." << std::endl;
-    do {
+void GameEngine::mainGameLoop(CommandProcessor *cp) {
+    while (currentState != states[8]) {
         reinforcementPhase();
         issueOrdersPhase();
         executeOrdersPhase();
-    } while (currentState != states[8]);
+    }
     string playOrEnd;
-    std::cout << "Play or end game?" << std::endl;
+    vector<Command *> *commands = cp->getCommandList();
     State *previousState = currentState;
+    commands = cp->getCommandList();
+
     while (currentState == previousState) {
-        std::cin >> playOrEnd;
-        setState(playOrEnd);
+        if (commands->empty()) {
+            cp->getCommand();
+        }
+        Command *c = commands->front();
+        setState(*c->command);
+        commands->erase(commands->begin());
     }
     if (currentState == states[0]) {
         play();
@@ -470,7 +448,6 @@ void GameEngine::reinforcementPhase() {
         p->setArmies(n);
         cout << *p << " has currently " << n << " armies available to deploy. " << endl;
     }
-
 }
 
 void GameEngine::issueOrdersPhase() {
@@ -550,7 +527,9 @@ void GameEngine::checkWinner() {
             setState("win");
         }
         else if (p->getTerritories()->empty()) {
-            cout << *p->getName() << " has lost the game." << endl;
+            if (currentState != states[8]) {
+                cout << *p->getName() << " has lost the game." << endl;
+            }
             players.erase(players.begin() + i);
         }
         i++;
@@ -568,7 +547,7 @@ void GameEngine::testPhase() {
     auto *neutral_player = new Player("NEUTRAL");
     neutral_player->setStrategy(strategies[3]);
     players.push_back(neutral_player);
-    auto *benevolent_player = new Player("BENEVOLENT");
+    /*auto *benevolent_player = new Player("BENEVOLENT");
     benevolent_player->setStrategy(strategies[2]);
     players.push_back(benevolent_player);
     auto *aggressive_player = new Player("AGGRESSIVE");
@@ -576,7 +555,7 @@ void GameEngine::testPhase() {
     players.push_back(aggressive_player);
     auto *human_player = new Player("AGGRESSIVE" + to_string(2));
     human_player->setStrategy(strategies[1]);
-    players.push_back(human_player);
+    players.push_back(human_player);*/
 
     distributeTerritories();
     randomizePlayOrder();
@@ -598,7 +577,8 @@ void GameEngine::testPhase() {
     currentState = states[3];
     currentState = states[4];
     currentState = states[5];
-    mainGameLoop();
+    auto *cp = new CommandProcessor();
+    mainGameLoop(cp);
 }
 
 

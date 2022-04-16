@@ -1,4 +1,4 @@
-#include "./GameEngine.h"
+#include "GameEngine.h"
 
 int main() {
     TournamentModeHandler* t = TournamentModeHandler::fromString("tournament -M ../Debug/MapFiles/artic.map -P player,cheater -G 5 -D 5");

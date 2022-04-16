@@ -1,0 +1,7 @@
+{
+	"files.associations": {
+		"*.cpdb": "json",
+		"*.token": "plaintext",
+		"vector": "cpp"
+	}
+}

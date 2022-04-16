@@ -1,71 +1,76 @@
 
 #ifndef COMMANDPROCESSING_H
 #define COMMANDPROCESSING_H
-#include "GameEngine.h" 
 #include <iostream>
 #include <vector>
+#include "LoggingObserver.h"
+using std::vector;
+using std::string;
+
+class GameEngine;
+// Class that provides functionality to match a Command.
+class Command: public Subject, public ILoggable
+{
+public:
+    Command& operator=(const Command &c);
+    Command(const Command &c);
+    explicit Command(std::string c);
+    friend std::ostream& operator<<(std::ostream &out, const Command &c);
+    bool matches(const std::string& s) const;
+    std::string stringToLog() override;
+    void saveEffect(std::string* e);
+    ~Command() override;
 
 
+    std::string* command;
+
+private:
+    std::string* effect;
+};
 
 class CommandProcessor{
-    
-private: 
-    GameEngine* gameEng; 
-    vector<Command *> commandList;
+
+private:
+    vector<Command *> *commandList;
     Command* lastCmd;
-
-
-    
-public: 
+    string *inputType;
+protected:
+    void readCommand();
+    void saveCommand();
+public:
     //CONSTRUCTOR
     CommandProcessor();
-    CommandProcessor(GameEngine* ge); 
-    CommandProcessor(GameEngine* ge, const std::vector<Command* > & lst);
-    void saveCommand();
-
+    explicit CommandProcessor(CommandProcessor *c);
     //DESTRUCTOR
     virtual ~CommandProcessor();
-    
-    bool validate(Command cmd, GameEngine* ge);
-    void getCommand(); 
-    virtual void readCommand(string cmd);
+    static bool validate(const Command& cmd, GameEngine* ge);
+    virtual void getCommand();
     void setLastCommand(Command*);
-    
+    void setCommandList(vector<Command *> *c);
+    void resetCommandList();
+    vector<Command *> * getCommandList();
+
 };
 
-class FileLineReader: public CommandProcessor{
+class FileLineReader {
 private:
-
-    string textfile;
-    
-public: 
-    //CONSTRUCTOR
+public:
     FileLineReader();
-    FileLineReader(string);
-    //DESTRUCTOR
-    virtual ~FileLineReader();
-    
-    void readLineFromFile(string fileName,GameEngine* ge);
+    vector<Command *> * getFileCommands(const string& path);
 };
 
-class FileCommandProcessorAdapter: public FileLineReader{
-    
+
+class FileCommandProcessorAdapter: public CommandProcessor {
+
 private:
     FileLineReader* fileLineReader;
-    CommandProcessor* commandProcessor;
-
-public: 
+public:
     //CONSTRUCTOR
-    FileCommandProcessorAdapter(CommandProcessor *cp);
-    FileCommandProcessorAdapter(FileLineReader *flr);
-
+    FileCommandProcessorAdapter();
+    explicit FileCommandProcessorAdapter(FileCommandProcessorAdapter *f);
     //DESTRUCTOR
     virtual ~FileCommandProcessorAdapter();
-    
-    virtual void readCommand(string fileName); 
-    virtual void readFileLine(string fileName);
+    void getCommand() override;
+    FileLineReader * getFileLineReader();
 };
-
-
-
 #endif

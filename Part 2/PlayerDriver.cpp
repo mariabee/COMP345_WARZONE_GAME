@@ -4,5 +4,4 @@
 int main(){
     GameEngine *ge = new GameEngine();
     ge->testPhase();
-
 }

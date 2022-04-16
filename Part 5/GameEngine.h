@@ -8,31 +8,13 @@
 #include <iostream>
 #include "Player.h"
 #include "Map.h"
+#include "Cards.h"
+#include "CommandProcessor.h"
 
 #define START_STATE "start"
 #define END_STATE "end"
 
 class State;
-
-// Class that provides functionality to match a Command.
-class Command: public Subject, public ILoggable
-{
-public:
-	Command& operator=(const Command &c);
-	Command(const Command &c);
-	explicit Command(std::string c);
-	friend std::ostream& operator<<(std::ostream &out, const Command &c);
-	bool matches(const std::string& s) const;
-	std::string stringToLog() override;
-	void saveEffect(std::string* e);
-	~Command() override;
-
-
-	std::string* command;
-
-private:
-	std::string* effect;
-};
 
 class Transition
 {
@@ -78,7 +60,6 @@ private:
     const std::string dir {"../Debug/MapFiles/"};
     const int MAX_NUM_PLAYERS {6};
     const int MIN_NUM_PLAYERS {2};
-    int roundCount {5};
     vector<Player *> players;
     Map *map;
 	State **states;
@@ -98,14 +79,14 @@ public:
 	friend std::ostream& operator<< (std::ostream &out, const GameEngine &ge);
 	~GameEngine() override;
 	void build();
-	void startupPhase();
+	void startupPhase(Command *c, vector<Command *> *commands);
     void distributeTerritories();
-    void mainGameLoop();
+    void mainGameLoop(CommandProcessor *cp);
     void randomizePlayOrder();
     void initializeDeck();
     void initializeStrategies();
     void setState(const std::string& s);
-    void initial_start();
+    void initial_start(CommandProcessor *cp);
     void testPhase();
 
     void play();

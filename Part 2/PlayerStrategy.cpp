@@ -10,7 +10,7 @@ void PlayerStrategy::addDeck(Deck *d) {
 void PlayerStrategy::addPlayers(vector<Player *> *p) {
     players = p;
 }
-
+//Returns a player that isn't the same player inputted
 Player *PlayerStrategy::generateNegotiate(Player *p) {
     for (Player *other : *players) {
         if (other != p) {
@@ -26,6 +26,7 @@ PlayerStrategy::~PlayerStrategy() {
 
 HumanPlayerStrategy::HumanPlayerStrategy() = default;
 
+//Adds order to orderList, returns true if successful
 bool HumanPlayerStrategy::issueOrder(Player *player, order *o) {
         if (dynamic_cast<Negotiate *>(o)) {
             auto *negotiate  = dynamic_cast<Negotiate *>(o);
@@ -40,6 +41,7 @@ bool HumanPlayerStrategy::issueOrder(Player *player, order *o) {
         }
         return true;
 }
+//Gets input from the console to issue orders
 void HumanPlayerStrategy::issueOrder(Player *p) {
     bool issueAgain;
     Player *player = p;
@@ -151,6 +153,7 @@ Territory *HumanPlayerStrategy::toMove(Player *p) {
     }
     return nullptr;
 }
+//Gets input from the console to generate
 Player *HumanPlayerStrategy::generateNegotiate(Player *p) {
     cout << "Which of these players would you like to negotiate with?" << endl;
         int i = 1;
@@ -316,6 +319,7 @@ void HumanPlayerStrategy::displayEnemyBorders(Territory *t, Player *p) {
         }
     }
 }
+//Displays all borders of a territory
 void HumanPlayerStrategy::displayBorders(Territory *t, Player *p) {
     if (t->getEdgeCount() == 0) {
         cout << "   NONE" << endl;
@@ -489,7 +493,7 @@ vector<Territory *> *BenevolentPlayerStrategy::toDefend(Player *p, order *type) 
     return out;
 
 }
-
+//Adds order to orderlist and returns true unless it is a BOMB order
 bool BenevolentPlayerStrategy::issueOrder(Player *p, order *o) {
     if (auto *negotiate  = dynamic_cast<Negotiate *>(o)) {
         Player *other = generateNegotiate(p);
@@ -505,7 +509,7 @@ bool BenevolentPlayerStrategy::issueOrder(Player *p, order *o) {
     }
     return true;
 }
-
+//Issues orders to deploy and move troops to a player's weakest territories
 void BenevolentPlayerStrategy::issueOrder(Player *p) {
     vector<Territory *> *weakest = toDefend(p, new Deploy);
     int armies = p->getArmies();
@@ -553,7 +557,7 @@ vector<Territory *> *CheaterPlayerStrategy::toAttack(Player *p, order *type) {
     }
     return out;
 }
-
+//Returns all territories owned by a player
 vector<Territory *> *CheaterPlayerStrategy::toDefend(Player *p, order *type) {
     auto *out = new vector<Territory *>();
     for (Territory *t : *p->getTerritories()) {
@@ -580,7 +584,11 @@ bool CheaterPlayerStrategy::issueOrder(Player *p, order *o) {
 void CheaterPlayerStrategy::issueOrder(Player *p) {
     vector<Territory *> *targets = toAttack(p, new Advance());
     for (Territory *t : *targets) {
-        if (!t->getOwner() || t->getOwner() != p) {
+        Player *owner = t->getOwner();
+        if (owner && dynamic_cast<NeutralPlayerStrategy *>(owner->getPlayerStrategy())){
+            owner->setStrategy(new AggressivePlayerStrategy());
+        }
+        if (!owner || owner != p) {
             p->addTerritory(t);
             cout << *p << " has automatically conquered " << *t->getName() << "." << endl;
         }

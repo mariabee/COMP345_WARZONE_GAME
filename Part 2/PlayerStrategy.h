@@ -26,6 +26,11 @@ public :
 };
 
 class HumanPlayerStrategy : public PlayerStrategy {
+    static Player * generateNegotiate(Player *p);
+    static void displayToAdvance(Player *p);
+    static void displayToAttack(Player *p);
+    static void displayEnemyBorders(Territory *t, Player *p);
+    static void displayBorders(Territory *t);
 public :
     explicit HumanPlayerStrategy();
     HumanPlayerStrategy(const HumanPlayerStrategy &other);
@@ -36,11 +41,7 @@ public :
     static Territory * toMove(Player *p);
     vector<Territory *> * toDefend(Player *, order *type) override;
     vector<Territory *> * toAttack(Player *p, order *type) override;
-    static Player * generateNegotiate(Player *p);
-    static void displayToAdvance(Player *p);
-    static void displayToAttack(Player *p);
-    static void displayEnemyBorders(Territory *t, Player *p);
-    static void displayBorders(Territory *t, Player *p);
+
 
 private:
     friend ostream& operator<<(ostream&, const HumanPlayerStrategy&);

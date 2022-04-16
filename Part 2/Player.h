@@ -23,7 +23,7 @@ class Player {
         vector<Player *> *cannotAttack;
 	public:
         Player();
-        Player(std::string);
+        explicit Player(std::string);
 		Player &operator=(const Player &p);
 		Player(Player &p);
 		friend std::ostream& operator<< (std::ostream &out, const Player &p);

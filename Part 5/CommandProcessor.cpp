@@ -1,10 +1,62 @@
 
 
-#include "CommandProcessor.h" 
+#include "CommandProcessor.h"
+#include "GameEngine.h"
 #include<iostream>
 #include<fstream>
+#include <utility>
 
 using namespace std;
+
+// Assignment operator overload for Command
+Command &Command::operator=(const Command &c) {
+    if (this == &c) return *this;
+    delete command;
+    delete effect;
+
+    command = new std::string(*c.command);
+    effect = new std::string(*c.effect);
+    return *this;
+}
+
+// Copy constructor for Command
+Command::Command(const Command &c) {
+    command = new std::string(*c.command);
+    effect = new std::string(*c.effect);
+}
+
+// Stream insertion operator overload for Command
+std::ostream &operator<<(std::ostream &out, const Command &c) {
+    out << *c.command;
+    return out;
+}
+
+void Command::saveEffect(std::string* e) {
+    effect = e;
+    notify();
+}
+
+std::string Command::stringToLog() {
+    return "COMMAND::\"" + *effect + "\"";
+}
+
+// Destructor for Command
+Command::~Command() {
+    delete effect;
+    delete command;
+}
+
+// Constructor for Command that takes a string
+Command::Command(std::string c) {
+    command = new std::string(std::move(c));
+    effect = new std::string("");
+}
+
+// Function that returns a boolean corresponding to whether a given string matches the command
+bool Command::matches(const std::string& s) const {
+    return *command == s;
+}
+
 
  //__________________________________
  // CommandProcessor
@@ -12,151 +64,179 @@ using namespace std;
 
 //CONSTRUCTOR
 CommandProcessor::CommandProcessor(){
-
+    lastCmd = nullptr;
+    commandList = new vector<Command *>();
+    inputType = nullptr;
 }
 
-CommandProcessor::CommandProcessor(GameEngine* ge){
-    this->gameEng = ge; 
-    lastCmd = new Command("");
-}
-
-CommandProcessor::CommandProcessor(GameEngine* ge, const vector<Command *> & lst){
-    this->gameEng = ge; 
-    commandList = lst;
-    lastCmd = new Command("");
+CommandProcessor::CommandProcessor(CommandProcessor *c){
+    delete commandList;
+    delete lastCmd;
+    delete inputType;
+    commandList = c->commandList;
+    lastCmd = c->lastCmd;
+    inputType = c->inputType;
 }
 
 //DESTRUCTOR
 CommandProcessor::~CommandProcessor(){
-    commandList.clear();
-    this->gameEng = nullptr; 
+    delete lastCmd;
+    for (Command *c : *commandList) {
+        delete c;
+    }
+    commandList->clear();
 }
     
-bool CommandProcessor::validate(Command cmd, GameEngine* ge){
+bool CommandProcessor::validate(const Command& cmd, GameEngine* ge){
     string* state = ge->currentState->name;
     string command = *cmd.command;
-    if (command.compare("loadmap") == 0) {
-        if (state->compare("start") == 0 || state->compare("maploaded") == 0)
+    if (command == "loadmap") {
+        if (*state == "start" || *state == "maploaded")
             return true;
     }
-    if (command.compare("validatemap") == 0) {
-        if (state->compare("maploaded") == 0)
+    if (command == "validatemap") {
+        if (*state == "map_loaded")
             return true;
     }
-    if (command.compare("addplayer") == 0) {
-        if (state->compare("mapvalidated") == 0 || state->compare("playersadded") == 0)
+    if (command == "addplayer") {
+        if (*state == "map_validated" || *state == "players_added")
             return true;
     }
-    if (command.compare("gamestart") == 0) {
-        if (state->compare("playersadded") == 0)
+    if (command == "gamestart") {
+        if (*state == "players_added")
             return true;
     }
-    if (command.compare("replay") == 0) {
-        if (state->compare("win") == 0)
+    if (command == "replay") {
+        if (*state == "win")
             return true;
     }
-    if (command.compare("quit") == 0) {
-        if (state->compare("win") == 0)
+    if (command == "quit") {
+        if (*state == "win")
             return true;
     }
     return false;
 } 
 
 void CommandProcessor::getCommand(){
-    std::cout << "Enter -console if you want to enter commands on the console and -file for commands from a file.\n";
-    string input; 
-    std::cin >> input;
-    if (input.compare("-console") == 0){
-        std::cout << "Will read input from console.\n";
+    if (!inputType) {
+        std::cout << "Enter -console if you want to enter commands on the console and -file to read commands from a file.\n";
+        string input;
+        std::cin >> input;
+        inputType = new string(input);
     }
-    else {
-        std::cout << "Please enter your file name: \n";
-        cin >> input;
-        FileCommandProcessorAdapter fcpa = FileCommandProcessorAdapter(new FileLineReader(input));
-        fcpa.readFileLine(input); 
+    if (*inputType == "-console"){
+        readCommand();
+    }
+    else if (*inputType == "-file") {
+        auto *adapter = new FileCommandProcessorAdapter();
+        adapter->getCommand();
+        setCommandList(adapter->getCommandList());
     }
 }
-    
-void CommandProcessor::readCommand(string cmd){
-    this->lastCmd = new Command(cmd);
-    saveCommand(); 
+
+void CommandProcessor::readCommand(){
+    std::cout << "Will read input from console.\n";
+    string input;
+    std::cout << "Enter the commands, or enter 0 to run them." << endl;
+    while (true) {
+        cin >> input;
+        if (input == "0") {
+            return;
+        }
+        this->lastCmd = new Command(input);
+        saveCommand();
+        if (input == "loadmap") {
+            cout << "Command entered to load map. Please enter the filename :" << endl;
+        }
+        if (input == "addplayer") {
+            cout << "Command entered to add player. Please enter the number of players, followed by their names: " << endl;
+        }
+        if (input == "quit" || input == "exit") {
+            return;
+        }
+    }
 }
     
 void CommandProcessor::saveCommand(){
-    commandList.push_back(this->lastCmd);
+    commandList->push_back(lastCmd);
 }
 
 void CommandProcessor::setLastCommand(Command* c) {
-    this->lastCmd = c;
+    lastCmd = c;
 }
- 
- //__________________________________
+
+void CommandProcessor::setCommandList(vector<Command *> *c) {
+    resetCommandList();
+    for (Command *c_ : *c) {
+        commandList->push_back(c_);
+    }
+}
+
+vector<Command *> *CommandProcessor::getCommandList() {
+    return commandList;
+}
+
+void CommandProcessor::resetCommandList() {
+    for (Command *c : *commandList) {
+        delete c;
+    }
+    commandList->clear();
+}
+
+
+//__________________________________
  // FileCommandProcessorAdapter
  //__________________________________
 
 //CONSTRUCTOR
-FileCommandProcessorAdapter::FileCommandProcessorAdapter(CommandProcessor *cp){
-    this->commandProcessor = cp;
-    this->fileLineReader = NULL;
+FileCommandProcessorAdapter::FileCommandProcessorAdapter(){
+    this->fileLineReader = new FileLineReader();
 }
-
-FileCommandProcessorAdapter::FileCommandProcessorAdapter(FileLineReader *flr){
-    this->commandProcessor = NULL;
-    this->fileLineReader = flr;
-} 
-
+FileCommandProcessorAdapter::FileCommandProcessorAdapter(FileCommandProcessorAdapter *f){
+    delete fileLineReader;
+    this->fileLineReader = f->getFileLineReader();
+}
 //DESTRUCTOR
 FileCommandProcessorAdapter::~FileCommandProcessorAdapter(){
-    delete commandProcessor;
     delete fileLineReader;
-    this->commandProcessor = nullptr;
     this->fileLineReader = nullptr; 
 }
 
-void FileCommandProcessorAdapter::readCommand(string cmd){
-    commandProcessor->readCommand(cmd);
+void FileCommandProcessorAdapter::getCommand(){
+    string input;
+    std::cout << "Please enter your file path: \n";
+    cin >> input;
+    vector<Command *> *commands = fileLineReader->getFileCommands(input);
+    setCommandList(commands);
 }
 
-void FileCommandProcessorAdapter::readFileLine(string fileName){
-    readFileLine(fileName);
+FileLineReader *FileCommandProcessorAdapter::getFileLineReader() {
+    return fileLineReader;
 }
-    
- //__________________________________
+
+//__________________________________
  // FileLineReader
  //__________________________________
- 
 
-//CONSTRUCTOR
-FileLineReader::FileLineReader(){
-    this->textfile = "";
-}
-    
-//DESTRUCTOR
-FileLineReader::~FileLineReader(){
-    this->textfile = nullptr;
-}
-
-void FileLineReader::readLineFromFile(string fileName,GameEngine* ge){
-    fstream file;
-    file.open(fileName,ios::out);
-    
-    if (file.is_open()){  
-        string cmd;
-        while(getline(file, cmd)){ 
-            if (validate(Command(cmd),ge)){
-                this->setLastCommand(new Command(cmd));
-                this->saveCommand();
-            }
-            else {
-                this->setLastCommand(new Command("Invalid Command."));
-                this->saveCommand();
-            }
-        }
-        file.close(); 
+vector<Command *> * FileLineReader::getFileCommands(const string& path){
+    string dir {"../Debug/"};
+    ifstream input(dir + path);
+    if (!input) {
+        cout << "Invalid file path." << endl;
+        return nullptr;
     }
+    auto *commands = new vector<Command *>();
+    cout << "Reading file..." << endl;
+
+    string cmd;
+    while(getline(input, cmd)){
+        auto *command = new Command(cmd);
+        commands->push_back(command);
+    }
+    input.close();
+
+    return commands;
 }
 
-FileLineReader::FileLineReader(string name) {
-    this->textfile = name;
-}
+FileLineReader::FileLineReader() = default;
 

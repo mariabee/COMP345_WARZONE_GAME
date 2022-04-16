@@ -600,3 +600,158 @@ void GameEngine::testPhase() {
     currentState = states[5];
     mainGameLoop();
 }
+
+
+std::string TournamentModeHandler::stringToLog() {
+
+    return "Test";
+}
+TournamentModeHandler& TournamentModeHandler::operator=(const TournamentModeHandler &t) {
+
+}
+TournamentModeHandler::TournamentModeHandler(const TournamentModeHandler &t) {
+
+}
+
+TournamentModeHandler::TournamentModeHandler() {
+
+}
+std::ostream& operator<< (std::ostream &out, const TournamentModeHandler &t) {
+    out << "Test";
+    return out;
+
+}
+TournamentModeHandler::~TournamentModeHandler() {
+
+}
+
+bool isNum(std::string* s) {
+    for(auto c:*s)
+        if (!isdigit(c)) return false;
+    return true;
+}
+
+std::string** split(std::string s, char del, int& outCt) {
+    std::string** out;
+    std::string cur;
+
+    int ct = 1;
+    for(auto c:s) {
+        if (c == del)
+            ct++;
+    }
+    outCt = ct;
+    out = new std::string*[ct];
+    // cout << ct;
+
+
+    int i = 0;
+    for(auto c:s) {
+        if (c == del) {
+            // cout << cur << endl;
+            out[i++] = new std::string(cur);
+            cur = "";
+        } else
+            cur += c;
+    }
+    if (cur.size() > 0) {
+        // cout << cur << endl;
+        out[i++] = new std::string(cur);
+        cur = "";
+    }
+    
+    return out;
+}
+
+// std::string** getList(std::string list) {
+//     int words = 0;
+//     std::string** words = split(list, ',', words);
+//     if (wor)
+// }
+
+TournamentModeHandler* TournamentModeHandler::fromString(std::string s) {
+    // TournamentModeHandler* out = new T
+
+    // TODO: make sure memory is clean before returning nullptr
+
+    int wordCt;
+    std::string** words = split(s, ' ', wordCt);
+    cout << wordCt;
+
+    // for(int i = 0; i < wordCt; i++) {
+    //     if ()
+    // }
+    if (wordCt != 9) return nullptr;
+    if (*words[0] != "tournament") return nullptr;
+    if (*words[1] != "-M") return nullptr;
+    // if (isNum(words[2])) return nullptr;
+    // int subWords = -1;
+    // if (subWords == 0)
+    if ((*words[2]).size() == 0) return nullptr;
+    int m = 0;
+    std::string** mapNames = split(*words[2], ',', m);
+    Map** oMaps = new Map*[m];
+    for(int i =0;i<m;i++) {
+        // TODO: if file doesn't exist return nullptr
+        // Parse, load and validate map
+        oMaps[i] = new Map(MapLoader::loadMap(*mapNames[i]));
+        if (!oMaps[i]->validate()) return nullptr;
+        delete mapNames[i];
+    }
+    delete mapNames;
+
+    if (*words[3] != "-P") return nullptr;
+
+    if ((*words[4]).size() == 0) return nullptr;
+    int p = 0;
+    std::string** playerNames = split(*words[4], ',', m);
+    PlayerStrategy** oPS = new PlayerStrategy*[m];
+    for(int i =0;i<p;i++) {
+        // TODO: if file doesn't exist return nullptr
+        // Parse, load and validate player
+        // oPS[i] = ;
+        delete playerNames[i];
+    }
+    delete playerNames;
+
+    if (*words[5] != "-G") return nullptr;
+    if (!isNum(words[6])) return nullptr;
+    if (*words[7] != "-D") return nullptr;
+    if (!isNum(words[8])) return nullptr;
+
+
+
+    // if (words[])
+        
+        // cout << *words[i];
+    
+
+    return new TournamentModeHandler(oMaps, m, oPS, p, stoi(*words[6]), stoi(*words[8]));
+}
+
+TournamentModeHandler::TournamentModeHandler(Map** m, int mapCt, PlayerStrategy** ps, int stratCt, int nGames, int mTurns) {
+    maps = m;
+    numMaps = mapCt;
+    playerStrategies = ps;
+    numStrats = stratCt;
+    numGames = nGames;
+    maxTurns = mTurns;
+}
+
+void TournamentModeHandler::run(GameEngine* ge) {
+    std::string** winners = new std::string*[numGames];
+
+    for(int i = 0; i < numGames; i++) {
+        winners[i] = new std::string[numMaps];
+        for(int j = 0; j < numMaps; j++) {
+            winners[i][j] = this->playGame(ge, maps[j], playerStrategies, numStrats);
+        }
+    }
+
+
+}
+
+
+std::string TournamentModeHandler::playGame(GameEngine* ge, Map* map, PlayerStrategy** players, int p) {
+
+}

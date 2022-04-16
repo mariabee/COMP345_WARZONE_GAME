@@ -113,4 +113,31 @@ public:
     void checkWinner();
 };
 
+class TournamentModeHandler: public Subject, public ILoggable {
+
+	private:
+		Map** maps = nullptr;
+		int numMaps;
+		PlayerStrategy** playerStrategies = nullptr;
+		int numStrats;
+		int numGames;
+		int maxTurns;
+
+	public:
+
+	std::string stringToLog() override;
+	TournamentModeHandler& operator=(const TournamentModeHandler &t);
+	TournamentModeHandler(const TournamentModeHandler &t);
+	TournamentModeHandler();
+	friend std::ostream& operator<< (std::ostream &out, const TournamentModeHandler &t);
+	~TournamentModeHandler() override;
+
+	static TournamentModeHandler* fromString(std::string s);
+
+	TournamentModeHandler(Map** m, int mapCt, PlayerStrategy** ps, int stratCt, int numGames, int maxTurns);
+
+	void run(GameEngine* ge);
+	std::string playGame(GameEngine* ge, Map* map, PlayerStrategy** players, int p);
+};
+
 #endif

@@ -392,7 +392,7 @@ void AggressivePlayerStrategy::issueOrder(Player *player) {
                 border = strongest->getEdges()[1];
             }
         }
-        auto *a = new Advance(player, strongest, border, strongest->getNumberOfArmies() + armies, deck);
+        auto *a = new Advance(player, strongest, border, (strongest->getNumberOfArmies() + armies), deck);
         player->getOrdersList()->add(a);
         previous = strongest;
         strongest = border;
@@ -451,7 +451,7 @@ vector<Territory *> *AggressivePlayerStrategy::toDefend(Player *p, order *type) 
     Territory *past_strong = nullptr;
     int max_armies = 0;
     for (Territory *t : *p->getTerritories()) {
-        if (t->getNumberOfArmies() > max_armies) {
+        if (t->getNumberOfArmies() > max_armies && t->getEdgeCount() > 0) {
             max_armies = t->getNumberOfArmies();
             past_strong = strongest;
             strongest = t;

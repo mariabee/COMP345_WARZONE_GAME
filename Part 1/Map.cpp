@@ -371,9 +371,10 @@ void Map::checkContinentOwners() {
                 }
             }
             if (owned) {
+                int bonus = continents[i].getBonus();
                 cout << *past_p << " currently owns all of " << *continents[i].getName();
-                cout << ", and will receive " << continents[i].getBonus() << " extra armies!" << endl;
-                past_p->addContinent(&continents[i]);
+                cout << ", and will receive " << bonus << " extra armies!" << endl;
+                past_p->setArmies(past_p->getArmies() + bonus);
             }
         }
     }

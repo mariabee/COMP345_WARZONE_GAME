@@ -18,7 +18,6 @@ class Player {
         int armies;
         bool cardWon;
         vector<Territory *> *territories;
-        vector<Continent *> *continents;
         vector<Territory *> *toMove;
         vector<Player *> *cannotAttack;
 	public:
@@ -34,7 +33,6 @@ class Player {
         vector<Territory*> * toAttack(order *type);
         //Accessors
         vector<Territory *> * getTerritories();
-        vector<Continent *> * getContinents();
         OrdersList *getOrdersList();
         Hand* getHand();
         int getArmies() const;
@@ -42,12 +40,11 @@ class Player {
         bool isCardWon() const;
         vector<Player *> *getCannotAttack() const;
         PlayerStrategy * getPlayerStrategy();
+        string * setName(string *n);
 
     //Mutators
         void addTerritory(Territory *t);
         bool removeTerritory(Territory *t);
-        void addContinent(Continent *c);
-        bool removeContinent(Continent *c);
         void setArmies(int armies);
         void setTerritories(vector<Territory *> *t);
         void setCannotAttack(vector<Player *> *cannotAttack);

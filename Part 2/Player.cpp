@@ -209,7 +209,6 @@ void Player::clearCannotAttack() {
 }
 
 void Player::setStrategy(PlayerStrategy *ps) {
-    delete strategy;
     strategy = ps;
 }
 

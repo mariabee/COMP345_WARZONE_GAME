@@ -20,9 +20,7 @@ Player *PlayerStrategy::generateNegotiate(Player *p) {
     return nullptr;
 }
 
-PlayerStrategy::~PlayerStrategy() {
-    players->clear();
-}
+PlayerStrategy::~PlayerStrategy() = default;
 ///////////////////////////////HUMAN PLAYER/////////////////////////
 HumanPlayerStrategy::HumanPlayerStrategy() = default;
 HumanPlayerStrategy::~HumanPlayerStrategy() = default;

@@ -23,6 +23,7 @@ class Player {
 	public:
         Player();
         explicit Player(std::string);
+        Player(std::string, PlayerStrategy *ps);
 		Player &operator=(const Player &p);
 		Player(Player &p);
 		friend std::ostream& operator<< (std::ostream &out, const Player &p);

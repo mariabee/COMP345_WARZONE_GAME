@@ -1,10 +1,18 @@
 #include "Player.h"
 #include <map>
-//Default constructor
+//Default constructor, sets strategy to neutral.
 Player::Player() {
-
+    name = new string("UNKNOWN");
+    orderList = new OrdersList();
+    hand = new Hand();
+    territories = new vector<Territory *>();
+    toMove = new vector<Territory *>();
+    armies = 3;
+    cardWon= false;
+    cannotAttack = new vector<Player *>();
+    strategy = new NeutralPlayerStrategy();
 }
-// Constructor for Player
+// Constructor for Player, default strategy is neutral.
 Player::Player(std::string n)
 {
 	name = new string(move(n));
@@ -15,9 +23,20 @@ Player::Player(std::string n)
     armies = 3;
     cardWon= false;
     cannotAttack = new vector<Player *>();
-    strategy = nullptr;
+    strategy = new NeutralPlayerStrategy();
 }
-
+// Constructor for Player
+Player::Player(std::string s, PlayerStrategy *ps) {
+    name = new string(move(s));
+    orderList = new OrdersList();
+    hand = new Hand();
+    territories = new vector<Territory *>();
+    toMove = new vector<Territory *>();
+    armies = 3;
+    cardWon= false;
+    cannotAttack = new vector<Player *>();
+    strategy = ps;
+}
 // Assignment operator overload for Player
 Player &Player::operator=(const Player &p)
 {
@@ -64,7 +83,6 @@ Player::Player(Player &p) {
         cannotAttack->push_back(p);
     }
 }
-
 // Stream insertion operator overload for Player
 std::ostream &operator<<(std::ostream &out, const Player &p)
 {
@@ -211,6 +229,8 @@ string *Player::setName(string *n) {
     delete name;
     this->name = n;
 }
+
+
 
 
 

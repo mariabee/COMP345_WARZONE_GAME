@@ -439,9 +439,6 @@ void GameEngine::reinforcementPhase() {
         //Calculate reinforcement pool and give it to the player.
         n = p->getArmies();
         n += p->getTerritories()->size() / 3;
-        for (Continent *c: *p->getContinents()) {
-            n += c->getBonus();
-        }
         if (n < 3) {
             n = 3;
         }
@@ -548,16 +545,15 @@ void GameEngine::testPhase() {
     auto *neutral_player = new Player("NEUTRAL");
     neutral_player->setStrategy(strategies[3]);
     players.push_back(neutral_player);
-    /*auto *benevolent_player = new Player("BENEVOLENT");
-    benevolent_player->setStrategy(strategies[2]);
-    players.push_back(benevolent_player);
-    auto *aggressive_player = new Player("AGGRESSIVE");
+    auto *a_player = new Player("AGGRESSIVE1");
+    a_player->setStrategy(strategies[1]);
+    players.push_back(a_player);
+    auto *aggressive_player = new Player("AGGRESSIVE2");
     aggressive_player->setStrategy(strategies[1]);
     players.push_back(aggressive_player);
-    auto *human_player = new Player("AGGRESSIVE" + to_string(2));
-    human_player->setStrategy(strategies[1]);
-    players.push_back(human_player);*/
-
+    //auto *human_player = new Player("AGGRESSIVE" + to_string(2));
+    //human_player->setStrategy(strategies[1]);
+    //players.push_back(human_player);*/
     distributeTerritories();
     randomizePlayOrder();
     std::cout << "The order of turn is as follow: ";
@@ -734,5 +730,4 @@ void TournamentModeHandler::run(GameEngine* ge) {
 
 
 std::string TournamentModeHandler::playGame(GameEngine* ge, Map* map, PlayerStrategy** players, int p) {
-
 }

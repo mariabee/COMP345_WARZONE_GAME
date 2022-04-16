@@ -220,32 +220,28 @@ void Advance::execute() {
         else{
             Player *defender = target->getOwner();
             string name;
-            if (!defender) { name = "NEUTRAL"; }
-            else {name = *defender->getName();}
 
             cout << "An attack has been initiated by " << *get_player() << " against " << name << " from " << *start->getName() << " onto " << *target->getName() << " with "
             << armies << " armies attacking, and " << target->getNumberOfArmies() << " armies defending." << endl;
-            if (dynamic_cast<NeutralPlayerStrategy *>(defender->getPlayerStrategy())) {
+            if (defender && dynamic_cast<NeutralPlayerStrategy *>(defender->getPlayerStrategy())) {
                 defender->setStrategy(new AggressivePlayerStrategy());
                 cout << *defender << " is changing strategy from neutral to aggressive play style." << endl;
+                defender->setName(new string("FORMER-NEUTRAL"));
             }
-            if (!dynamic_cast<CheaterPlayerStrategy *>(get_player()->getPlayerStrategy())) {
-                float random;
-                srand(time(nullptr));
-                while (target->getNumberOfArmies() > 0 && armies > 0) {
-                    random = ((float) rand() / (float) RAND_MAX);
-                    if (random > 0.4) {
-                        target->setNumberOfArmies(target->getNumberOfArmies() - 1);
-                    }
-                    if (random > 0.3) {
-                        start->setNumberOfArmies(start->getNumberOfArmies() - 1);
-                        armies--;
-                    }
+
+            float random;
+            srand(time(nullptr));
+            while (target->getNumberOfArmies() > 0 && armies > 0) {
+                random = ((float) rand() / (float) RAND_MAX);
+                if (random > 0.4) {
+                    target->setNumberOfArmies(target->getNumberOfArmies() - 1);
+                }
+                if (random > 0.3) {
+                    start->setNumberOfArmies(start->getNumberOfArmies() - 1);
+                    armies--;
                 }
             }
-            else {
-                target->setNumberOfArmies(0);
-            }
+
             if(target->getNumberOfArmies()==0){
                 get_player()->addTerritory(target);
                 string s = *target->getName() + " has been conquered by " + *get_player()->getName() + ". ";
@@ -316,7 +312,6 @@ bool Advance::validate() {
     }
 
     if (!get_player()->getCannotAttack()->empty()) {
-        cout << *target << endl;
         Player *owner = target->getOwner();
         for (auto & i : *get_player()->getCannotAttack()) {
             if (owner && owner == i) {
@@ -479,7 +474,7 @@ void Blockade::execute() {
         territory->setNumberOfArmies(territory->getNumberOfArmies()*2);
         Player *owner = territory->getOwner();
         if (owner) {
-            territory->getOwner()->removeTerritory(territory);
+            owner->removeTerritory(territory);
         }
         set_order_effect(*territory->getName() + "'s troops have DOUBLED. The territory is now NEUTRAL. ");
     }

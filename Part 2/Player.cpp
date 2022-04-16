@@ -11,7 +11,6 @@ Player::Player(std::string n)
 	orderList = new OrdersList();
 	hand = new Hand();
     territories = new vector<Territory *>();
-    continents = new vector<Continent *>();
     toMove = new vector<Territory *>();
     armies = 3;
     cardWon= false;
@@ -28,21 +27,16 @@ Player &Player::operator=(const Player &p)
     delete strategy;
 	delete hand;
 	delete[] territories;
-    delete[] continents;
     delete[] toMove;
 	delete orderList;
 
 	name = new string(*p.name);
 	hand = new Hand(*p.hand);
 	territories = new vector<Territory *>();
-    continents = new vector<Continent *>();
 	for (Territory *t : *p.territories )
 	{
 		territories->push_back(t);
 	}
-    for (Continent *c : *p.continents) {
-        continents->push_back(c);
-    }
 	orderList = new OrdersList(*p.orderList);
     cannotAttack = new vector<Player *>();
     for (Player* p: *p.cannotAttack)
@@ -58,7 +52,6 @@ Player::Player(Player &p) {
     hand = new Hand(*p.hand);
     armies = p.getArmies();
     territories = new vector<Territory *>();
-    continents = new vector<Continent *>();
     toMove = new vector<Territory *>();
     for (Territory *t: *p.getTerritories()) {
         territories->push_back(t);
@@ -88,7 +81,6 @@ Player::~Player()
 
 	// Delete only the array of pointers since the territories should be deleted from the map not the player
 	delete[] territories;
-    delete[] continents;
     delete[] toMove;
     delete[] cannotAttack;
 
@@ -153,12 +145,6 @@ bool Player::removeTerritory(Territory *toRemove) {
             t->changeOwner(nullptr);
             //erase the territory in Player
             territories->erase(territories->begin() + i);
-            //Check if the continent of the territory was owned by Player
-            Continent *c = t->getContinent();
-            //if so, remove continent
-            if (c->getOwner() == this) {
-                removeContinent(c);
-            }
             return true;
         }
     }
@@ -166,33 +152,11 @@ bool Player::removeTerritory(Territory *toRemove) {
     return false;
 
 }
-void Player::addContinent(Continent *c) {
-    //add continent to player, and player to continent
-    continents->push_back(c);
-    c->setOwner(this);
-}
-bool Player::removeContinent(Continent *c) {
-    //find the continent in the player's vector
-    for (int i = 0; i < continents->size(); i++) {
-        if (continents->at(i)->getId() == c->getId()) {
-            //remove player from continent
-            c->setOwner(nullptr);
-            //remove continent from player
-            continents->erase(continents->begin() + i);
-            return true;
-        }
-    }
-    //return false if player did not own continent
-    return false;
-}
 
 vector<Territory *> * Player::getTerritories() {
     return territories;
 }
 
-vector<Continent *> * Player::getContinents() {
-    return continents;
-}
 PlayerStrategy *Player::getPlayerStrategy() {
     return strategy;
 }
@@ -241,6 +205,11 @@ void Player::issueOrder() {
     if (!territories->empty()) {
         strategy->issueOrder(this);
     }
+}
+
+string *Player::setName(string *n) {
+    delete name;
+    this->name = n;
 }
 
 

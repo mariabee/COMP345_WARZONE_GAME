@@ -1,6 +1,6 @@
 #include "Cards.h"
 #include<iostream>
-
+#include "Player.h"
 using namespace std;
 // ___________________
 // Class Card methods
@@ -181,13 +181,13 @@ Deck::Deck(int deckSize)
 {
     initialDeckSize = deckSize;
     nbCardInDeck = deckSize;
-    while (nbCardInDeck < 0){
+    if (nbCardInDeck < 0) {
         cout << "Not a valid deck size; The deck size will be initiated with 55 cards.\n";
         initialDeckSize = 55;
         nbCardInDeck = 55;
     }
-    cardsInDeck = new class Card*[initialDeckSize];
-    initialDeck = new class Card[initialDeckSize];
+    cardsInDeck = new Card*[initialDeckSize];
+    initialDeck = new Card[initialDeckSize];
 
     this->initialize();
 
@@ -265,16 +265,15 @@ void Deck::addCardBackToDeck(Card *card) {
 }
 
 //Draw card from the deck
-Card * Deck::draw()
-{
-    class Card* pickedCard ;
-
-    while( nbCardInDeck > 0 ){
+Card* Deck::draw() {
+    Card *pickedCard;
+    int n = getCurrentSize();
+    while(n > 0 ){
         int temp = rand() % initialDeckSize;
         pickedCard = cardsInDeck[temp];
         if (pickedCard != nullptr) {
             cardsInDeck[temp] = nullptr;
-            this->nbCardInDeck--;
+            nbCardInDeck = n - 1;
             cout << "Player just received this NEW CARD: " << *pickedCard;
             return pickedCard;
         }
@@ -322,6 +321,10 @@ Hand& Hand::operator = (const Hand & hand){
 
 // Draw a card from the deck (add a card in hand)
 void Hand::drawFromDeck(Deck* deck){
+    if (!deck) {
+        cout << "DECK IS NULL" << endl;
+        return;
+    }
     if (nbCardsInHand == maxCard){
         cout << "Hand is full. Player currently has " << nbCardsInHand << " cards.\n";
     }
@@ -329,7 +332,7 @@ void Hand::drawFromDeck(Deck* deck){
         for (int i = 0 ; i < maxCard; i++ ){
             if (cardsInHand[i] == nullptr){
                 cardsInHand[i] = deck->draw();
-                nbCardsInHand++;
+                nbCardsInHand = nbCardsInHand + 1;
                 break;
             }
         }

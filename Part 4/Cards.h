@@ -6,8 +6,7 @@
 #include <stdlib.h>
 #include <time.h>
 
-#include "../Part 2/Player.h"
-
+class Player;
 class Deck;
 class Hand;
 enum cardType {BOMB, REINFORCEMENT, BLOCKADE, AIRLIFT, DIPLOMACY }; // Type possible for a give card

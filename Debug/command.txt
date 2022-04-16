@@ -1,5 +1,10 @@
 loadmap
+artic.map
 validatemap
 addplayer
+3
+NameA
+NameB
+NameC
 gamestart
-quit
+end

@@ -29,7 +29,8 @@ class HumanPlayerStrategy : public PlayerStrategy {
 public :
     explicit HumanPlayerStrategy();
     HumanPlayerStrategy(const HumanPlayerStrategy &other);
-    HumanPlayerStrategy& operator=(const OrdersList& other);
+    HumanPlayerStrategy& operator=(const HumanPlayerStrategy& other);
+    virtual ~HumanPlayerStrategy();
     bool issueOrder(Player *p, order *o) override;
     void issueOrder(Player *p) override;
     static Territory * toMove(Player *p);
@@ -50,6 +51,7 @@ public :
     explicit AggressivePlayerStrategy();
     AggressivePlayerStrategy(const AggressivePlayerStrategy &other);
     AggressivePlayerStrategy& operator=(const AggressivePlayerStrategy& other);
+    virtual ~AggressivePlayerStrategy();
     bool issueOrder(Player *p, order *o) override;
     void issueOrder(Player *p) override;
     vector<Territory *> * toDefend(Player *p, order *type) override;
@@ -62,6 +64,7 @@ public :
     explicit BenevolentPlayerStrategy();
     BenevolentPlayerStrategy(const BenevolentPlayerStrategy &other);
     BenevolentPlayerStrategy& operator=(const BenevolentPlayerStrategy& other);
+    virtual ~BenevolentPlayerStrategy();
     bool issueOrder(Player *p, order *o) override;
     void issueOrder(Player *p) override;
     vector<Territory *> * toDefend(Player *p, order *type) override;
@@ -74,6 +77,7 @@ public :
     explicit NeutralPlayerStrategy();
     NeutralPlayerStrategy(const NeutralPlayerStrategy &other);
     NeutralPlayerStrategy& operator=(const NeutralPlayerStrategy& other);
+    virtual ~NeutralPlayerStrategy();
     bool issueOrder(Player *p, order *o) override;
     void issueOrder(Player *p) override;
     vector<Territory *> * toDefend(Player *p, order *type) override;
@@ -86,11 +90,11 @@ public :
     explicit CheaterPlayerStrategy();
     CheaterPlayerStrategy(const CheaterPlayerStrategy &other);
     CheaterPlayerStrategy& operator=(const CheaterPlayerStrategy& other);
+    virtual ~CheaterPlayerStrategy();
     bool issueOrder(Player *p, order *o) override;
     void issueOrder(Player *p) override;
     vector<Territory *> * toDefend(Player *p, order *type) override;
     vector<Territory *> * toAttack(Player *p, order *type) override;
-private:
     friend ostream& operator<<(ostream&, const CheaterPlayerStrategy&);
 };
 

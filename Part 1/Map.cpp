@@ -394,7 +394,7 @@ Map MapLoader::loadMap(const string &filename)  {
     ifstream input(filename);
     //If file is not found
     if (!input) {
-        cerr << "Error! Cannot find the file you're looking for!" << endl;
+        cerr << "Error! Cannot find the file you're looking for!: " << filename << endl;
         exit(0);
     }
     while (getline(input, *str)) {

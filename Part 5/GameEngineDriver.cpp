@@ -1,9 +1,14 @@
 #include "GameEngine.h"
 
 int main() {
-    auto *ge = new GameEngine();
-    ge->play();
+    TournamentModeHandler* t = TournamentModeHandler::fromString("tournament -M ../Debug/MapFiles/artic.map -P player,cheater -G 5 -D 5");
+    if (t != nullptr)
+        cout << *t;
+    else cout << "bad";
+    // t->run();
+    // GameEngine *ge = new GameEngine();
+    // ge->play();
+    // delete ge;
 
-    delete ge;
-    return 0;
+    // return 0;
 }

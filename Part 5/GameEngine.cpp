@@ -336,7 +336,14 @@ void GameEngine::startupPhase(Command *c, vector<Command *> *commands) {
     if (currentState == states[3]) {
         commands->erase(commands->begin());
         c = commands->front();
-        int num_of_players = std::stoi(*c->command);
+        int num_of_players;
+        try {
+            num_of_players = std::stoi(*c->command);
+        }
+        catch(std::invalid_argument& e){
+            c->saveEffect(new string("Invalid integer entered for number of players."));
+            return;
+        }
         if (num_of_players + players.size() > MAX_NUM_PLAYERS) {
             std::cout << "Max number of players reached, failed to add these players!" << std::endl;
             c->saveEffect(new string("Max number of players reached, failed to add these players!"));
@@ -401,12 +408,12 @@ void GameEngine::mainGameLoop(CommandProcessor *cp) {
     }
     string playOrEnd;
     vector<Command *> *commands = cp->getCommandList();
-
     State *previousState = currentState;
+    commands = cp->getCommandList();
+
     while (currentState == previousState) {
         if (commands->empty()) {
             cp->getCommand();
-            commands = cp->getCommandList();
         }
         Command *c = commands->front();
         setState(*c->command);
@@ -521,7 +528,9 @@ void GameEngine::checkWinner() {
             setState("win");
         }
         else if (p->getTerritories()->empty()) {
-            cout << *p->getName() << " has lost the game." << endl;
+            if (currentState != states[8]) {
+                cout << *p->getName() << " has lost the game." << endl;
+            }
             players.erase(players.begin() + i);
         }
         i++;

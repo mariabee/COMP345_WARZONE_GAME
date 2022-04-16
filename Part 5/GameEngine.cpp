@@ -532,6 +532,7 @@ void GameEngine::checkWinner() {
                 cout << *p->getName() << " has lost the game." << endl;
             }
             players.erase(players.begin() + i);
+            i--;
         }
         i++;
     }

@@ -2,9 +2,11 @@ loadmap
 artic.map
 validatemap
 addplayer
-3
-NameA
-NameB
-NameC
+5
+Maria
+Harry
+Therese
+Val
+Chris
 gamestart
-end
+play

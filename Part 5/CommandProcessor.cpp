@@ -118,42 +118,59 @@ bool CommandProcessor::validate(const Command& cmd, GameEngine* ge){
 } 
 
 void CommandProcessor::getCommand(){
-    if (!inputType) {
-        std::cout << "Enter -console if you want to enter commands on the console and -file to read commands from a file.\n";
-        string input;
-        std::cin >> input;
-        inputType = new string(input);
-    }
-    if (*inputType == "-console"){
-        readCommand();
-    }
-    else if (*inputType == "-file") {
-        auto *adapter = new FileCommandProcessorAdapter();
-        adapter->getCommand();
-        setCommandList(adapter->getCommandList());
+    while (true) {
+        if (!inputType) {
+            std::cout
+                    << "Enter -console if you want to enter commands on the console and -file to read commands from a file.\n";
+            string input;
+            std::cin >> input;
+            inputType = new string(input);
+        }
+        if (*inputType == "-console") {
+            readCommand();
+            return;
+        } else if (*inputType == "-file") {
+            auto *adapter = new FileCommandProcessorAdapter();
+            adapter->getCommand();
+            setCommandList(adapter->getCommandList());
+            return;
+        } else {
+            cout << "Invalid choice." << endl;
+            inputType = nullptr;
+        }
     }
 }
 
 void CommandProcessor::readCommand(){
-    std::cout << "Will read input from console.\n";
+    std::cout << "Reading input from console...\n";
     string input;
-    std::cout << "Enter the commands, or enter 0 to run them." << endl;
-    while (true) {
+    cin >> input;
+    if (input == "0") {
+        return;
+    }
+    this->lastCmd = new Command(input);
+    saveCommand();
+    if (input == "loadmap") {
+        cout << "Command entered to load map. Please enter the filename :" << endl;
         cin >> input;
-        if (input == "0") {
-            return;
-        }
         this->lastCmd = new Command(input);
         saveCommand();
-        if (input == "loadmap") {
-            cout << "Command entered to load map. Please enter the filename :" << endl;
+    }
+    if (input == "addplayer") {
+        cout << "Command entered to add player. Please enter the number of players, followed by their names: " << endl;
+        int n;
+        cin >> n;
+        this->lastCmd = new Command(to_string(n));
+        saveCommand();
+        for (int i = 0; i < n; i++) {
+            cin >> input;
+            this->lastCmd = new Command(input);
+            saveCommand();
         }
-        if (input == "addplayer") {
-            cout << "Command entered to add player. Please enter the number of players, followed by their names: " << endl;
-        }
-        if (input == "quit" || input == "exit") {
-            return;
-        }
+        return;
+    }
+    if (*lastCmd->command == "gamestart") {
+        cout << "Game has finished. Enter play to play again, or end to quit.";
     }
 }
     

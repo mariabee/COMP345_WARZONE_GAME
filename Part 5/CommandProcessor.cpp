@@ -32,6 +32,7 @@ std::ostream &operator<<(std::ostream &out, const Command &c) {
 }
 
 void Command::saveEffect(std::string* e) {
+    delete effect;
     effect = e;
     notify();
 }

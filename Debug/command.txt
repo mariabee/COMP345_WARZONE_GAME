@@ -3,10 +3,12 @@ loadmap
 little.map
 validatemap
 addplayer
-2
+3
 Maria
 aggressive
 Harry
 neutral
+Jane
+cheater
 gamestart
 play

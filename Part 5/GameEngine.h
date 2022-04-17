@@ -94,6 +94,8 @@ public:
 
     Player* checkWinner();
 	Player* checkWinner(int maxTurns);
+
+    void reset();
 };
 
 class TournamentModeHandler: public Subject, public ILoggable {

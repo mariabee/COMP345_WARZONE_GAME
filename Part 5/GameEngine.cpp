@@ -247,6 +247,7 @@ void GameEngine::build() {
 
     auto start = new State(START_STATE);
     currentState = start;
+    auto tournament_mode = new State("tournament_mode");
     auto map_load = new State("map_loaded");
     auto map_valid = new State("map_validated");
     auto players_added = new State("players_added");
@@ -256,12 +257,15 @@ void GameEngine::build() {
     auto execute_orders = new State("execute_orders");
     auto win = new State("win");
     auto end = new State(END_STATE);
-    states = new State *[10]
+    states = new State *[11]
             {start, map_load, map_valid, players_added, game_start, assign_reinforcement, issue_orders, execute_orders,
-             win, end};
-    stateCount = 10;
-
+             win, end, tournament_mode};
+    stateCount = 11;
+    start->setTransitions(new Transition(start, start, "play"));
     start->setTransitions(new Transition(start, map_load, "loadmap"));
+    start->setTransitions(new Transition(start, tournament_mode, "tournament"));
+    tournament_mode->setTransitions(new Transition(tournament_mode, map_load, "loadmap"));
+    tournament_mode->setTransitions(new Transition(tournament_mode, start, "play"));
     map_load->setTransitions(new Transition(map_load, map_load, "loadmap"));
     map_load->setTransitions(new Transition(map_load, map_valid, "validatemap"));
     map_valid->setTransitions(new Transition(map_valid, players_added, "addplayer"));
@@ -284,7 +288,7 @@ void GameEngine::initial_start(CommandProcessor *cp) {
     cp->getCommand();
     vector<Command *> *commands = cp->getCommandList();
 
-    while (currentState != states[5]) {
+    do {
         if (!commands->empty()) {
             Command *c = commands->front();
             index = currentState->getCommandIndex(*c->command);
@@ -304,8 +308,7 @@ void GameEngine::initial_start(CommandProcessor *cp) {
             cp->getCommand();
             commands = cp->getCommandList();
         }
-
-    }
+    } while (currentState != states[5] && currentState != states[10]);
 }
 
 
@@ -381,21 +384,38 @@ void GameEngine::startupPhase(Command *c, vector<Command *> *commands) {
                 players.at(i)->getHand()->drawFromDeck(new_deck);
                 cout << *players.at(i)->getHand() << endl;
             }
-            currentState = states[5];
         }
+        currentState = states[5];
     }
     commands->erase(commands->begin());
 }
 
 
 void GameEngine::play() {
-    auto *cp = new CommandProcessor();
-    initial_start(cp);
-    mainGameLoop(cp);
+    do {
+        auto *cp = new CommandProcessor();
+        initial_start(cp);
+        if (currentState == states[10]) {
+            if (!cp->getCommandList()->empty()) {
+                Command *c = cp->getCommandList()->front();
+                TournamentModeHandler *t = TournamentModeHandler::fromString("tournament " + *c->command);
+                if (t) {
+                    t->run(this);
+                } else {
+                    cout << "Invalid tournament command." << endl;
+                }
+            }
+        }
+        else {
+            mainGameLoop(cp);
+        }
+    }while(currentState != states[9]);
+    cout << "Exiting game. Have a good day!" << endl;
 }
 
 std::string GameEngine::mainGameLoop(int maxTurns) {
     int i = 1;
+    currentState = states[5];
     while (currentState != states[8]) {
         reinforcementPhase();
         issueOrdersPhase();
@@ -449,17 +469,16 @@ void GameEngine::mainGameLoop(CommandProcessor *cp) {
         setState(*c->command);
         commands->erase(commands->begin());
     }
-    if (currentState == states[9]) {
-        cout << "Thank you for playing! " << endl;
-        return;
+    for (Player *p : players) {
+        delete p;
     }
     players.clear();
     delete new_deck;
     delete map;
-    play();
 }
 
 void GameEngine::reinforcementPhase() {
+    setState("assignArmies");
     map->checkContinentOwners();
     int n;
     //Go through every player
@@ -561,6 +580,7 @@ Player* GameEngine::checkWinner(int maxTurns) {
              if (currentState != states[8]) {
                  cout << *p->getName() << " has lost the game." << endl;
              }
+             delete p;
              players.erase(players.begin() + i);
              i--;
         }
@@ -581,6 +601,7 @@ Player* GameEngine::checkWinner() {
             if (currentState != states[8]) {
                 cout << *p->getName() << " has lost the game." << endl;
             }
+            delete p;
             players.erase(players.begin() + i);
             i--;
         }
@@ -864,17 +885,11 @@ void TournamentModeHandler::run(GameEngine* ge) {
             winners[i][j] = this->playGame(ge, maps[j], playerStrategies, numStrats);
         }
     }
-    ge->setState("end");
-
     notify();
-
 }
-
 
 std::string TournamentModeHandler::playGame(GameEngine* ge, Map* map, Player** players, int p) const {
     ge->setState("addplayer");
-
-    ge->players.clear();
     cout << p << endl;
     for(int i = 0; i < p; i++) {
         auto *temp = new Player(*players[i]);

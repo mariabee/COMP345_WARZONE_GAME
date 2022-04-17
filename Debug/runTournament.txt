@@ -1,0 +1,2 @@
+tournament
+-M little.map,canada.map,artic.map -P aggressive,benevolent,neutral -G 5 -D 50

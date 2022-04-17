@@ -91,8 +91,11 @@ CommandProcessor::~CommandProcessor(){
 bool CommandProcessor::validate(const Command& cmd, GameEngine* ge){
     string* state = ge->currentState->name;
     string command = *cmd.command;
+    if (command == "tournament") {
+        if (*state == "start") return true;
+    }
     if (command == "loadmap") {
-        if (*state == "start" || *state == "maploaded")
+        if (*state == "start" || *state == "maploaded" || *state == "tournamentstart")
             return true;
     }
     if (command == "validatemap") {
@@ -103,15 +106,12 @@ bool CommandProcessor::validate(const Command& cmd, GameEngine* ge){
         if (*state == "map_validated" || *state == "players_added")
             return true;
     }
-    if (command == "tournament") {
-        if (*state == "players_added") return true;
-    }
     if (command == "gamestart") {
         if (*state == "players_added")
             return true;
     }
     if (command == "play") {
-        if (*state == "win")
+        if (*state == "win" || *state == "tournamentstart" || *state == "start")
             return true;
     }
     if (command == "end") {
@@ -149,11 +149,21 @@ void CommandProcessor::readCommand(){
     std::cout << "Reading input from console...\n";
     string input;
     cin >> input;
-    if (input == "0") {
-        return;
-    }
     this->lastCmd = new Command(input);
     saveCommand();
+    if (input == "tournament") {
+        cout << "Command entered to start tournament. Please enter the maps separated by commas (little.map,canada.map,artic.map): " << endl;
+        string maps, strategies, games, maxTurns;
+        cin >> maps;
+        cout << "Enter the strategies seperated by commas" << endl;
+        cin >> strategies;
+        cout << "Enter the number of games per map" << endl;
+        cin >> games;
+        cout << "Enter the max number of rounds per game" << endl;
+        cin >> maxTurns;
+        this->lastCmd = new Command("-M " + maps + " -P " + strategies + " -G " + games + " -D " + maxTurns);
+        saveCommand();
+    }
     if (input == "loadmap") {
         cout << "Command entered to load map. Please enter the filename :" << endl;
         cin >> input;
@@ -181,7 +191,7 @@ void CommandProcessor::readCommand(){
         return;
     }
     if (*lastCmd->command == "gamestart") {
-        cout << "Game has finished. Enter play to play again, or end to quit.";
+        cout << "Enter play to play again, or end to quit.";
     }
 }
     

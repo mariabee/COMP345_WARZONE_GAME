@@ -94,14 +94,15 @@ std::ostream &operator<<(std::ostream &out, const Player &p)
 // Destructor for Player
 Player::~Player()
 {
+    cout << "Deleting " + *name + " ...." << endl;
+    // Delete only the array of pointers since the territories should be deleted from the map not the player
+    territories->clear();
+    toMove->clear();
+    cannotAttack->clear();
 	delete name;
 	delete hand;
 	delete orderList;
-	// Delete only the array of pointers since the territories should be deleted from the map not the player
-	delete[] territories;
-    delete[] toMove;
-    delete[] cannotAttack;
-
+    cout << "Successfully deleted player object" << endl;
 }
 
 // Function that returns a pointer to the players hand

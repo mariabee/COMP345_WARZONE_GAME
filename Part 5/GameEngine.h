@@ -89,6 +89,7 @@ public:
     void setState(const std::string& s);
     void initial_start(CommandProcessor *cp);
     void testPhase();
+	void reset();
 
     void play();
 

@@ -44,6 +44,7 @@ public:
     //DESTRUCTOR
     virtual ~CommandProcessor();
     static bool validate(const Command& cmd, GameEngine* ge);
+    static bool checkTournament(const Command& cmd, GameEngine* ge);
     virtual void getCommand();
     void setLastCommand(Command*);
     void setCommandList(vector<Command *> *c);

@@ -89,12 +89,14 @@ public:
     void setState(const std::string& s);
     void initial_start(CommandProcessor *cp);
     void testPhase();
-	void reset();
-
+    Deck * getDeck();
+ 	  void reset();
     void play();
 
-    void checkWinner();
+    Player* checkWinner();
 	Player* checkWinner(int maxTurns);
+
+    void reset();
 };
 
 class TournamentModeHandler: public Subject, public ILoggable {
@@ -124,7 +126,7 @@ class TournamentModeHandler: public Subject, public ILoggable {
 	TournamentModeHandler(Map** m, std::string** mapNames, int mapCt, Player** ps, int stratCt, int numGames, int maxTurns);
 
 	void run(GameEngine* ge);
-	std::string playGame(GameEngine* ge, Map* map, Player** players, int p);
+	std::string playGame(GameEngine* ge, Map* map, Player** players, int p) const;
 };
 
 #endif

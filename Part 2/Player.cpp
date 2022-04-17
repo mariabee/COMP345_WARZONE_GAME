@@ -43,7 +43,6 @@ Player &Player::operator=(const Player &p)
 	if (this == &p)
 		return *this;
 	delete name;
-    delete strategy;
 	delete hand;
 	delete[] territories;
     delete[] toMove;
@@ -51,6 +50,7 @@ Player &Player::operator=(const Player &p)
 
 	name = new string(*p.name);
 	hand = new Hand(*p.hand);
+    strategy = p.strategy;
 	territories = new vector<Territory *>();
 	for (Territory *t : *p.territories )
 	{
@@ -58,15 +58,16 @@ Player &Player::operator=(const Player &p)
 	}
 	orderList = new OrdersList(*p.orderList);
     cannotAttack = new vector<Player *>();
-    for (Player* p: *p.cannotAttack)
+    for (Player* p_: *p.cannotAttack)
     {
-        cannotAttack->push_back(p);
+        cannotAttack->push_back(p_);
     }
 	return *this;
 }
 
 // Copy constructor for Player
 Player::Player(Player &p) {
+    strategy = p.strategy;
     name = new string(*p.name);
     hand = new Hand(*p.hand);
     armies = p.getArmies();
@@ -78,9 +79,9 @@ Player::Player(Player &p) {
     orderList = new OrdersList(*p.getOrdersList());
     cardWon = p.cardWon;
     cannotAttack = new vector<Player *>();
-    for (Player* p: *p.cannotAttack)
+    for (Player* p_: *p.cannotAttack)
     {
-        cannotAttack->push_back(p);
+        cannotAttack->push_back(p_);
     }
 }
 // Stream insertion operator overload for Player
@@ -93,15 +94,15 @@ std::ostream &operator<<(std::ostream &out, const Player &p)
 // Destructor for Player
 Player::~Player()
 {
+    cout << "Deleting " + *name + " ...." << endl;
+    // Delete only the array of pointers since the territories should be deleted from the map not the player
+    territories->clear();
+    toMove->clear();
+    cannotAttack->clear();
 	delete name;
 	delete hand;
 	delete orderList;
-
-	// Delete only the array of pointers since the territories should be deleted from the map not the player
-	delete[] territories;
-    delete[] toMove;
-    delete[] cannotAttack;
-
+    cout << "Successfully deleted player object" << endl;
 }
 
 // Function that returns a pointer to the players hand
@@ -220,14 +221,36 @@ bool Player::issueOrder(order *o) {
 }
 
 void Player::issueOrder() {
+    cout << "Currently using ";
+    strategy->print();
+    cout << endl;
     if (!territories->empty()) {
         strategy->issueOrder(this);
     }
 }
 
-string *Player::setName(string *n) {
+void Player::setName(string *n) {
     delete name;
     this->name = n;
+}
+
+void Player::setStrategy(string s) {
+    if (s == "human") {
+        strategy = new HumanPlayerStrategy();
+    }
+    else if (s == "aggressive") {
+        strategy = new AggressivePlayerStrategy();
+    }
+    else if (s == "cheater") {
+        strategy = new CheaterPlayerStrategy();
+    }
+    else if (s == "human") {
+        strategy = new HumanPlayerStrategy();
+    }
+    else {
+        strategy = new NeutralPlayerStrategy();
+    }
+
 }
 
 

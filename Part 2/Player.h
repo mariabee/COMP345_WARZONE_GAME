@@ -41,7 +41,7 @@ class Player {
         bool isCardWon() const;
         vector<Player *> *getCannotAttack() const;
         PlayerStrategy * getPlayerStrategy();
-        string * setName(string *n);
+        void setName(string *n);
 
     //Mutators
         void addTerritory(Territory *t);
@@ -52,6 +52,7 @@ class Player {
         void clearCannotAttack();
         void setCardWon(bool cardWon);
         void setStrategy(PlayerStrategy *ps);
+        void setStrategy(string s);
 
 
 };

@@ -17,6 +17,7 @@ protected:
 public :
     virtual bool issueOrder(Player *p, order *o) = 0;
     virtual void issueOrder(Player *p) = 0;
+    virtual void print() = 0;
     virtual vector<Territory *> * toDefend(Player *p, order *type) = 0;
     virtual vector<Territory *> * toAttack(Player *p, order *type) = 0;
     static void addDeck(Deck *d);
@@ -41,7 +42,7 @@ public :
     static Territory * toMove(Player *p);
     vector<Territory *> * toDefend(Player *, order *type) override;
     vector<Territory *> * toAttack(Player *p, order *type) override;
-
+    void print() override;
 
 private:
     friend ostream& operator<<(ostream&, const HumanPlayerStrategy&);
@@ -57,6 +58,7 @@ public :
     void issueOrder(Player *p) override;
     vector<Territory *> * toDefend(Player *p, order *type) override;
     vector<Territory *> * toAttack(Player *p, order *type) override;
+    void print();
 private:
     friend ostream& operator<<(ostream&, const AggressivePlayerStrategy&);
 };
@@ -70,6 +72,7 @@ public :
     void issueOrder(Player *p) override;
     vector<Territory *> * toDefend(Player *p, order *type) override;
     vector<Territory *> * toAttack(Player *p, order *type ) override;
+    void print() override;
 private:
     friend ostream& operator<<(ostream&, const BenevolentPlayerStrategy&);
 };
@@ -83,6 +86,7 @@ public :
     void issueOrder(Player *p) override;
     vector<Territory *> * toDefend(Player *p, order *type) override;
     vector<Territory *> * toAttack(Player *p, order *type) override;
+    void print();
 private:
     friend ostream& operator<<(ostream&, const NeutralPlayerStrategy&);
 };
@@ -97,6 +101,7 @@ public :
     vector<Territory *> * toDefend(Player *p, order *type) override;
     vector<Territory *> * toAttack(Player *p, order *type) override;
     friend ostream& operator<<(ostream&, const CheaterPlayerStrategy&);
+    void print();
 };
 
 

@@ -77,7 +77,6 @@ bool Card::play(Deck* deck, Player* player)
     vector <Territory *> *toAttack;
     vector <Territory *> *toDefend;
     bool cardPlayed = true;
-
         switch (type) {
             case BOMB:
                 toAttack = player->toAttack(new Bomb());
@@ -149,6 +148,8 @@ bool Card::play(Deck* deck, Player* player)
                     cout << *player->getName() << " has played a DIPLOMACY card\n";
                 }
                 break;
+            default:
+                break;
         }
     if (cardPlayed) {
         deck->addCardBackToDeck(this);
@@ -209,10 +210,9 @@ Deck::Deck(const Deck &obj){
 //destructor
 Deck::~Deck()
 {
-    delete[] cardsInDeck;
-    cardsInDeck = nullptr;
+    cout << "Deleting.." << endl;
     delete[] initialDeck;
-    initialDeck = nullptr;
+    delete[] cardsInDeck;
     cout << "Deck object were successfully DELETED\n";
 }
 
@@ -221,10 +221,18 @@ Deck& Deck::operator = (const Deck & deck){
     if (this == &deck){
         return *this;
     }
-    **cardsInDeck = **deck.cardsInDeck;
-    *initialDeck = *deck.initialDeck;
+    delete[] cardsInDeck;
+    delete[] initialDeck;
     initialDeckSize = deck.initialDeckSize;
     nbCardInDeck = deck.nbCardInDeck;
+    cardsInDeck = new Card*[initialDeckSize];
+    initialDeck = new Card[initialDeckSize];
+    for (int i = 0; i < nbCardInDeck; i++) {
+        cardsInDeck[i] = deck.cardsInDeck[i];
+    }
+    for (int i = 0; i < initialDeckSize; i++) {
+        initialDeck[i] = deck.initialDeck[i];
+    }
     return *this;
 }
 
@@ -294,17 +302,19 @@ Hand::Hand(){
 }
 //copy constructor
 Hand::Hand(const Hand &obj){
+    maxCard = 5;
     cardsInHand = new Card*[maxCard]();
-    *cardsInHand = *obj.cardsInHand;
-    maxCard = obj.maxCard;
     nbCardsInHand = obj.nbCardsInHand;
+    for (int i = 0; i < obj.nbCardsInHand; i++) {
+        cardsInHand[i] = obj.cardsInHand[i];
+    }
+    maxCard = obj.maxCard;
     cout << "Hand object was successfully CREATED\n";
 }
 
 //destructor
 Hand::~Hand(){
     delete[] cardsInHand;
-    cardsInHand = nullptr;
     cout << "Hand object was successfully DELETED\n";
 }
 
@@ -313,9 +323,14 @@ Hand& Hand::operator = (const Hand & hand){
     if (this == &hand) {
         return *this;
     }
-    *cardsInHand = *hand.cardsInHand;
-    maxCard = hand.maxCard;
+    delete[] cardsInHand;
+    cardsInHand = new Card*[maxCard]();
     nbCardsInHand = hand.nbCardsInHand;
+    for (int i = 0; i < hand.nbCardsInHand; i++) {
+        cardsInHand[i] = hand.cardsInHand[i];
+    }
+    maxCard = hand.maxCard;
+    cout << "Hand object was successfully CREATED\n";
     return *this;
 }
 

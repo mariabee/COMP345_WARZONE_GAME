@@ -90,6 +90,7 @@ public:
     void initial_start(CommandProcessor *cp);
     void testPhase();
     Deck * getDeck();
+ 	  void reset();
     void play();
 
     Player* checkWinner();

@@ -3,6 +3,7 @@
 		"*.cpdb": "json",
 		"*.token": "plaintext",
 		"vector": "cpp",
-		"*.tcc": "cpp"
+		"*.tcc": "cpp",
+		"bitset": "cpp"
 	}
 }

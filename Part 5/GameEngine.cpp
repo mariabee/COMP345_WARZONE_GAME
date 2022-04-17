@@ -425,8 +425,8 @@ std::string GameEngine::mainGameLoop(int maxTurns) {
     // if (currentState == states[9]) {
     cout << "Thank you for playing! Game is over." << endl;
     // }
-    Player* p;
-    if (p = checkWinner(maxTurns))
+    Player* p = checkWinner(maxTurns);
+    if (p)
         return *p->getName();
     // else return "draw";
 
@@ -552,21 +552,21 @@ void GameEngine::executeOrdersPhase() {
 }
 
 Player* GameEngine::checkWinner(int maxTurns) {
-    // int i = 0;
+    int i = 0;
     for (Player *p: players) {
         if (p->getTerritories()->size() == map->getNumOfTers()) {
             // cout << *p->getName() << " has won the game!" << endl;
             return p;
             // setState("win");
         }
-        // else if (p->getTerritories()->empty()) {
-        //     if (currentState != states[8]) {
-        //         cout << *p->getName() << " has lost the game." << endl;
-        //     }
-        //     players.erase(players.begin() + i);
-        //     i--;
-        // }
-        // i++;
+        else if (p->getTerritories()->empty()) {
+             if (currentState != states[8]) {
+                 cout << *p->getName() << " has lost the game." << endl;
+             }
+             players.erase(players.begin() + i);
+             i--;
+        }
+        i++;
     }
     return nullptr;
 }
@@ -855,13 +855,13 @@ void TournamentModeHandler::run(GameEngine* ge) {
     winners = new std::string*[numGames];
 
     for(int i = 0; i < numGames; i++) {
+        ge->setState("play");
         winners[i] = new std::string[numMaps];
         for(int j = 0; j < numMaps; j++) {
             // if (i == 0 && j == 0)
             winners[i][j] = this->playGame(ge, maps[j], playerStrategies, numStrats);
             // else
             // winners[i][j] = "test";
-
         }
     }
 
@@ -871,25 +871,28 @@ void TournamentModeHandler::run(GameEngine* ge) {
 
 
 std::string TournamentModeHandler::playGame(GameEngine* ge, Map* map, Player** players, int p) {
-    ge->setState("start");
-    // ge->
+    ge->setState("loadmap");
+    ge->setState("validatemap");
+    ge->setState("addplayer");
+
     vector<Player *> ps;
+    ps.reserve(p);
     for(int i = 0; i < p; i++)
-        ps.push_back(players[i]);
-
-    ge->players = ps;
+            ps.push_back(players[i]);
     ge->map = map;
-
+    ge->players = ps;
 
     ge->initializeDeck();
     ge->initializeStrategies();
     ge->distributeTerritories();
     ge->randomizePlayOrder();
-    ge->setState("game_start");
+    ge->setState("gamestart");
+    ge->setState("assignarmies");
     // ge->currentState != states[5]
 
-    return ge->mainGameLoop(maxTurns);
+    string s = ge->mainGameLoop(maxTurns);
 
+    return s;
     // ps.clear();
 
 

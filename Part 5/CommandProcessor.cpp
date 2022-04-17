@@ -103,15 +103,18 @@ bool CommandProcessor::validate(const Command& cmd, GameEngine* ge){
         if (*state == "map_validated" || *state == "players_added")
             return true;
     }
+    if (command == "tournament") {
+        if (*state == "players_added") return true;
+    }
     if (command == "gamestart") {
         if (*state == "players_added")
             return true;
     }
-    if (command == "replay") {
+    if (command == "play") {
         if (*state == "win")
             return true;
     }
-    if (command == "quit") {
+    if (command == "end") {
         if (*state == "win")
             return true;
     }
@@ -158,13 +161,20 @@ void CommandProcessor::readCommand(){
         saveCommand();
     }
     if (input == "addplayer") {
-        cout << "Command entered to add player. Please enter the number of players, followed by their names: " << endl;
+        cout << "Command entered to add player. Please enter the number of players: " << endl;
         int n;
         cin >> n;
         this->lastCmd = new Command(to_string(n));
         saveCommand();
         for (int i = 0; i < n; i++) {
+            cout << "Player name : ";
             cin >> input;
+            cout << endl;
+            this->lastCmd = new Command(input);
+            saveCommand();
+            cout << "Player Strategy : ";
+            cin >> input;
+            cout << endl;
             this->lastCmd = new Command(input);
             saveCommand();
         }

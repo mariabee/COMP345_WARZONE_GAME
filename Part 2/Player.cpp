@@ -226,9 +226,28 @@ void Player::issueOrder() {
     }
 }
 
-void *Player::setName(string *n) {
+void Player::setName(string *n) {
     delete name;
     this->name = n;
+}
+
+void Player::setStrategy(string s) {
+    if (s == "human") {
+        strategy = new HumanPlayerStrategy();
+    }
+    else if (s == "aggressive") {
+        strategy = new AggressivePlayerStrategy();
+    }
+    else if (s == "cheater") {
+        strategy = new CheaterPlayerStrategy();
+    }
+    else if (s == "human") {
+        strategy = new HumanPlayerStrategy();
+    }
+    else {
+        strategy = new NeutralPlayerStrategy();
+    }
+
 }
 
 

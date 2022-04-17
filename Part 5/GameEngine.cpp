@@ -235,7 +235,6 @@ void GameEngine::randomizePlayOrder() {
 }
 
 void GameEngine::initializeDeck() {
-    delete new_deck;
     new_deck = new Deck(100);
 }
 void GameEngine::initializeStrategies() {
@@ -320,7 +319,6 @@ void GameEngine::startupPhase(Command *c, vector<Command *> *commands) {
         c->saveEffect(new string("Map loaded successfully."));
         //               std::cout << map->getTerritories()[2] << std::endl;
     }
-
     if (currentState == states[2]) {
         if (!map->validate()) {
             std::cout << "Map not valid, please reenter a valid map file" << std::endl;
@@ -345,17 +343,19 @@ void GameEngine::startupPhase(Command *c, vector<Command *> *commands) {
             c->saveEffect(new string("Max number of players reached, failed to add these players!"));
         } else {
             initializeDeck();
-            initializeStrategies();
             for (int i{0}; i < num_of_players; i++) {
                 commands->erase(commands->begin());
                 if (!commands->empty()) {
                     c = commands->front();
                     temp_player = new Player(*c->command);
-                    temp_player->setStrategy(strategies[3]);
+                    commands->erase(commands->begin());
+                    c = commands->front();
+                    cout << *c << endl;
+                    temp_player->setStrategy(*c->command);
                     players.push_back(temp_player);
                 }
             }
-            players.back()->setStrategy(strategies[4]);
+            initializeStrategies();
             std::cout << "Players added successfully" << std::endl;
             c->saveEffect(new string("Players added successfully."));
         }
@@ -441,24 +441,23 @@ void GameEngine::mainGameLoop(CommandProcessor *cp) {
         executeOrdersPhase();
     }
     string playOrEnd;
-    vector<Command *> *commands = cp->getCommandList();
+    vector<Command *> *commands;
     State *previousState = currentState;
     commands = cp->getCommandList();
 
-    while (currentState == previousState) {
-        if (commands->empty()) {
-            cp->getCommand();
-        }
+    if (commands && !commands->empty()) {
         Command *c = commands->front();
         setState(*c->command);
         commands->erase(commands->begin());
     }
-    if (currentState == states[0]) {
-        play();
-    }
     if (currentState == states[9]) {
-        cout << "Thank you for playing! Game is over." << endl;
+        cout << "Thank you for playing! " << endl;
+        return;
     }
+    players.clear();
+    delete new_deck;
+    delete map;
+    play();
 }
 
 void GameEngine::reinforcementPhase() {
@@ -596,16 +595,16 @@ void GameEngine::testPhase() {
     initializeDeck();
     initializeStrategies();
     auto *cheat_player = new Player("CHEATER");
-    cheat_player->setStrategy(strategies[4]);
+    cheat_player->setStrategy(new CheaterPlayerStrategy);
     players.push_back(cheat_player);
     auto *neutral_player = new Player("NEUTRAL");
-    neutral_player->setStrategy(strategies[3]);
+    neutral_player->setStrategy(new NeutralPlayerStrategy);
     players.push_back(neutral_player);
     auto *a_player = new Player("AGGRESSIVE1");
-    a_player->setStrategy(strategies[1]);
+    a_player->setStrategy(new AggressivePlayerStrategy);
     players.push_back(a_player);
     auto *aggressive_player = new Player("AGGRESSIVE2");
-    aggressive_player->setStrategy(strategies[1]);
+    aggressive_player->setStrategy(new AggressivePlayerStrategy);
     players.push_back(aggressive_player);
     //auto *human_player = new Player("AGGRESSIVE" + to_string(2));
     //human_player->setStrategy(strategies[1]);

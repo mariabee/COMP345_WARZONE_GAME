@@ -90,13 +90,11 @@ public:
     void initial_start(CommandProcessor *cp);
     void testPhase();
     Deck * getDeck();
- 	  void reset();
+    void reset();
     void play();
 
     Player* checkWinner();
 	Player* checkWinner(int maxTurns);
-
-    void reset();
 };
 
 class TournamentModeHandler: public Subject, public ILoggable {

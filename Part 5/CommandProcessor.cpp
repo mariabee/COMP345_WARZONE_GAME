@@ -87,6 +87,18 @@ CommandProcessor::~CommandProcessor(){
     }
     commandList->clear();
 }
+
+bool CommandProcessor::checkTournament(const Command& cmd, GameEngine* ge) {
+    string* state = ge->currentState->name;
+    string command = *cmd.command;
+
+    if (*state == "start") {
+        if (TournamentModeHandler::fromString(command))
+            return true;
+    }
+    return false;
+
+}
     
 bool CommandProcessor::validate(const Command& cmd, GameEngine* ge){
     string* state = ge->currentState->name;

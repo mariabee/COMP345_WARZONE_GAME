@@ -404,6 +404,9 @@ std::string GameEngine::mainGameLoop(int maxTurns) {
     while (currentState != states[8] && i++ < maxTurns) {
         reinforcementPhase();
         issueOrdersPhase();
+        if (i == maxTurns) {
+            setState("win");
+        }
         executeOrdersPhase();
     }
     // string playOrEnd;
@@ -853,17 +856,18 @@ TournamentModeHandler::TournamentModeHandler(Map** m, std::string** mNames, int 
 
 void TournamentModeHandler::run(GameEngine* ge) {
     winners = new std::string*[numGames];
-
+    int j = 0;
     for(int i = 0; i < numGames; i++) {
         ge->setState("play");
         winners[i] = new std::string[numMaps];
-        for(int j = 0; j < numMaps; j++) {
-            // if (i == 0 && j == 0)
-            winners[i][j] = this->playGame(ge, maps[j], playerStrategies, numStrats);
-            // else
-            // winners[i][j] = "test";
+        Map *m = maps[j];
+        j++;
+        if (j == numMaps) {
+            j = 0;
         }
+        winners[i][j] = this->playGame(ge, maps[j], playerStrategies, numStrats);
     }
+    ge->setState("end");
 
     notify();
 

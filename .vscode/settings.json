@@ -2,6 +2,7 @@
 	"files.associations": {
 		"*.cpdb": "json",
 		"*.token": "plaintext",
-		"vector": "cpp"
+		"vector": "cpp",
+		"*.tcc": "cpp"
 	}
 }

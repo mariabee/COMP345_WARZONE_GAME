@@ -60,8 +60,6 @@ private:
     const std::string dir {"../Debug/MapFiles/"};
     const int MAX_NUM_PLAYERS {6};
     const int MIN_NUM_PLAYERS {2};
-    vector<Player *> players;
-    Map *map;
 	State **states;
     PlayerStrategy **strategies;
     Deck* new_deck;
@@ -71,6 +69,8 @@ private:
     void issueOrdersPhase();
     void executeOrdersPhase();
 public:
+    vector<Player *> players;
+    Map *map;
 	State *currentState;
 	std::string stringToLog() override;
 	GameEngine& operator=(const GameEngine &ge);
@@ -82,6 +82,7 @@ public:
 	void startupPhase(Command *c, vector<Command *> *commands);
     void distributeTerritories();
     void mainGameLoop(CommandProcessor *cp);
+	std::string mainGameLoop(int maxTurns);
     void randomizePlayOrder();
     void initializeDeck();
     void initializeStrategies();
@@ -92,17 +93,20 @@ public:
     void play();
 
     void checkWinner();
+	Player* checkWinner(int maxTurns);
 };
 
 class TournamentModeHandler: public Subject, public ILoggable {
 
 	private:
 		Map** maps = nullptr;
+		std::string** mapNames = nullptr;
 		int numMaps;
-		PlayerStrategy** playerStrategies = nullptr;
+		Player** playerStrategies = nullptr;
 		int numStrats;
 		int numGames;
 		int maxTurns;
+		std::string** winners = nullptr;
 
 	public:
 
@@ -115,10 +119,11 @@ class TournamentModeHandler: public Subject, public ILoggable {
 
 	static TournamentModeHandler* fromString(std::string s);
 
-	TournamentModeHandler(Map** m, int mapCt, PlayerStrategy** ps, int stratCt, int numGames, int maxTurns);
+
+	TournamentModeHandler(Map** m, std::string** mapNames, int mapCt, Player** ps, int stratCt, int numGames, int maxTurns);
 
 	void run(GameEngine* ge);
-	std::string playGame(GameEngine* ge, Map* map, PlayerStrategy** players, int p);
+	std::string playGame(GameEngine* ge, Map* map, Player** players, int p);
 };
 
 #endif

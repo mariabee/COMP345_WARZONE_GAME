@@ -454,6 +454,7 @@ std::string GameEngine::mainGameLoop(int maxTurns) {
 }
 
 void GameEngine::mainGameLoop(CommandProcessor *cp) {
+    setState("assignarmies");
     while (currentState != states[8]) {
         reinforcementPhase();
         issueOrdersPhase();
@@ -478,7 +479,6 @@ void GameEngine::mainGameLoop(CommandProcessor *cp) {
 }
 
 void GameEngine::reinforcementPhase() {
-    setState("assignArmies");
     map->checkContinentOwners();
     int n;
     //Go through every player
@@ -658,6 +658,16 @@ Deck *GameEngine::getDeck() {
     return new_deck;
 }
 
+void GameEngine::reset() {
+    cout << "Reset settings..." << endl;
+    for (Player *p : players) {
+        delete p;
+    }
+    players.clear();
+    delete new_deck;
+    setState("play");
+}
+
 #include <sstream>
 #include <iomanip>
 
@@ -814,7 +824,7 @@ TournamentModeHandler* TournamentModeHandler::fromString(std::string s) {
     int p = 0;
     std::string* playerNames = split(words[4], ',', p);
     if (p > 4 || p < 2) return nullptr;
-    Player** oPS = new Player*[p];
+    auto** oPS = new Player*[p];
     for(int i =0;i<p;i++) {
         oPS[i] = new Player(playerNames[i]);
 
@@ -879,18 +889,22 @@ void TournamentModeHandler::run(GameEngine* ge) {
     for(int i = 0; i < numGames; i++) {
         winners[i] = new std::string[numMaps];
         for (int j = 0; j < numMaps; j++) {
-            ge->setState("play");
-            ge->setState("loadmap");
-            ge->setState("validatemap");
             winners[i][j] = this->playGame(ge, maps[j], playerStrategies, numStrats);
+            ge->reset();
         }
     }
+    for (int i = 0; i < numMaps; i++) {
+        delete maps[i];
+    }
+    delete[] maps;
     notify();
 }
 
 std::string TournamentModeHandler::playGame(GameEngine* ge, Map* map, Player** players, int p) const {
+    ge->setState("loadmap");
+    ge->setState("validatemap");
     ge->setState("addplayer");
-    cout << p << endl;
+
     for(int i = 0; i < p; i++) {
         auto *temp = new Player(*players[i]);
         ge->players.push_back(temp);}
@@ -905,13 +919,6 @@ std::string TournamentModeHandler::playGame(GameEngine* ge, Map* map, Player** p
         player->getHand()->drawFromDeck(ge->getDeck());
     }
     ge->setState("gamestart");
-    ge->setState("assignarmies");
-    // ge->currentState != states[5]
-
     string s = ge->mainGameLoop(maxTurns);
     return s;
-    // ps.clear();
-
-
-    // ge.
 }

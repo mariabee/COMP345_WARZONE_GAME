@@ -337,6 +337,10 @@ void HumanPlayerStrategy::displayBorders(Territory *t) {
     }
 }
 
+void HumanPlayerStrategy::print() {
+    cout << *this;
+}
+
 ///////////////////////////////AGGRESSIVE PLAYER/////////////////////////
 //Constructor
 AggressivePlayerStrategy::AggressivePlayerStrategy() {
@@ -345,7 +349,7 @@ AggressivePlayerStrategy::AggressivePlayerStrategy() {
 //Destructor
 AggressivePlayerStrategy::~AggressivePlayerStrategy() = default;
 std::ostream &operator << ( std::ostream &out, const AggressivePlayerStrategy &aggressivePlayerStrategy ){
-    out<< "Aggressive Player Strategy";
+    out << "Aggressive Player Strategy";
     return out;
 }
 AggressivePlayerStrategy::AggressivePlayerStrategy(const AggressivePlayerStrategy &other){
@@ -370,6 +374,7 @@ bool AggressivePlayerStrategy::issueOrder(Player *p, order *o) {
 //issues a turn of orders according to an aggressive player strategy
 void AggressivePlayerStrategy::issueOrder(Player *player) {
     Territory *strongest = toDefend(player, new Advance())->back();
+
     int armies = player->getArmies();
     //issue order to deploy troops to strongest territory
     player->getOrdersList()->add(new Deploy(player, strongest, armies));
@@ -471,6 +476,10 @@ vector<Territory *> *AggressivePlayerStrategy::toDefend(Player *p, order *type) 
         }
     }
     return out;
+}
+
+void AggressivePlayerStrategy::print() {
+    cout << *this;
 }
 
 ///////////////////////////////BENEVOLENT PLAYER/////////////////////////
@@ -575,6 +584,9 @@ void BenevolentPlayerStrategy::issueOrder(Player *p) {
     p->getHand()->playCard(deck, p, 0);
 
 }
+void BenevolentPlayerStrategy::print() {
+    cout << *this;
+}
 
 ///////////////////////////////CHEATER PLAYER/////////////////////////
 CheaterPlayerStrategy::CheaterPlayerStrategy() = default;
@@ -664,7 +676,7 @@ std::ostream &operator << ( std::ostream &out, const CheaterPlayerStrategy &chea
 NeutralPlayerStrategy::NeutralPlayerStrategy() = default;
 NeutralPlayerStrategy::~NeutralPlayerStrategy() = default;
 std::ostream &operator << ( std::ostream &out, const NeutralPlayerStrategy &neutralPlayerStrategy ){
-    out<< "Neutral Player Strategy";
+    out << "Neutral Player Strategy";
     return out;
 }
 NeutralPlayerStrategy::NeutralPlayerStrategy(const NeutralPlayerStrategy &other){
@@ -681,5 +693,13 @@ vector<Territory *> *NeutralPlayerStrategy::toDefend(Player *p, order *type) {
 }
 vector<Territory *> *NeutralPlayerStrategy::toAttack(Player *p, order *type) {
     return nullptr;
+}
+
+void NeutralPlayerStrategy::print() {
+    cout << *this;
+}
+
+void CheaterPlayerStrategy::print() {
+    cout << *this;
 }
 

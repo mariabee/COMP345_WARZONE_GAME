@@ -77,7 +77,6 @@ bool Card::play(Deck* deck, Player* player)
     vector <Territory *> *toAttack;
     vector <Territory *> *toDefend;
     bool cardPlayed = true;
-
         switch (type) {
             case BOMB:
                 toAttack = player->toAttack(new Bomb());
@@ -148,6 +147,8 @@ bool Card::play(Deck* deck, Player* player)
                 else {
                     cout << *player->getName() << " has played a DIPLOMACY card\n";
                 }
+                break;
+            default:
                 break;
         }
     if (cardPlayed) {
@@ -294,17 +295,19 @@ Hand::Hand(){
 }
 //copy constructor
 Hand::Hand(const Hand &obj){
+    maxCard = 5;
     cardsInHand = new Card*[maxCard]();
-    *cardsInHand = *obj.cardsInHand;
-    maxCard = obj.maxCard;
     nbCardsInHand = obj.nbCardsInHand;
+    for (int i = 0; i < obj.nbCardsInHand; i++) {
+        cardsInHand[i] = obj.cardsInHand[i];
+    }
+    maxCard = obj.maxCard;
     cout << "Hand object was successfully CREATED\n";
 }
 
 //destructor
 Hand::~Hand(){
     delete[] cardsInHand;
-    cardsInHand = nullptr;
     cout << "Hand object was successfully DELETED\n";
 }
 
@@ -313,9 +316,14 @@ Hand& Hand::operator = (const Hand & hand){
     if (this == &hand) {
         return *this;
     }
-    *cardsInHand = *hand.cardsInHand;
-    maxCard = hand.maxCard;
+    delete[] cardsInHand;
+    cardsInHand = new Card*[maxCard]();
     nbCardsInHand = hand.nbCardsInHand;
+    for (int i = 0; i < hand.nbCardsInHand; i++) {
+        cardsInHand[i] = hand.cardsInHand[i];
+    }
+    maxCard = hand.maxCard;
+    cout << "Hand object was successfully CREATED\n";
     return *this;
 }
 

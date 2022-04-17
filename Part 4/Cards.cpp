@@ -210,10 +210,9 @@ Deck::Deck(const Deck &obj){
 //destructor
 Deck::~Deck()
 {
-    delete[] cardsInDeck;
-    cardsInDeck = nullptr;
+    cout << "Deleting.." << endl;
     delete[] initialDeck;
-    initialDeck = nullptr;
+    delete[] cardsInDeck;
     cout << "Deck object were successfully DELETED\n";
 }
 
@@ -222,10 +221,18 @@ Deck& Deck::operator = (const Deck & deck){
     if (this == &deck){
         return *this;
     }
-    **cardsInDeck = **deck.cardsInDeck;
-    *initialDeck = *deck.initialDeck;
+    delete[] cardsInDeck;
+    delete[] initialDeck;
     initialDeckSize = deck.initialDeckSize;
     nbCardInDeck = deck.nbCardInDeck;
+    cardsInDeck = new Card*[initialDeckSize];
+    initialDeck = new Card[initialDeckSize];
+    for (int i = 0; i < nbCardInDeck; i++) {
+        cardsInDeck[i] = deck.cardsInDeck[i];
+    }
+    for (int i = 0; i < initialDeckSize; i++) {
+        initialDeck[i] = deck.initialDeck[i];
+    }
     return *this;
 }
 

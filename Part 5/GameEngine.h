@@ -92,7 +92,7 @@ public:
     Deck * getDeck();
     void play();
 
-    void checkWinner();
+    Player* checkWinner();
 	Player* checkWinner(int maxTurns);
 };
 

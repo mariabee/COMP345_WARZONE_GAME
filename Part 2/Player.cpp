@@ -220,7 +220,9 @@ bool Player::issueOrder(order *o) {
 }
 
 void Player::issueOrder() {
+    cout << "Currently using ";
     strategy->print();
+    cout << endl;
     if (!territories->empty()) {
         strategy->issueOrder(this);
     }

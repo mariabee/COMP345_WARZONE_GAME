@@ -350,7 +350,6 @@ void GameEngine::startupPhase(Command *c, vector<Command *> *commands) {
                     temp_player = new Player(*c->command);
                     commands->erase(commands->begin());
                     c = commands->front();
-                    cout << *c << endl;
                     temp_player->setStrategy(*c->command);
                     players.push_back(temp_player);
                 }
@@ -400,7 +399,7 @@ std::string GameEngine::mainGameLoop(int maxTurns) {
     while (currentState != states[8]) {
         reinforcementPhase();
         issueOrdersPhase();
-        if (i == maxTurns ) {
+        if (i == maxTurns) {
             setState("win");
             break;
         }
@@ -557,7 +556,6 @@ Player* GameEngine::checkWinner(int maxTurns) {
         if (p->getTerritories()->size() == map->getNumOfTers()) {
             // cout << *p->getName() << " has won the game!" << endl;
             return p;
-            // setState("win");
         }
         else if (p->getTerritories()->empty()) {
              if (currentState != states[8]) {
@@ -571,12 +569,13 @@ Player* GameEngine::checkWinner(int maxTurns) {
     return nullptr;
 }
 
-void GameEngine::checkWinner() {
+Player* GameEngine::checkWinner() {
     int i = 0;
     for (Player *p: players) {
         if (p->getTerritories()->size() == map->getNumOfTers()) {
             cout << *p->getName() << " has won the game!" << endl;
             setState("win");
+            return p;
         }
         else if (p->getTerritories()->empty()) {
             if (currentState != states[8]) {
@@ -587,6 +586,7 @@ void GameEngine::checkWinner() {
         }
         i++;
     }
+    return nullptr;
 }
 
 void GameEngine::testPhase() {
@@ -858,7 +858,7 @@ void TournamentModeHandler::run(GameEngine* ge) {
     for(int i = 0; i < numGames; i++) {
         winners[i] = new std::string[numMaps];
         for (int j = 0; j < numMaps; j++) {
-            if (i != 0) { ge->setState("play");}
+            ge->setState("play");
             ge->setState("loadmap");
             ge->setState("validatemap");
             winners[i][j] = this->playGame(ge, maps[j], playerStrategies, numStrats);

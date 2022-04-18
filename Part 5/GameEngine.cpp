@@ -402,7 +402,7 @@ void GameEngine::play() {
                 if (t) {
                     t->run(this);
                 } else {
-                    cout << "Invalid tournament command." << endl;
+                    cout << "Invalid tournament command: \"" + *c->command + "\"." << endl;
                 }
             }
         }
@@ -705,7 +705,7 @@ std::string TournamentModeHandler::stringToLog() {
         for(int j = -1; j < numGames; j++) {
             if (i == -1 || j == -1) {
                 if (j != -1)
-                    out << left << setw(15) << ("Game " + to_string(j));
+                    out << left << setw(15) << ("Game " + to_string(j + 1));
                 else {
                     if (i == -1)
                     out << left << setw(15) << "";
@@ -792,7 +792,7 @@ TournamentModeHandler* TournamentModeHandler::fromString(std::string s) {
 
     int wordCt;
     std::string* words = split(s, ' ', wordCt);
-    cout << wordCt;
+    // cout << wordCt;
 
     // for(int i = 0; i < wordCt; i++) {
     //     if ()

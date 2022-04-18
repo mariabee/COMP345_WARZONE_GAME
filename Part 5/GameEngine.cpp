@@ -580,8 +580,8 @@ Player* GameEngine::checkWinner(int maxTurns) {
              if (currentState != states[8]) {
                  cout << *p->getName() << " has lost the game." << endl;
              }
-             delete p;
              players.erase(players.begin() + i);
+             delete p;
              i--;
         }
         i++;
@@ -601,8 +601,8 @@ Player* GameEngine::checkWinner() {
             if (currentState != states[8]) {
                 cout << *p->getName() << " has lost the game." << endl;
             }
-            delete p;
             players.erase(players.begin() + i);
+            delete p;
             i--;
         }
         i++;

@@ -102,11 +102,11 @@ class TournamentModeHandler: public Subject, public ILoggable {
 	private:
 		Map** maps = nullptr;
 		std::string** mapNames = nullptr;
-		int numMaps;
+		int numMaps{};
 		Player** playerStrategies = nullptr;
-		int numStrats;
-		int numGames;
-		int maxTurns;
+		int numStrats{};
+		int numGames{};
+		int maxTurns{};
 		std::string** winners = nullptr;
 
 	public:

@@ -426,29 +426,12 @@ std::string GameEngine::mainGameLoop(int maxTurns) {
         executeOrdersPhase();
         i++;
     }
-    // string playOrEnd;
-    // vector<Command *> *commands = cp->getCommandList();
-    // State *previousState = currentState;
-    // commands = cp->getCommandList();
-
-    // while (currentState == previousState) {
-    //     if (commands->empty()) {
-    //         cp->getCommand();
-    //     }
-    //     Command *c = commands->front();
-    //     setState(*c->command);
-    //     commands->erase(commands->begin());
-    // }
-    // if (currentState == states[0]) {
-    //     play();
-    // }
-    // if (currentState == states[9]) {
     cout << "Thank you for playing! Game is over." << endl;
     // }
     Player* p = checkWinner(maxTurns);
     if (p)
         return *p->getName();
-    // else return "draw";
+
 
     return "draw";
 }
@@ -573,7 +556,6 @@ Player* GameEngine::checkWinner(int maxTurns) {
     int i = 0;
     for (Player *p: players) {
         if (p->getTerritories()->size() == map->getNumOfTers()) {
-            // cout << *p->getName() << " has won the game!" << endl;
             return p;
         }
         else if (p->getTerritories()->empty()) {
@@ -627,9 +609,6 @@ void GameEngine::testPhase() {
     auto *aggressive_player = new Player("AGGRESSIVE2");
     aggressive_player->setStrategy(new AggressivePlayerStrategy);
     players.push_back(aggressive_player);
-    //auto *human_player = new Player("AGGRESSIVE" + to_string(2));
-    //human_player->setStrategy(strategies[1]);
-    //players.push_back(human_player);*/
     distributeTerritories();
     randomizePlayOrder();
     std::cout << "The order of turn is as follow: ";
@@ -696,7 +675,6 @@ std::string TournamentModeHandler::stringToLog() {
     out << "\n";
     out << "\n";
 
-    // out += format("%1% %2% %|40t|%3%\n") % first[i] % last[i] % tel[i];
 
     out << "Results: \n";
 
@@ -723,11 +701,32 @@ std::string TournamentModeHandler::stringToLog() {
 
     return out.str();
 }
-TournamentModeHandler& TournamentModeHandler::operator=(const TournamentModeHandler &t) {
-    return *this;
-}
-TournamentModeHandler::TournamentModeHandler(const TournamentModeHandler &t) {
 
+// Assign Operator for TournamentModeHandler
+TournamentModeHandler& TournamentModeHandler::operator=(const TournamentModeHandler &t) {
+    if (this == &t) {return *this;}
+    for (int i = 0; i < numMaps; i ++) {
+        delete maps[i];
+    }
+    delete[] maps;
+    for (int i = 0; i < numMaps; i ++) {
+        delete mapNames[i];
+    }
+    delete[] mapNames;
+    for (int i = 0; i < numStrats; i ++) {
+        delete playerStrategies[i];
+    }
+    delete[] playerStrategies;
+
+    maps = t.maps;
+    mapNames = t.mapNames;
+    numMaps = t.numMaps;
+    playerStrategies = t.playerStrategies;
+    numStrats = t.numStrats;
+    numGames = t.numGames;
+    maxTurns = t.maxTurns;
+
+    return *this;
 }
 
 TournamentModeHandler::TournamentModeHandler() = default;
@@ -737,8 +736,21 @@ std::ostream& operator<< (std::ostream &out, const TournamentModeHandler &t) {
     return out;
 
 }
-TournamentModeHandler::~TournamentModeHandler() {
 
+// Destructor for TournamentModeHandler
+TournamentModeHandler::~TournamentModeHandler() {
+    for (int i = 0; i < numMaps; i ++) {
+        delete maps[i];
+    }
+    delete[] maps;
+    for (int i = 0; i < numMaps; i ++) {
+        delete mapNames[i];
+    }
+    delete[] mapNames;
+    for (int i = 0; i < numStrats; i ++) {
+        delete playerStrategies[i];
+    }
+    delete[] playerStrategies;
 }
 
 bool isNum(std::string s) {
@@ -758,20 +770,16 @@ std::string* split(std::string s, char del, int& outCt) {
     }
     outCt = ct;
     out = new std::string[ct];
-    // cout << ct;
-
 
     int i = 0;
     for(auto c:s) {
         if (c == del) {
-            // cout << cur << endl;
             out[i++] = cur;
             cur = "";
         } else
             cur += c;
     }
     if (cur.size() > 0) {
-        // cout << cur << endl;
         out[i++] = cur;
         cur = "";
     }
@@ -779,38 +787,22 @@ std::string* split(std::string s, char del, int& outCt) {
     return out;
 }
 
-// std::string** getList(std::string list) {
-//     int words = 0;
-//     std::string** words = split(list, ',', words);
-//     if (wor)
-// }
 
 TournamentModeHandler* TournamentModeHandler::fromString(std::string s) {
-    // TournamentModeHandler* out = new T
 
     // TODO: make sure memory is clean before returning nullptr
 
     int wordCt;
     std::string* words = split(s, ' ', wordCt);
-    // cout << wordCt;
-
-    // for(int i = 0; i < wordCt; i++) {
-    //     if ()
-    // }
-    if (wordCt != 9) return nullptr;
+    if (wordCt != 9)return nullptr;
     if (words[0] != "tournament") return nullptr;
     if (words[1] != "-M") return nullptr;
-    // if (isNum(words[2])) return nullptr;
-    // int subWords = -1;
-    // if (subWords == 0)
     if ((words[2]).size() == 0) return nullptr;
     int m = 0;
     std::string* mapNames = split(words[2], ',', m);
     if (m > 5 || m < 1) return nullptr;
     Map** oMaps = new Map*[m];
     for(int i =0;i<m;i++) {
-        // cout << (m);
-        // cout << (*mapNames[i]);
         // TODO: if file doesn't exist return nullptr
         // Parse, load and validate map
         oMaps[i] = new Map(MapLoader::loadMap("../Debug/MapFiles/"+ mapNames[i]));
@@ -839,12 +831,6 @@ TournamentModeHandler* TournamentModeHandler::fromString(std::string s) {
         else if (s == "cheater")
             oPS[i]->setStrategy(new CheaterPlayerStrategy());
         else return nullptr;
-    // strategies[0] = new HumanPlayerStrategy();
-    // strategies[1] = ;
-    // strategies[2] = ;
-    // strategies[3] = ;
-    // strategies[4] = ;
-
         // TODO: if file doesn't exist return nullptr
         // Parse, load and validate player
         // oPS[i] = ;
@@ -860,12 +846,6 @@ TournamentModeHandler* TournamentModeHandler::fromString(std::string s) {
     int d = stoi(words[8]); 
     if (d < 10 || d > 50) return nullptr;
 
-
-
-    // if (words[])
-        
-        // cout << *words[i];
-
     std::string** mapNamesOut = new std::string*[m];
     for (int i = 0; i < m; i++)
         mapNamesOut[i] = new std::string(mapNames[i]);
@@ -874,6 +854,8 @@ TournamentModeHandler* TournamentModeHandler::fromString(std::string s) {
     return new TournamentModeHandler(oMaps, mapNamesOut, m, oPS, p, g, d);
 }
 
+// Constructor for TournamentModeHandler that takes a pointer to an array of map pointers, a pointer to an array of map's name pointers,
+// a pointer to an array of player strat pointers, number of maps, number of strats, number of games and number of turns
 TournamentModeHandler::TournamentModeHandler(Map** m, std::string** mNames, int mapCt, Player** ps, int stratCt, int nGames, int mTurns) {
     maps = m;
     mapNames = mNames;
@@ -882,6 +864,17 @@ TournamentModeHandler::TournamentModeHandler(Map** m, std::string** mNames, int 
     numStrats = stratCt;
     numGames = nGames;
     maxTurns = mTurns;
+}
+
+// Copy Constructor for TournamentHandler
+TournamentModeHandler::TournamentModeHandler(const TournamentModeHandler &t) {
+    maps = t.maps;
+    mapNames = t.mapNames;
+    numMaps = t.numMaps;
+    playerStrategies = t.playerStrategies;
+    numStrats = t.numStrats;
+    numGames = t.numGames;
+    maxTurns = t.maxTurns;
 }
 
 void TournamentModeHandler::run(GameEngine* ge) {
